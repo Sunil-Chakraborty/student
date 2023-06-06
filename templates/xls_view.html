@@ -1,0 +1,69 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <title>Excel Data</title>
+	
+	<style type="text/css">
+		
+	
+
+	</style>
+  </head>
+
+  <body>
+
+	<h2> Please check your mail</h2>
+     <form action="" method="GET" enctype="multipart/form-data">
+
+			{% csrf_token %}
+			
+			{{form1.path_name}}
+			
+	  <button type="submit">Upload</button>
+	  
+	  
+	</form>
+	<br>
+   
+		<h2>View Excel Data</h2>
+		
+		<table  class = "table sts table-striped rounded shadow">
+				
+					{% for r in row_iterator %}
+					                
+									<tr>
+									
+									{% for c in col_iterator %}
+										{% for q in queryset %}
+											
+											<td>{{q}}</td>
+											
+										{% endfor %}										
+									{% endfor %}
+									
+									</tr>
+									
+					{% endfor %} 					
+				 
+				
+	
+		</table>
+				
+	</div>		
+
+    </main>
+
+
+
+
+<script type="text/javascript">
+	//<input type="file" id="file-upload" name="file-upload">
+</script>
+
+</body>
+
+</html>

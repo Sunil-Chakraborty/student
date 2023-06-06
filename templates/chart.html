@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chart</title>
+    <style>
+        .chart-container {
+            position: relative;
+        }
+
+        .chart-bar {
+            display: inline-block;
+            background-color: blue;
+            margin-right: 20px;
+        }
+
+        .x-axis {
+            position: absolute;
+            left: 50px;
+            bottom: 0;
+        }
+
+        .y-axis {
+            position: absolute;
+            left: 0;
+            top: 50px;
+            transform: rotate(-90deg);
+            transform-origin: left top;
+        }
+    </style>
+</head>
+<body>
+    <h1>Faculty Intake Chart</h1>
+    <div class="chart-container">
+        {% for bar in chart_bars %}
+            <div class="chart-bar" style="width: {{ bar.width }}px; height: {{ bar.height }}px;"></div>
+        {% endfor %}
+        <div class="x-axis">
+            {% for bar in chart_bars %}
+                <div>{{ bar.faculty }}</div>
+            {% endfor %}
+        </div>
+        <div class="y-axis">
+            {% for bar in chart_bars  %}
+                <div>{{ bar.intake }}</div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
