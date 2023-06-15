@@ -1,12 +1,14 @@
 from django import forms
 from django.forms import Form, ModelForm, DateField, widgets
-from .models import Student
+from .models import Student,Fin_Year
 
 class StudentForm(forms.ModelForm):
+    
     class Meta:
         model = Student
-        fields = "__all__"
-            
+        #fields = "__all__"
+        exclude = ['year_name','faculty_name','courses_name'] 
+        
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():

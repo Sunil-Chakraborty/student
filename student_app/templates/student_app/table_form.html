@@ -251,10 +251,10 @@
 				{% for student in queryset %}
 					<tr>
 						<td>{{ forloop.counter }}</td>
-						<td>{{ student.year }}</td>
+						<td>{{ student.year.name }}</td>
 						<td>{{ student.course_name }}</td>
-						<td>{{ student.faculty }}</td>
-						<td>{{ student.courses }}</td>						
+						<td>{{ student.faculty.name }}</td>
+						<td>{{ student.courses.name }}</td>						
 						<td style="text-align: right;">{{ student.intake|floatformat:2 }}</td>						
 						<td style="text-align: right;">{{ student.strength|floatformat:2 }}</td>						
 					</tr>				

@@ -148,6 +148,8 @@ def Chart1(request):
 def table_view(request):
 
     qs=Student.objects.all()
+    count = qs.count()
+
     fin_yr=Fin_Year.objects.all()
     courses=Courses.objects.all()
     faculty=Faculty.objects.all()
@@ -156,41 +158,43 @@ def table_view(request):
     course_query=request.GET.getlist('course')
     faculty_query=request.GET.getlist('faculty')
     
-    
-    qs=qs.filter(year__in=years_query)    
-    qs=qs.filter(courses__in=course_query)
-    qs=qs.filter(faculty__in=faculty_query)
-    
-    qs_sum_intake=qs.aggregate(s=Sum('intake'))["s"]
-    
-    qs_sum_strength=qs.aggregate(s=Sum('strength'))["s"]
-    
-    #queryset = Student.objects.values('faculty').annotate(total_intake=Sum('intake'))
-    queryset = qs.values('faculty').annotate(total_intake=Sum('intake'))
-    # Prepare the data for chart view
-    data = [(item['faculty'], int(item['total_intake'])) for item in queryset]
-    # Extract the categories and values
-    categories = [item[0] for item in data]
-    values = [item[1] for item in data]
-    
-    
-    
-    context={
-        "queryset":qs,
-        "fin_yr":fin_yr,
-        "courses":courses,
-        "faculty":faculty,
-        "qs_sum_intake":qs_sum_intake,
-        "qs_sum_strength":qs_sum_strength,
-        "years_query":years_query,
-        "course_query":course_query,
-        "faculty_query":faculty_query,
-        "categories":categories,
-        "values":values,
-    }
+    if count > 0 :
+        qs=qs.filter(year_name__in=years_query)    
+        qs=qs.filter(courses_name__in=course_query)
+        qs=qs.filter(faculty_name__in=faculty_query)
+        
+        qs_sum_intake=qs.aggregate(s=Sum('intake'))["s"]
+        
+        qs_sum_strength=qs.aggregate(s=Sum('strength'))["s"]
+        
+        #queryset = Student.objects.values('faculty').annotate(total_intake=Sum('intake'))
+        queryset = qs.values('faculty').annotate(total_intake=Sum('intake'))
+        # Prepare the data for chart view
+        data = [(item['faculty'], int(item['total_intake'])) for item in queryset]
+        # Extract the categories and values
+        categories = [item[0] for item in data]
+        values = [item[1] for item in data]
+        
     
     
-    return render(request, "student_app/table_form.html", context)
+        context={
+            "queryset":qs,
+            "fin_yr":fin_yr,
+            "courses":courses,
+            "faculty":faculty,
+            "qs_sum_intake":qs_sum_intake,
+            "qs_sum_strength":qs_sum_strength,
+            "years_query":years_query,
+            "course_query":course_query,
+            "faculty_query":faculty_query,
+            "categories":categories,
+            "values":values,
+        }
+        return render(request, "student_app/table_form.html", context)
+    else :
+        return redirect('dashboard')
+    
+    
     
 def student_create(request):   
    
