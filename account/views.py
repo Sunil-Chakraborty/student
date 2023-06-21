@@ -7,6 +7,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegistrationForm
 #from django.contrib.auth.views import LoginView
 from . models import Account,Department
+from django.contrib.auth.models import User
 
 
 def account_register(request):
@@ -44,7 +45,7 @@ def account_login(request):
             #print(user.id)
             user_id = user.id
             request.session['user_id'] = user_id
-            
+            print('l-47',user_id)
             return redirect('dashboard')
             
             #return redirect(request.path)

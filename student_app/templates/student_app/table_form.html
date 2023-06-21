@@ -169,7 +169,7 @@
 			</div>
  
 					<script>
-					var barColors = ["red", "green","blue","orange","brown"];
+					var barColors = ["teal", "green","blue","orange","brown"];
 					var config = {
 					  type: 'horizontalBar',
 					  data: {
@@ -177,11 +177,13 @@
 						datasets: [{
 							label: 'Intake',
 							//backgroundColor: barColors, /* different color will appear
-							backgroundColor: 'teal',
+							backgroundColor: "teal",
 							data: {{ values|safe }}
+
 						  }],  
 						labels: {{ categories|safe }}		  
 					  },
+					  
 					  options: {
 						  responsive: true,
 						  legend: {
@@ -213,18 +215,18 @@
 	  <br>
 	  <span style="font-size:20px;font-weight:bold;">Selected parameter :</span>
 	  <div style="background-color: #777799;color: #ffffff;font-weight:bold;">
-		  Year   :  <p style="color: #ffffff;">{% if years_query %}
-		                 {{years_query}}
+		    <p style="color: #ffffff;">Year :{% if years_query %}
+		                 <span>{{years_query}}</span>
 					   {% endif %}
-					</p>
-		  Course :  <p style="color: #ffffff;">{% if course_query %}
-		                 {{course_query}}
+			</p>
+		    <p style="color: #ffffff;">Course :{% if course_query %}
+		                 <span>{{course_query}}</span>
 					   {% endif %}
-					</p>
-		  Faculty:  <p style="color: #ffffff;">{% if faculty_query %}
-		                 {{faculty_query}}
+			</p>
+		    <p style="color: #ffffff;">Faculty:{% if faculty_query %}
+		                 <span>{{faculty_query}}</span>
 					   {% endif %}
-					</p>		  
+			</p>		  
 	  </div>
 	  <div >
 	  </div>
@@ -251,10 +253,10 @@
 				{% for student in queryset %}
 					<tr>
 						<td>{{ forloop.counter }}</td>
-						<td>{{ student.year.name }}</td>
+						<td>{{ student.year_name }}</td>
 						<td>{{ student.course_name }}</td>
-						<td>{{ student.faculty.name }}</td>
-						<td>{{ student.courses.name }}</td>						
+						<td>{{ student.faculty_name }}</td>
+						<td>{{ student.courses_name }}</td>						
 						<td style="text-align: right;">{{ student.intake|floatformat:2 }}</td>						
 						<td style="text-align: right;">{{ student.strength|floatformat:2 }}</td>						
 					</tr>				

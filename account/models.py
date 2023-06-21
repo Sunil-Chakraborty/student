@@ -29,17 +29,18 @@ class MyAccountManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class Account(AbstractBaseUser):
-    email = models.EmailField(unique=True)
-    username = models.CharField(max_length=100)
-    emp_id = models.CharField(verbose_name="Emp_id", unique=True, max_length=6) 
-    Department = models.ForeignKey("Department", on_delete=models.CASCADE, null=True, blank=True)
-    dept_name = models.CharField(max_length=100,null=True, blank=True)
-    faculty = models.CharField(max_length=50,null=True, blank=True)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
+    email           = models.EmailField(unique=True)
+    username        = models.CharField(max_length=100)
+    emp_id          = models.CharField(verbose_name="Emp_id", unique=True, max_length=6) 
+    Department      = models.ForeignKey("Department", on_delete=models.CASCADE, null=True, blank=True)
+    dept_name       = models.CharField(max_length=100,null=True, blank=True)
+    faculty         = models.CharField(max_length=50,null=True, blank=True)
+    last_login      = models.DateTimeField(auto_now_add=True)    
+    is_active       = models.BooleanField(default=True)
+    is_staff        = models.BooleanField(default=False)
+    is_superuser    = models.BooleanField(default=False)
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD  = 'email'
     #REQUIRED_FIELDS = ['first_name', 'last_name']
 
     objects = MyAccountManager()

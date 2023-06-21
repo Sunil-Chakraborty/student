@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+ 
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <title>Filter Form</title>
+	
+	<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-multiselect.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+	
+	{% block content %}
+	<script src="{% static 'js/Chart.min.js' %}"></script>
+	
+	<style type="text/css">
+		.container{
+			margin-top: 5px;
+			margin-left: 20px;
+			font-size:20px;
+
+		}
+		.card-body{
+			background-color: #5d5c61;
+			cursor:default;
+			overflow: auto;
+    		white-space: nowrap;
+		} 
+		.card {
+		   background-color: 1FCBDE;
+		   color: black;
+		   padding: 15px 30px;
+		   border-radius: 3px;
+		   
+		   margin-bottom: 5px; 
+		}
+		
+		thead.sticky {
+		  position: -webkit-sticky;
+		  position: sticky;
+		  top: 0;
+		  background-color: red;		  
+		  padding: 50px;
+		  font-size: 20px;
+		  height : 40px;
+		  
+		}
+		.div_class{
+			font-size:25px;
+			font-weight:bolder;
+			
+		}
+		.multiselect-selected{
+			width:250px;
+			font-size:10px;
+		}
+		
+		.myFont{
+			font-size:15px;
+			font-weight:bold;
+		}
+		.multiselect-wrapper {
+			font-size:15px;
+			font-weight:bold;
+		}
+				.dataTables_wrapper .dataTables_paginate .paginate_button {
+			border-radius: 0;
+		}
+		.dataTables_wrapper .dataTables_paginate .paginate_button {
+			border-radius: 0;
+			background: BDB76B !important;
+			
+		}
+		.dataTables_length {		
+			color: black !important;
+			margin-right:180px !important;
+		}
+		.dataTables_filter {
+			color:black !important;
+		}
+		.dt-buttons{
+			color:black !important;
+		}
+		.collapsible {
+		  background-color: #eee;
+		  color: #444;
+		  cursor: pointer;
+		  padding: 18px;
+		  width: 100%;
+		  border: none;
+		  text-align: left;
+		  outline: none;
+		  font-size: 15px;
+		  transition: 0.4s;
+		}
+
+		.collapsible:hover {
+		  background-color: #ccc;
+		}
+
+		.content {
+		  padding: 0 18px;
+		  display: none;
+		  overflow: hidden;
+		  background-color: #f9f9f9;
+		}
+		.container2 {
+		  display: flex;
+		  justify-content: center;
+		  align-items: center;
+		  height: 100vh; /* Adjust as needed */
+		}
+		
+		#my-table td {
+			width: 500px; /* Adjust the width as needed */
+			padding: 10px; /* Adjust the padding as needed */
+			border: 1px solid #000; /* Optional: Add borders to the cells */
+		}
+		#my-table th {
+			width: 200px; /* Adjust the width as needed */
+			padding: 10px; /* Adjust the padding as needed */
+			border: 1px solid #000; /* Optional: Add borders to the cells */
+		}
+	</style>
+  </head>
+
+  <body>
+ 
+	<br>
+	
+    <main role="main" class="container" style="width:120%;">
+
+      
+	  <div class="card shadow p-3 mb-5 bg-white rounded" style="max-width:120%;margin-top:5px;">
+     
+		<table id="student" class = "table sts table-striped rounded shadow display " style="width:100% ">
+				 
+				
+				
+				<h2 style="color:green;font-weight:bolder;font-size:30px;text-align:center">Student History Data</h2>
+				<thead class="sticky">
+					<tr style="background-color:powderblue;" >
+						<th style="text-align: left;color:black; width:3%">Srl.</th>
+						<th style="text-align: left;color:black; width:10%">Year</th>	
+						<th style="text-align: left;color:black; width:50%">Course Name</th>						
+						<th style="text-align: left;color:black; width:10%">Faculty</th>
+						<th style="text-align: left;color:black; width:9%">Courses</th>
+						<th style="text-align: left;color:black; width:9%">Intake</th>
+						<th style="text-align: left;color:black; width:9%">Strength</th>
+						<th style="text-align: left;color:black; width:10%">Actions</th>
+						<th></th>
+					</tr>
+				</thead>
+				{% for student in queryset %}
+					<tr>
+						<td>{{ forloop.counter }}</td>
+						<td>{{ student.year_name }}</td>
+						<td>{{ student.course_name }}</td>
+						<td>{{ student.faculty_name }}</td>
+						<td>{{ student.courses_name }}</td>						
+						<td style="text-align: right;">{{ student.intake|floatformat:2 }}</td>						
+						<td style="text-align: right;">{{ student.strength|floatformat:2 }}</td>
+						<td><a style="text-align: right;color:blue;" href="{% url 'student:edit-student' student.id %}">Edit</a></td>
+						<td><a style="text-align: right;color:red;" href="{% url 'student:student-delete' student.id %}">Delete</a></td>							
+					</tr>				
+				{% endfor %}
+				<tfoot>
+					<tr style="background-color: rgba(255, 127, 80, 0.58);">
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th style="text-align: right;"></th>
+						<th style="text-align: right;"></th>
+						<th style="text-align: right;"></th>
+						<th></th>
+						<th></th>
+											
+					</tr>
+				</tfoot>
+		</table>
+				
+	</div>
+	
+	<div id="row-edit" style="background-color:lightblue;">
+		<p style="text-align:center;color:black;font-weight:bold;"> Editing Screen </p>
+		<form method="POST">
+		  {% csrf_token %}
+		  <table id="my-table" class="container" style="width:95%;" border="1">
+			
+				{{ form }}
+			
+		  </table>
+		  <p style="text-align:center;"><button type="submit">Save</button></p>
+		</form>
+	</div>
+	
+    </main>
+	
+
+	<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+	<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'js/Chart.min.js' %}"></script>
+
+<script type="text/javascript">
+	
+  $(document).ready(function() {
+	//$('#year-checkboxes').multiselect();
+	
+	$('#select_yr').click(function() {
+		$('#year-checkboxes option').prop('selected', true);		
+	});	
+	
+	$('#select_course').click(function() {
+		$('#course-checkboxes option').prop('selected', true);		
+	});
+	
+	$('#select_faculty').click(function() {
+		$('#faculty-checkboxes option').prop('selected', true);
+	});
+	
+	//$('table.highchart').highchartTable();
+	
+	$('#student').DataTable({
+	
+			drawCallback: function () {
+		      var api = this.api();
+		      var sum = 0;
+		      var formated = 0;
+		      //to show first th
+		      $(api.column(4).footer()).html('Total:');
+
+		      for(var i=5; i<=6;i++)
+		      {
+		      	sum = api.column(i, {page:'current'}).data().sum();
+				
+		      	//to format this sum
+		      	formated = parseFloat(sum).toLocaleString(undefined, {minimumFractionDigits:2});
+		      	
+				$(api.column(i).footer()).html(formated);
+				
+		      }
+		      
+		    },
+			
+			dom: 'lBfrtip',
+			
+			columnDefs: [
+				{
+					targets: [0],
+					orderData: [0, 1],
+				},
+				{
+					targets: [1],
+					orderData: [1, 0],
+				},
+				{
+					targets: [4],
+					orderData: [4, 0],
+				},
+			],
+			
+			buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+			]
+			
+			
+	});
+
+	
+  });
+  
+
+</script>
+
+
+{% endblock content %}
+</body>
+
+</html>

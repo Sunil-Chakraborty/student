@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
-
+{% load custom_filters %}
 {% block content %}
 <header>
 		<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
 </header>
 
-<h1>Course data edit</h1>
+<h1>Student data Edit</h1>
 
 <form method="POST">
     {% csrf_token %}
@@ -15,12 +15,13 @@
         <thead>
             <tr>
 				<th>Row&nbsp&nbsp</th>				
-                <th>Course Name</th>
-                <th>Session</th>
-                <th>Semester</th>
-                <th>Schd-HC</th>
-                <th>Actl-HC</th>
-				<th>Delete</th>
+                <th>Year</th>
+                <th>Course_Name</th>
+                <th>Faculty</th>
+                <th>Courses</th>
+                <th>Intake</th>
+				<th>Strength</th>
+				
             </tr>
         </thead>
         <tbody>
@@ -32,25 +33,48 @@
 				<div class="alert alert-danger">
 				<p><strong>Error in</strong>
 					Row {{ forloop.counter }}:
-				</p>
-					<ul>
-						{% for field_errors in form.errors.values %}
+				
+					<span>
+						{% for field_name, field_errors in form.errors.items %}
 							{% for error in field_errors %}
-								<li>{{ error }}</li>							
+								{% if error == 'This field is required.' %}
+									<strong>{{ form|get_field_label:field_name }}</strong> is required. {% if not forloop.last %} {% endif %}
+								{% else %}
+									{{ error }}{% if not forloop.last %} {% endif %}
+								{% endif %}
 							{% endfor %}
 						{% endfor %}
+					</span>
+										<!--
+					
+					<ul>
+					
+					{% for error in form.non_field_errors %}
+						<li>{{ error }}</li>
+					{% endfor %}
+					
+					
+					{% for field_name, field_errors in form.errors.items %}
+						{% for error in field_errors %}
+							<span class="help-block">{{ form.errors }}</span>
+						{% endfor %}
+					{% endfor %}
+
+					
 					</ul>
+					-->
 				</div>
 			{% endif %}
 			
                 <tr>
 					<td style="text-align:center;">{{ forloop.counter }}</td>
+                    <td>{{ form.year }}</td>
                     <td>{{ form.course_name }}</td>
-                    <td>{{ form.session }}</td>
-                    <td>{{ form.semister }}</td>
-                    <td>{{ form.sch_hc }}</td>
-                    <td>{{ form.act_hc }}</td>
-					<td>{{ form.DELETE}}</td>
+                    <td>{{ form.faculty }}</td>
+                    <td>{{ form.courses }}</td>
+                    <td>{{ form.intake }}</td>
+					<td>{{ form.strength }}</td>
+					
                 </tr>
 				{{ form.id }}
             {% endfor %}

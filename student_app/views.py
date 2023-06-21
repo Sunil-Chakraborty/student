@@ -8,14 +8,18 @@ import numpy as np
 from django.forms import modelformset_factory
 from django.forms import formset_factory, inlineformset_factory
 from .forms import StudentForm
-
+from account.models import Account
+from django.contrib.auth.models import User
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render, get_object_or_404
+from . models import Fin_Year,Courses,Faculty,Student
 
 import time
 
 
 # Create your views here.
-from . models import Fin_Year,Courses,Faculty,Student
-from student_app.models import Student
+
 
 def is_valid_queryparam(param):
     return param !='' and param is not None
@@ -72,77 +76,6 @@ def Chart1(request):
     response.write(chart_image.getvalue())
 
     return response
-    
-    """
-    #Multiple Year pie chart in one frame
-    years = [2017, 2018, 2019, 2020, 2021, 2022, 2023]
-    tlr_scores = [67.63, 63.57, 51.7, 53.38, 54.4, 57.08, 48.64]
-    rp_scores = [53.66, 53.73, 51.72, 52.96, 54.89, 57.07, 54.09]
-    go_scores = [90.61, 90.1, 87.77, 90.39, 90.28, 91.39, 91.42]
-    oi_scores = [56.79, 56.86, 50.16, 48.67, 44.95, 36, 53.37]
-    pear_scores = [58.76, 64.67, 67.31, 71.44, 51.83, 35.5, 28.81]
-   
-    num_years = len(years)
-    num_cols = 3
-    num_rows = (num_years + num_cols - 1) // num_cols
-
-    fig, axes = plt.subplots(num_rows, num_cols, figsize=(15, 10))
-    fig.suptitle('Scores for Different Years\n')
-
-    for i, year in enumerate(years):
-        row = i // num_cols
-        col = i % num_cols
-
-        scores = [tlr_scores[i], rp_scores[i], go_scores[i], oi_scores[i], pear_scores[i]]
-        labels = ['TLR score', 'RP score', 'GO score', 'OI score', 'Pear Perception score']
-
-        axes[row, col].pie(scores, labels=labels, autopct='%1.1f%%')
-        axes[row, col].set_title(f'Year {year}')
-
-    plt.tight_layout()
-    plt.show()
-    
-    #Multiple Year pie chart
-    years = [2017, 2018, 2019, 2020, 2021, 2022, 2023]
-    tlr_scores = [67.63, 63.57, 51.7, 53.38, 54.4, 57.08, 48.64]
-    rp_scores = [53.66, 53.73, 51.72, 52.96, 54.89, 57.07, 54.09]
-    go_scores = [90.61, 90.1, 87.77, 90.39, 90.28, 91.39, 91.42]
-    oi_scores = [56.79, 56.86, 50.16, 48.67, 44.95, 36, 53.37]
-    pear_scores = [58.76, 64.67, 67.31, 71.44, 51.83, 35.5, 28.81]
-   
-    for i, year in enumerate(years):
-        scores = [tlr_scores[i], rp_scores[i], go_scores[i], oi_scores[i], pear_scores[i]]
-        labels = ['TLR score', 'RP score', 'GO score', 'OI score', 'Pear Perception score']
-
-        plt.figure(figsize=(8, 7))
-        plt.pie(scores, labels=labels, autopct='%1.1f%%')
-        plt.title(f'Scores for the year {year}')
-
-        plt.show()
-
-    
-    Single Year pie chart
-    years = [2017, 2018, 2019, 2020, 2021, 2022, 2023]
-    tlr_scores = [67.63, 63.57, 51.7, 53.38, 54.4, 57.08, 48.64]
-    rp_scores = [53.66, 53.73, 51.72, 52.96, 54.89, 57.07, 54.09]
-    go_scores = [90.61, 90.1, 87.77, 90.39, 90.28, 91.39, 91.42]
-    oi_scores = [56.79, 56.86, 50.16, 48.67, 44.95, 36, 53.37]
-    pear_scores = [58.76, 64.67, 67.31, 71.44, 51.83, 35.5, 28.81]
-   
-    selected_year = 2023
-    selected_index = years.index(selected_year)
-    
-    scores = [tlr_scores[selected_index], rp_scores[selected_index], go_scores[selected_index],
-              oi_scores[selected_index], pear_scores[selected_index]]
-    labels = ['TLR score', 'RP score', 'GO score', 'OI score', 'Pear Perception score']
-    
-    plt.figure(figsize=(8, 7))
-    plt.pie(scores, labels=labels, autopct='%1.1f%%')
-    plt.title(f'Scores for the year {selected_year}')
-    
-    plt.show()
-    """
-    
 
     
 def table_view(request):
@@ -168,15 +101,19 @@ def table_view(request):
         qs_sum_strength=qs.aggregate(s=Sum('strength'))["s"]
         
         #queryset = Student.objects.values('faculty').annotate(total_intake=Sum('intake'))
-        queryset = qs.values('faculty').annotate(total_intake=Sum('intake'))
+        queryset = qs.values('faculty_name').annotate(total_intake=Sum('intake'))
+        #queryset = qs.values('faculty_name').annotate(total_intake=Sum('intake'), total_strength=Sum('strength'))
         # Prepare the data for chart view
-        data = [(item['faculty'], int(item['total_intake'])) for item in queryset]
+        data = [(item['faculty_name'], int(item['total_intake'])) for item in queryset]
+        #data = [(item['faculty_name'], int(item['total_intake']), int(item['total_strength'])) for item in queryset]
         # Extract the categories and values
         categories = [item[0] for item in data]
         values = [item[1] for item in data]
         
-    
-    
+        #intake_values = [item[1] for item in data]
+        #strength_values = [item[2] for item in data]
+        
+        
         context={
             "queryset":qs,
             "fin_yr":fin_yr,
@@ -189,16 +126,20 @@ def table_view(request):
             "faculty_query":faculty_query,
             "categories":categories,
             "values":values,
+            #"intake_values":intake_values,
+            #"strength_values":strength_values,
         }
         return render(request, "student_app/table_form.html", context)
     else :
         return redirect('dashboard')
     
     
-    
-def student_create(request):   
+  
+def student_create(request,*args, **kwargs):
    
-       
+    user_id = request.session['user_id']
+    account = Account.objects.get(id=user_id)
+    
     if request.method == 'POST':
        
         StudentFormSet = formset_factory(StudentForm, extra=4)
@@ -207,7 +148,12 @@ def student_create(request):
         
         if formset.is_valid():
             for form in formset:
-                if form.has_changed(): 
+                if form.has_changed():                                        
+                    user = form.save(commit=False)
+                    
+                    user.email = account
+                    print(account.username)
+                    
                     form.save()
             
             return redirect('dashboard')
@@ -221,3 +167,52 @@ def student_create(request):
                 
     }
     return render(request, 'student_app/student_create.html', context)
+
+
+def student_edit(request):
+
+    user_id = request.session['user_id']
+    account = Account.objects.get(id=user_id)
+    
+    qs=Student.objects.all()
+    qs=qs.filter(email=account)
+    
+    
+    count = qs.count()
+    
+    if count > 0 :
+        
+        
+        context={
+            "queryset":qs,
+        
+        }
+        return render(request, "student_app/edit_table_form.html", context)
+    else :
+        return redirect('dashboard')
+
+def edit_student(request, student_id):
+    student = get_object_or_404(Student, pk=student_id)
+
+    if request.method == 'POST':
+        form = StudentForm(request.POST, instance=student)
+        if form.is_valid():
+            form.save()
+            return redirect('student_app:student-edit')
+    else:
+        form = StudentForm(instance=student)
+
+    return render(request, 'student_app/edit_table_form.html', {'form': form, 'student': student})
+
+def student_delete(request, student_id):
+    student = get_object_or_404(Student, pk=student_id)
+    
+    if request.method == "POST":
+        student.delete()
+        return redirect("student_app:student-edit")
+        
+    context = {'student':student}
+    
+    return render(request, 'student_app/student_delete.html', context)
+
+
