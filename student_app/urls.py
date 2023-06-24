@@ -7,6 +7,7 @@ from student_app.views import (
     edit_student,
     student_delete,
     Chart1,
+    modal_form,
 	)
  
 app_name = 'student_app'
@@ -18,4 +19,5 @@ urlpatterns = [
     path('edit/<int:student_id>/', edit_student, name='edit-student'),
     path('delete/<int:student_id>/', student_delete, name='student-delete'),
     path('chart1/', Chart1, name='chart1'),
+    path('modal-form/', modal_form, name='modal-form'),
 ]

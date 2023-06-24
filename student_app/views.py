@@ -156,7 +156,8 @@ def student_create(request,*args, **kwargs):
                     
                     form.save()
             
-            return redirect('dashboard')
+            #return redirect('dashboard')
+            return redirect('student:student-edit')
     else:
        
         StudentFormSet = formset_factory(StudentForm, extra=4)
@@ -175,7 +176,7 @@ def student_edit(request):
     account = Account.objects.get(id=user_id)
     
     qs=Student.objects.all()
-    qs=qs.filter(email=account)
+    #qs=qs.filter(email=account)
     
     
     count = qs.count()
@@ -190,7 +191,8 @@ def student_edit(request):
         return render(request, "student_app/edit_table_form.html", context)
     else :
         return redirect('dashboard')
-
+        
+        
 def edit_student(request, student_id):
     student = get_object_or_404(Student, pk=student_id)
 
@@ -202,7 +204,7 @@ def edit_student(request, student_id):
     else:
         form = StudentForm(instance=student)
 
-    return render(request, 'student_app/edit_table_form.html', {'form': form, 'student': student})
+    return render(request, 'student_app/edit_row.html', {'form': form, 'student': student})
 
 def student_delete(request, student_id):
     student = get_object_or_404(Student, pk=student_id)
@@ -215,4 +217,6 @@ def student_delete(request, student_id):
     
     return render(request, 'student_app/student_delete.html', context)
 
-
+def modal_form(request):
+    context={}
+    return render(request, "sample_BS_modal.html", context)

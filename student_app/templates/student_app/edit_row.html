@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+	{% block content %}
+  <head>
+  
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	
+	<script>
+		jQuery(document).ready(function($) {
+			$("#myModal").modal('show');
+		});
+	</script>
+	<style>
+		.modal {
+		   position: absolute;
+		   top: 10%;
+		   left: 10%;
+		}
+	</style>
+  </head>
+
+  <body>
+ 
+  <br>
+  <br>
+  <br>
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Editing Student Data</h4>
+			{{ forloop.counter }}
+        </div>
+        <div class="modal-body">
+          <form method="POST">
+		  {% csrf_token %}
+		  <table id="my-table" class="container" style="width:95%;" border="1">
+			
+				{{ form }}
+			
+		  </table>
+		  <br>
+		  <button type="submit" style="text-align:left;" class="btn btn-info">Save</button>
+		</form>
+        </div>
+        <div class="modal-footer">
+		    <button type="button"  class="btn btn-secondary" id="closeModalBtn" data-dismiss="modal">Close</button>
+		</div>
+      </div>
+      
+    </div>
+  </div>
+  
+</div>
+
+<script>
+	var closeModalBtn = document.getElementById("closeModalBtn");
+
+	// Add an event listener to the close button
+	closeModalBtn.addEventListener("click", function() {
+	  // Redirect to the previous page
+	  history.back();
+	});
+	
+	$('#myModal').modal({backdrop: 'static', keyboard: false})  
+	
+</script>
+
+{% endblock content %}
+</body>
+
+</html>

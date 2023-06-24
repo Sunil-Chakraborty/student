@@ -13,8 +13,9 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.min.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-multiselect.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
-	
 	{% block content %}
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	
 	<script src="{% static 'js/Chart.min.js' %}"></script>
 	
 	<style type="text/css">
@@ -136,11 +137,10 @@
 
       
 	  <div class="card shadow p-3 mb-5 bg-white rounded" style="max-width:120%;margin-top:5px;">
-     
+		<a class="btn btn-info" style="width:15%;" href="{% url 'student:student-create'%}">Add New</a>
+		
 		<table id="student" class = "table sts table-striped rounded shadow display " style="width:100% ">
-				 
-				
-				
+						
 				<h2 style="color:green;font-weight:bolder;font-size:30px;text-align:center">Student History Data</h2>
 				<thead class="sticky">
 					<tr style="background-color:powderblue;" >
@@ -157,7 +157,7 @@
 				</thead>
 				{% for student in queryset %}
 					<tr>
-						<td>{{ forloop.counter }}</td>
+						<td>{{ forloop.counter }}</td>						
 						<td>{{ student.year_name }}</td>
 						<td>{{ student.course_name }}</td>
 						<td>{{ student.faculty_name }}</td>
@@ -185,20 +185,7 @@
 		</table>
 				
 	</div>
-	
-	<div id="row-edit" style="background-color:lightblue;">
-		<p style="text-align:center;color:black;font-weight:bold;"> Editing Screen </p>
-		<form method="POST">
-		  {% csrf_token %}
-		  <table id="my-table" class="container" style="width:95%;" border="1">
-			
-				{{ form }}
-			
-		  </table>
-		  <p style="text-align:center;"><button type="submit">Save</button></p>
-		</form>
-	</div>
-	
+
     </main>
 	
 
@@ -209,7 +196,8 @@
 <script type="text/javascript">
 	
   $(document).ready(function() {
-	//$('#year-checkboxes').multiselect();
+	
+	
 	
 	$('#select_yr').click(function() {
 		$('#year-checkboxes option').prop('selected', true);		
