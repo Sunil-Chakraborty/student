@@ -1,10 +1,10 @@
-{% extends 'base.html' %}
-{% load static %}
+
 {% load custom_filters %}
 
 <!doctype html>
 <html lang="en">
 	{% block content %}
+	{% include "student_app/edit_table_form.html" %}
   <head>
   
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -24,6 +24,12 @@
 		.modal-lg {
 			max-width: 80% !important;
 		}
+		input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+           -webkit-appearance: none; 
+           margin: 0; 
+		}
+
 	</style>	
   </head>
 
@@ -37,7 +43,7 @@
 		  <!-- Modal content-->
 		  <div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Editing Student Data</h4>
+				<h4 class="modal-title">Insert new Student Data</h4>
 			</div>
 			<div class="modal-body">
 

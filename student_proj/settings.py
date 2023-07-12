@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'product.apps.ProductConfig',
     'bootstrap_modal_forms',
     'crispy_forms',
+    'widget_tweaks',
     
 ]
 

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>JU Student Data</title>
+    <title>Production Data</title>
 
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
@@ -78,10 +78,11 @@
 		#sidebar {
 			min-width: 250px;
 			max-width: 250px;
-			background: #7386D5;
+			background: #4e6570;
 			color: #fff;
 			transition: all 0.3s;
 		}
+	
 
 		#sidebar.active {
 			margin-left: -250px;
@@ -89,7 +90,7 @@
 
 		#sidebar .sidebar-header {
 			padding: 20px;
-			background: #6d7fcc;
+			background: #4e6570;
 		}
 
 		#sidebar ul.components {
@@ -190,6 +191,18 @@
 		  background-color: black;		  
 		}
 		
+		.img-bar {
+			  position: fixed;
+			  top: 0;
+			  left: 0;
+			  width: 8%;
+			  height: 60px;
+			  border-radius: 25px;
+			  background-blend-mode: luminosity;
+			  
+		}
+		
+		
 </style>
 
 </head>
@@ -199,27 +212,26 @@
         <!-- Sidebar  -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3>Softnook</h3>
-            </div>
+			 <img  class="img-bar" src="{% static 'image/softnook3.png' %}" alt="Soft Logo"  style="float:left;margin-top:8px;margin-left:4px;"> 
 
+                
+            </div>
+			<br>
             <ul class="list-unstyled components">
+				
                 <p><a href="{% url 'dashboard'%}">Dashboard</a></p>
 				
-				<li class="active">
+				<li>
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Student</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
                         <li>                            
-							<a href="{% url 'student:table-view'%}">List View</a>
+							<a href="{% url 'student:table-view'%}">Query Listing</a>
                         </li>
 						<li>                            
-							<a href="{% url 'student:student-create'%}">Create</a>
-                        </li>
-						<li>                            
-							<a href="{% url 'student:student-edit'%}">Edit</a>
-                        </li>
-						
+							<a href="{% url 'student:student-edit'%}">CRUD</a>
+                        </li>						
                         <li>
-                            <a href="{% url 'student:chart1'%}">Chart View</a>
+                            <a href="#">Break</a>
                         </li>
                         <li>
                             <a href="{% url 'student:modal-form' %}">Modal Form</a>
@@ -229,23 +241,31 @@
 				<li>
                     <a href="#">Break</a>
                 </li>
-				<li class="active">
-                    <a href="#prodSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Production</a>
+				<li>
+                    <a href="#prodSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Master Data</a>
                     <ul class="collapse list-unstyled" id="prodSubmenu">
                         <li>                            
-							<a href="#">Product Master</a>
+							<a href="{% url 'product:prod-tcb-crud'%}">Item Master</a>
                         </li>
 						<li>                            
-							<a href="#">Prod 2</a>
+							<a href="{% url 'product:customers-list' %}">Customer Master</a>
                         </li>
+					</ul>
+				</li>
+				<li>
+                    <a href="#">Break</a>
+                </li>
+				<li>	
+					<a href="#orderSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Sales Order</a>	
+					<ul class="collapse list-unstyled" id="orderSubmenu">		
 						<li>                            
-							<a href="#">Prod 3</a>
-                        </li>						
-                        <li>
-                            <a href="#">Prod 4</a>
+							<a href="{% url 'product:select-customer' %}">New Sales Order</a>
                         </li>
                         <li>
-                            <a href="#">Prod 5</a>
+                            <a href="#">Order 1</a>
+                        </li>
+						<li>
+                            <a href="#">Order 2</a>
                         </li>
                     </ul>
                 </li>
@@ -275,6 +295,7 @@
             </ul>
 
             <ul class="list-unstyled CTAs">
+			<!--
                 <li>
                     <a href="https://bootstrapious.com/tutorial/files/sidebar.zip" class="download">Download source</a>
                 </li>
@@ -282,6 +303,7 @@
                     <a href="https://bootstrapious.com/p/bootstrap-sidebar" class="article">Back to Softnook</a>
                 </li>
             </ul>
+			-->
         </nav>
 
         <!-- Page Content  -->
@@ -290,16 +312,20 @@
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
 
-                    <button type="button" id="sidebarCollapse" class="btn btn-info">
-                        <i class="fas fa-align-left"></i>
-                        <span>Toggle Sidebar</span>
+                    <button type="button" id="sidebarCollapse" class="btn btn-info" style="margin-left:2px;" >
+                        <i class='fas fa-align-left fa-border fa-1x' style='width:25px;'></i>
+                        
                     </button>
+					
+
                     <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <i class="fas fa-align-justify"></i>
                     </button>
-
+					
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="nav navbar-nav ml-auto">
+                        						
+						<ul class="nav navbar-nav ml-auto">
+							
                             <li class="nav-item active">                                
 								<a href="{% url 'logout' %}" class="nav-link" style="color:white;">Logout</a>
                             </li>
@@ -318,8 +344,20 @@
                     </div>
                 </div>
             </nav>
+			<div class="row">
+                <div class="col-md-12">
+                
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}"> {{ message }} </div>
+                        {% endfor %}
+                    {% endif %}
+					
+				</div>
+			</div>	
+			
 			{% block content %}
-  
+			 	
 			{% endblock content %}
             
     </div>
@@ -352,6 +390,28 @@
                 $('#sidebar').toggleClass('active');
             });
         });
+		
+		/*
+		// Get all the submenu items inside the sidebar
+		var subMenuItems = document.querySelectorAll('#sidebar ul li');
+
+		// Loop through each submenu item
+		subMenuItems.forEach(function(item) {
+		  // Add a click event listener to each submenu item
+		  item.addEventListener('click', function() {
+			// Remove the "active" class from all submenu items
+			subMenuItems.forEach(function(subItem) {
+			  subItem.classList.remove('active');
+			});
+			
+			// Add the "active" class to the clicked submenu item
+			this.classList.add('active');
+		  });
+		});
+
+		*/
+		
+		
     </script>
 </body>
 

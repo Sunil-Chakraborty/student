@@ -20,9 +20,8 @@ from account.views import(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #path('', BootstrapFilterView, name='bootstrap'),
-    #path('table-view/', table_view, name='table-view'),    
     path('student/', include('student_app.urls', namespace='student')),
+    path('product/', include('product.urls', namespace='product')),
     path('xlview', ExcelView, name='xlview'),
     path('chart/', ChartView, name='chart'),
     path('', account_register, name="register"),

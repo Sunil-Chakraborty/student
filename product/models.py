@@ -1,11 +1,11 @@
 from django.db import models
-from django.core.validators import MaxValueValidator
+from django.core.validators import MinValueValidator,MaxValueValidator
 from account.models import Account
 
 # Create your models here.
 
 class Grade(models.Model):
-    name    = models.CharField(max_length=50)
+    name    = models.CharField(max_length=50,null=True, blank=True)
     skim1   = models.CharField(verbose_name='NN-Skim',max_length=30,null=True, blank=True)
     skim2   = models.CharField(verbose_name='EP-Skim',max_length=30,null=True, blank=True)
     covr1   = models.CharField(verbose_name='NN-Cover',max_length=30,null=True, blank=True)
@@ -17,34 +17,31 @@ class Grade(models.Model):
 
 
 class Product(models.Model):
-    PROD_CHOICES = (
+    prod_code = models.CharField(verbose_name='Prod-Code', max_length=10, unique=True, null=True, blank=True)
+    PROD_CHOICES    = (
  		 (None, 'Select'),
-         ('SCB', 'SCB'),
-         ('TCB', 'TCB'),
-         ('S-PIPE', 'S-PIPE'),
-         ('T-PIPE', 'T-PIPE'),
+         ('01', 'SCB'),
+         ('02', 'TCB'),
+         ('03', 'S-PIPE'),
+         ('04', 'T-PIPE'),
          
 	)
     prod_tag        = models.CharField(verbose_name='Prod-Catg', max_length=7,
 	                                  choices=PROD_CHOICES, null=True, blank=True)
-    width           = models.IntegerField(verbose_name='Width',validators=[MaxValueValidator(9999)],null=True, blank=True)
-    
-    FAB_CHOICES = (
+       
+    FAB_CHOICES     = (
  		 (None, 'Select'),
-         ('NN', 'NN'),
-         ('EP', 'EP'),
+         ('01', 'NN'),
+         ('02', 'EP'),
+         ('03', 'PP'),
 	)
     fab_type        = models.CharField(verbose_name='Fab-type', max_length=5,
 	                                  choices=FAB_CHOICES, null=True, blank=True)    
     grade           = models.ForeignKey("Grade", verbose_name="Grade", on_delete=models.CASCADE, null=True, blank=True)
-    brkr_no         = models.IntegerField(verbose_name='No of Breaker',validators=[MaxValueValidator(9)],null=True, blank=True)  
-    brkr_type       = models.CharField(verbose_name='Breaker Type', max_length=25, null=True, blank=True)
-    top_cover       = models.DecimalField(verbose_name='Top Cover',max_digits=5,decimal_places=2,null=True,blank=True)
-    bot_cover       = models.DecimalField(verbose_name='Top Cover',max_digits=5,decimal_places=2,null=True,blank=True)
     EDGE_CHOICES = (
  		 (None, 'Select'),
-         ('CE', 'CE'),
-         ('ME', 'ME'),
+         ('01', 'CE'),
+         ('02', 'ME'),
 	)
     edge            = models.CharField(verbose_name='Edge', max_length=5,choices=EDGE_CHOICES, null=True, blank=True)
     ST_CHOICES = (
@@ -69,20 +66,88 @@ class Product(models.Model):
             ('ST 2250','ST 2250'),
 	)
     st_rating       = models.CharField(verbose_name='Strength', max_length=7,choices=ST_CHOICES, null=True, blank=True)
-    cord_dia        = models.DecimalField(verbose_name='Cord Dia',max_digits=5,decimal_places=2,null=True,blank=True)
-    STCON_CHOICES = (
+    STCON_CHOICES   = (
  		 (None, 'Select'),
-         ('7x7', '7x7'),
-         ('7x19', '7x19'),
+         ('01', '7x7'),
+         ('02', '7x19'),
 	)
     cord_const      = models.CharField(verbose_name='Cord Const.', max_length=15,choices=STCON_CHOICES, null=True, blank=True)
-    pitch           = models.DecimalField(verbose_name='Cord Pitch',max_digits=5,decimal_places=2,null=True,blank=True)
-    no_cords        = models.IntegerField(verbose_name='No of Cords',validators=[MaxValueValidator(99)],null=True, blank=True)
-    sensor_loop     = models.IntegerField(verbose_name='Sensor Loop',validators=[MaxValueValidator(9)],null=True, blank=True)
+    prod_des        = models.CharField(verbose_name='Item Description', max_length=250, null=True, blank=True)
     created_date    = models.DateTimeField(auto_now_add=True)
     modified_date   = models.DateTimeField(auto_now=True)
     email 	        = models.ForeignKey(Account,verbose_name="email key", on_delete=models.CASCADE, null=True, blank=True)
-
+    
     def __str__(self):
         return self.prod_tag
         
+class Customer(models.Model):
+    id              = models.AutoField(primary_key=True)
+    name            = models.CharField(verbose_name='Name',max_length=150,null=True, blank=True)
+    phone           = models.CharField(verbose_name='Phone',max_length=12, unique=True)
+    address         = models.CharField(verbose_name='Address',max_length=200,null=True)
+    email           = models.EmailField(verbose_name='Email',max_length=50, unique=True)
+    created_date    = models.DateTimeField(auto_now_add=True)
+    modified_date   = models.DateTimeField(auto_now=True)
+    fk_email 	    = models.ForeignKey(Account,verbose_name="email key", on_delete=models.CASCADE, null=True, blank=True)
+    is_deleted      = models.BooleanField(default=False)
+
+    def __str__(self):
+	    return self.name
+
+#contains the sales bills made
+class SalesBill(models.Model):
+    billno = models.AutoField(primary_key=True)
+    time = models.DateTimeField(auto_now=True)
+    customer = models.ForeignKey(Customer, on_delete = models.CASCADE, related_name='salescustomer')
+
+    def __str__(self):
+	    return "Bill no: " + str(self.billno)
+
+    def get_items_list(self):
+        return SalesItem.objects.filter(billno=self)
+
+    def get_total_price(self):
+        salesitems = SalesItem.objects.filter(billno=self)
+        total = 0
+        for item in salesitems:
+            total += item.totalprice
+        return total
+
+
+class Stock(models.Model):
+    id = models.AutoField(primary_key=True)    
+    name = models.CharField(max_length=30, unique=True)    
+    quantity = models.IntegerField(default=1)
+    is_deleted = models.BooleanField(default=False)
+
+    def __str__(self):
+	    return self.name
+        
+#contains the sales stocks made
+class SalesItem(models.Model):
+    billno = models.ForeignKey(SalesBill, on_delete = models.CASCADE, related_name='salesbillno')
+    stock = models.ForeignKey(Stock, on_delete = models.CASCADE, related_name='salesitem')
+    quantity = models.IntegerField(default=1)
+    perprice = models.IntegerField(default=1)
+    totalprice = models.IntegerField(default=1)
+
+    def __str__(self):
+	    return "Bill no: " + str(self.billno.billno) + ", Item = " + self.stock.name
+
+class SalesBillDetails(models.Model):
+    billno = models.ForeignKey(SalesBill, on_delete = models.CASCADE, related_name='purchasedetailsbillno')
+    
+    eway = models.CharField(max_length=50, blank=True, null=True)    
+    veh = models.CharField(max_length=50, blank=True, null=True)
+    destination = models.CharField(max_length=50, blank=True, null=True)
+    po = models.CharField(max_length=50, blank=True, null=True)
+    
+    cgst = models.CharField(max_length=50, blank=True, null=True)
+    sgst = models.CharField(max_length=50, blank=True, null=True)
+    igst = models.CharField(max_length=50, blank=True, null=True)
+    cess = models.CharField(max_length=50, blank=True, null=True)
+    tcs = models.CharField(max_length=50, blank=True, null=True)
+    total = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+	    return "Bill no: " + str(self.billno.billno)

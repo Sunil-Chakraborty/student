@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Customer List {% endblock title %}
+<header>
+<style>
+	.dt-buttons{
+		color:black !important;
+		margin-left:120px;	
+	}
+
+</style>
+
+</header>
+
+{% block content %}
+ 
+ 
+    <div class="row" style="color: #575757; font-style: bold; font-size: 3rem;">
+        <div class="col-md-8">Customer List</div>
+        <div class="col-md-4">       <!-- Log on to codeastro.com for more projects -->        
+            <div style="float:right;"> <a class="btn btn-success" href="{% url 'product:new-customer' %}">Add New Customer</a> </div>
+        </div>
+    </div>
+
+    <br>
+
+    <table id="product" class="table table-css table-hover table-bordered">
+        
+        <thead class="thead-dark align-middle">
+            <tr>
+                <th width="21%">Name</th>
+                <th width="45%">Contact</th>
+                <th width="10%">Phone No</th>
+				<th width="10%">Email</th>
+                <th width="14%">Actions</th>
+				
+			</tr>
+        </thead>
+
+{% if object_list %}
+
+        <tbody>
+            {% for customer in object_list %}
+            <tr>
+                
+				<td class="align-middle"> {{ customer.name }} </td>
+                <td class="align-middle"> {{ customer.address }} </td>
+				<td class="align-middle"> {{ customer.phone }} </td>
+				<td class="align-middle"> {{ customer.email }} </td>                
+                <td class="align-middle">
+                    <div class="align-middle">
+                        <a href="{% url 'product:edit-customer' customer.pk %}" class="btn btn-info btn-sm">Edit Details</a>
+						<a href="{% url 'product:delete-customer' customer.pk %}" class="btn btn-danger btn-sm">Delete</a>
+					</div>
+                </td>              
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+
+{% else %}
+
+        <tbody></tbody>   
+    </table><!-- Log on to codeastro.com for more projects -->
+
+    <br><br><br><br><br><br><br><br>
+    <div style="color: #575757; font-style: bold; font-size: 1.5rem; text-align: center;">The records are empty. Please try adding some.</div>
+
+{% endif %}
+
+	<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+	<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'js/Chart.min.js' %}"></script>
+
+<script type="text/javascript">
+	
+  $(document).ready(function() {
+  
+	$('#product').DataTable({
+			scrollX: true,
+			
+			
+			dom: 'lBfrtip',
+			
+			columnDefs: [
+				{
+					targets: [0],
+					orderData: [0, 1],
+				},
+				{
+					targets: [1],
+					orderData: [1, 0],
+				},
+				{
+					targets: [4],
+					orderData: [4, 0],
+				},
+				
+				
+			],
+			
+			buttons: [
+            'copy', 'csv', 'print',
+			
+			{
+				extend: 'pdfHtml5',
+				exportOptions: {
+				  //columns: ':not(:last-child):not(:nth-last-child(2))'
+				  columns: ':not(:eq(4))'
+				  /*selector excludes the first 
+				   and third columns (0-based index) 
+				   from being exported.
+				  columns: ':not(:eq(0)):not(:eq(2))'
+				  */
+				  
+				}				
+			},
+			
+			{
+			  extend: 'excelHtml5',
+			  exportOptions: {
+				columns: ':not(:last-child):not(:nth-last-child(2))'
+			  }
+			}
+			
+			
+			
+			]
+			
+			
+	});
+
+	
+  });
+  
+
+
+</script>
+
+{% endblock content %}

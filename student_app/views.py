@@ -14,8 +14,14 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, get_object_or_404
 from . models import Fin_Year,Courses,Faculty,Student
+import pdfplumber
+
+import pytesseract
+from PIL import Image
+from pdf2image import convert_from_path
 
 import time
+import os
 
 
 # Create your views here.
@@ -181,16 +187,16 @@ def student_edit(request):
     
     count = qs.count()
     
-    if count > 0 :
+    #if count > 0 :
         
         
-        context={
-            "queryset":qs,
+    context={
+        "queryset":qs,
         
-        }
-        return render(request, "student_app/edit_table_form.html", context)
-    else :
-        return redirect('dashboard')
+    }
+    return render(request, "student_app/edit_table_form.html", context)
+    #else :
+    #    return redirect('dashboard')
         
         
 def edit_student(request, student_id):

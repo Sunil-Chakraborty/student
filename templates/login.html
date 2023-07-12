@@ -283,7 +283,17 @@
 				font-weight:bold;
 				font-family:sans-sarif;
 			}
-			
+			.img-bar {
+			  position: fixed;
+			  top: 0;
+			  left: 0;
+			  width: 8%;
+			  height: 60px;
+			  border-radius: 25px;
+			  background-blend-mode: luminosity;
+			  
+			}
+	
 	</style>
 	
   </head>
@@ -294,11 +304,11 @@
 	<!-- Top container -->
 <div id="topbar" class="w3-bar w3-top w3-large w3-card w3-display-topmiddle w3-margin-bottom " >
 	
-	<span class="w3-bar-item " style="padding-left:20px; padding-top:5px;">
-	  <img  src="{% static 'image/softnook.png' %}" alt="Soft Logo" width="280" height="40" style="float:left;margin-top:8px;margin-left:4px;"> 
+	<span class="w3-bar-item img-bar" style="padding-left:20px; padding-top:5px;">
+	  <img  class="img-bar" src="{% static 'image/softnook3.png' %}" alt="Soft Logo"  style="float:left;margin-top:8px;margin-left:4px;"> 
 	</span>
   
-	<h3 class="heading w3-text-shadow" style="margin-top:0;padding-left:610px;">
+	<h3 class="heading w3-text-shadow" style="margin-top:0;padding-left:610px;padding-top:10px;">
 	  Application Development Portal
 	</h3>
 	

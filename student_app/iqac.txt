@@ -1,0 +1,145 @@
+API SCORE CALCULATION MATRIX
+CATEGORY III: Research and Academic Contribution
+III-A : Journal Publication
+No.of Volume
+Impact I.F Jrnl. Self Verified
+Sl. Yr.of No.of other Journal (Issue), Journal
+Title of the Paper Role of Applicant Factor Doc Pub. Appraisal API
+No. Publ. authors co - Name pg no. from - Type
+(I.F) link Link Score Score
+authors to
+Corresponding author / UGC Care
+1 2023 sdgdgd 4 0 dfsafa fsafsafs 3.841 View View 30.25 30.25
+supervisor / mentor List
+Operating Regimes of a Magnetic Split-flow
+First and Corresponding Microfluidics UGC Care
+2 2021 Thin (SPLITT) Fractionation Microfluidic 1 0 2, III 5.525 View View 45.00 45.00
+author Nanofluidics List
+Device for Immunomagnetic Separation
+Total 75.25
+III-B(i): Publications other than journal articles
+Title of Self Verified
+Sl. Yr.of Title of No.of Name of Status of Doc.
+Type of Publication the Book/ ISBN/ISSN No Appraisal API
+No. Publ. the Chapter/ Paper authors Publisher Publisher Link
+Proceedings Score Score
+Book Chapter/ Conf.
+1 2021 Chapter of the book Best book 2 gasgaga National gsgsagsa View 2.50 2.50
+Proceedings
+Total 2.50
+III-B(ii): Referring of Journal Papers from UGC list
+Journal Name Title of the paper Year of review Review Review
+Self Verified
+Sl. submission Invitation submission
+Appraisal API
+No. Letter link document
+Score Score
+link
+1 CrystEngComm - CE-ART-01-2023-000091 Insight into polymorphism of the aripiprazole 2023 View View 5.00 5.00
+(c) - page 8 of 15Journal Name Title of the paper Year of review Review Review
+Self Verified
+Sl. submission Invitation submission
+Appraisal API
+No. Letter link document
+Score Score
+link
+Synthesis, non-covalent interactions and chemical
+Journal of Molecular Structure -
+2 reactivity of 1-pentyl-3-phenylquinoxalin-2(1H)-one — 2023 View View 5.00 5.00
+MOLSTRUC-D-23-01390R1
+Structural and computational studies
+Total 10.00
+(c) - page 9 of 15CATEGORY III-C: Research Projects
+III-C (i): Sponsored Project
+Upload
+Duration Grant Self Verified
+Sl. Name of the Funding Grant
+Area of the Applicant Title of the Project (no.of Sanctioned Appraisal API
+No. Agency Letter
+years) (in Lakhs) Score Score
+link
+Quantitative analysis of noncovalent interactions of
+Science and Engineering Research Board
+1 Science organic solids for photosensitive Schottky barrier diode 3 41.47 View 41.47 41.47
+(SERB)
+behavior
+Total 41.47
+III-C (ii): Consultancy Project
+Upload
+Duration Self Verified
+Sl. Name of the Funding Amount Grant
+Area of the Applicant Title of the Project (in Appraisal API
+No. Agency Mobilized Letter
+months) Score Score
+link
+1 Science dgdsgsd dsgdsgsd 1 15.00 View 10.00 10.00
+Total 10.00
+III-C (iii): Projects Outcome/Output
+Doc.No./ Status Verified
+Sl. Upload Self Appraisal
+Area of the Applicant Type Title Level Patent No/ (if patent API
+No. doc.link Score
+Other ref. no only) Score
+Preparation of bifunctional Ru/CeO2-SBA-15
+1 Engineering & Technology Patent catalyst for the production of hydrocarbon fuels from International 202211020754 Filed View 30.00 30.00
+industrial effluents afjskjfsakljflksa
+Total 30.00
+(c) - page 10 of 15III-D: Research Guidance
+Verified
+Sl. Document
+Name of the Student Degree Title of the Thesis Status Self API Score API
+No. Link
+Score
+A novel approach to biomethane synthesis after pretreatment of
+1 Aritra Das PhD Degree awarded View 15.00 15.00
+agricultural wastes through catalytic anaerobic digestion
+2 Sourav Roy MPHARM fssf Degree awarded View Blank Blank
+Studies on high voltage cathode materials for advanced lithium-ion
+3 Sourav Nag PhD Thesis submitted View 10.00 10.00
+battery
+4 dgdgdsgg PhD dgsdd Ph.D Registered View 5.00 5.00
+5 Sourav roy MPHARM asasas Degree awarded View Blank Blank
+Total 30.00
+(c) - page 11 of 15III-E : Fellowships, Awards and Invited lectures delivered in conferences / seminars
+III-E : (i) Fellowship / Award from Academic Bodies/Associations
+Verified
+Sl. Name of the Awarding Document Self Appraisal
+Type Name of the Fellowship/Award Level API
+No. Body/Association Link Score
+Score
+Chemical Weekly Award for the Best Paper
+Award for academic published in the Indian Chemical Engineer
+1 IIChE International View 15.00 15.00
+bodies/ Association journal in its issues for 2018 jaskfjsakljf
+jfklsaajfklsaj jlkjsalkjfls
+Total 15.00
+III-E : (ii) Invited Lecture / Paper presented
+Duration
+Name of the Verified
+Sl. Title of the of Document Self Appraisal
+Type Conference/ Organized by Venue Level API
+No. Lecture/Paper Seminar/ Link Score
+Seminar/ Workshop Score
+Workshop
+Advanced Oxidation of Phenol
+Advanced Oxidation Department of
+over MCM-41 supported Ru
+1 Invited Lecture Processes for Environmental NIT-Rourkela Chemical 7 National View 5.00 5.00
+Catalyst in a Fixed Bed Flow
+Remediation (AOPER-2022) Engineering
+Reactor
+Total 5.00
+III-E (iii): e-Learning Delivery Process/Material
+Verified
+Sl. Self Appraisal
+Name of the Module Name of the Course Name of the Program Document Link API
+No. Score
+Score
+1 elective Catalytic Processes for Green Energy Elective for undergradute ( 4th year) hfhdfhdf View 10.00 10.00
+(c) - page 12 of 15Verified
+Sl. Self Appraisal
+Name of the Module Name of the Course Name of the Program Document Link API
+No. Score
+Score
+Total 10.00
+(c) - page 13 of 15(c) - page 15 of 15

@@ -1,0 +1,186 @@
+
+
+
+<!doctype html>
+<html lang="en">
+	{% block content %}
+	
+  <head>
+  
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	
+	<script>
+		jQuery(document).ready(function($) {
+			$("#myModal").modal('show');
+		});
+	</script>
+	<style>
+		.modal {
+		   position: absolute;		   
+		   top: 10%;
+		   left: 10%;
+		}
+		.modal-lg {
+			max-width: 80% !important;
+		}
+		input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+           -webkit-appearance: none; 
+           margin: 0; 
+		}
+
+	</style>	
+  </head>
+
+  <body>
+ 
+  <br>
+  <br>
+	<div class="modal fade" id="myModal" role="dialog">
+		<div class="modal-dialog modal-lg">
+		
+		  <!-- Modal content-->
+		  <div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Insert new Product Data</h4>
+			</div>
+			<div class="modal-body">
+
+
+			<form method="POST">
+				{% csrf_token %}
+				
+
+				<table>
+					<thead>
+						<tr>
+							<th>Row&nbsp&nbsp</th>				
+							<th>Catg</th>
+							<th>Width</th>
+							<th>Fab-Type</th>
+							<th>Courses</th>
+							<th>Intake</th>
+							<th>Strength</th>
+							
+						</tr>
+					</thead>
+					<tbody>
+						<!--{{formset}}-->
+						{{ formset.management_form }}
+						{% for form in formset %}
+						
+						{% if form.errors %}
+							<div class="alert alert-danger">
+							<p><strong>Error in</strong>
+								Row {{ forloop.counter }}:
+							
+								<span>
+									{% for field_name, field_errors in form.errors.items %}
+										{% for error in field_errors %}
+											{% if error == 'This field is required.' %}
+												<strong>{{ form|get_field_label:field_name }}</strong> is required. {% if not forloop.last %} {% endif %}
+											{% else %}
+												{{ error }}{% if not forloop.last %} {% endif %}
+											{% endif %}
+										{% endfor %}
+									{% endfor %}
+								</span>
+								
+							</div>
+						{% endif %}
+						
+							<tr>
+								<td style="text-align:center;">{{ forloop.counter }}</td>
+								<td>{{ form.year }}</td>
+								<td>{{ form.course_name }}</td>
+								<td>{{ form.faculty }}</td>
+								<td>{{ form.courses }}</td>
+								<td>{{ form.intake }}</td>
+								<td>{{ form.strength }}</td>
+								
+							</tr>
+							{{ form.id }}
+						{% endfor %}
+					</tbody>
+				</table>
+				<br>
+				<button type="submit" style="text-align:left;" class="btn btn-info">Save</button>
+			</form>
+				<div class="modal-footer">
+					<button type="button"  class="btn btn-secondary" id="closeModalBtn" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		  </div>
+		</div>  
+</div>
+<script>
+			$(document).ready(function() {
+				$('.skip-enter').keydown(function(event) {
+					var td = $(this).closest('td');
+					var tr = $(this).closest('tr');
+					var idx = td.index();
+					
+					if (event.keyCode === 13) { // Enter key code is 13
+						event.preventDefault();
+						var inputs = $(this).find(':input');
+						var currentInput = inputs.get(0);
+						
+						if (currentInput !== null) {
+							var inputsInRow = tr.find('td').eq(idx).find(':input');
+							var inputIdx = inputsInRow.index(currentInput);
+							
+							if (inputIdx !== -1 && inputIdx < inputsInRow.length - 1) {
+								var nextInput = inputsInRow.eq(inputIdx + 1);
+								nextInput.focus();
+							} else {
+								var nextTd = td.next();
+								var nextInputs = nextTd.find(':input');
+								if (nextInputs.length > 0) {
+									nextInputs.eq(0).focus();
+								}
+							}
+						}
+					} else if (event.keyCode === 38) { // Up arrow key code is 38
+						event.preventDefault();
+						var prevTd = td.prev();
+						if (prevTd.length > 0) {
+							var prevInputs = prevTd.find(':input');
+							if (prevInputs.length > 0) {
+								var lastInput = prevInputs.last();
+								lastInput.focus();
+							}
+						}
+					} else if (event.keyCode === 40) { // Down arrow key code is 40
+						event.preventDefault();
+						var nextTd = td.next();
+						if (nextTd.length > 0) {
+							var nextInputs = nextTd.find(':input');
+							if (nextInputs.length > 0) {
+								var firstInput = nextInputs.eq(0);
+								firstInput.focus();
+							}
+						}
+					}
+				});
+			});
+			
+	var closeModalBtn = document.getElementById("closeModalBtn");
+
+	// Add an event listener to the close button
+	closeModalBtn.addEventListener("click", function() {
+	  // Redirect to the previous page
+	  history.back();
+	});
+	
+	$('#myModal').modal({backdrop: 'static', keyboard: false})  
+			
+</script>
+
+
+
+{% endblock %}
+</html>
+
+
+

@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+ 
+  <head>
+    <title>Customer Master Form</title>
+	
+	<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-multiselect.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+	{% block content %}
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	
+	<script src="{% static 'js/Chart.min.js' %}"></script>
+	<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+	<style type="text/css">
+		.container{
+			margin-top: 5px;
+			margin-left: 20px;
+			font-size:20px;
+			width:100%;
+
+		}
+		.card-body{
+			background-color: #5d5c61;
+			cursor:default;
+			overflow: auto;
+    		white-space: nowrap;
+		} 
+		.card {
+		   background-color: 1FCBDE;
+		   color: black;
+		   padding: 15px 30px;
+		   border-radius: 3px;
+		   
+		   margin-bottom: 5px; 
+		}
+		
+		thead.sticky {
+		  position: -webkit-sticky;
+		  position: sticky;
+		  top: 0;
+		  background-color: red;		  
+		  padding: 50px;
+		  font-size: 20px;
+		  
+		  
+		}
+		.div_class{
+			font-size:25px;
+			font-weight:bolder;
+			
+		}
+		.multiselect-selected{
+			width:250px;
+			font-size:10px;
+		}
+		
+		.myFont{
+			font-size:15px;
+			font-weight:bold;
+		}
+		.multiselect-wrapper {
+			font-size:15px;
+			font-weight:bold;
+		}
+				.dataTables_wrapper .dataTables_paginate .paginate_button {
+			border-radius: 0;
+		}
+		.dataTables_wrapper .dataTables_paginate .paginate_button {
+			border-radius: 0;
+			background: BDB76B !important;
+			
+		}
+		div.dataTables_wrapper {
+        width: 1200px;
+        margin: 0 auto;
+		}
+		.dataTables_length {		
+			color: black !important;
+			margin-right:200px !important;
+		}
+		.dataTables_filter {
+			color:black !important;
+		}
+		.dt-buttons{
+			color:black !important;
+			
+		}
+		.collapsible {
+		  background-color: #eee;
+		  color: #444;
+		  cursor: pointer;
+		  padding: 18px;
+		  width: 100%;
+		  border: none;
+		  text-align: left;
+		  outline: none;
+		  font-size: 15px;
+		  transition: 0.4s;
+		}
+
+		.collapsible:hover {
+		  background-color: #ccc;
+		}
+
+		.content {
+		  padding: 0 18px;
+		  display: none;
+		  overflow: hidden;
+		  background-color: #f9f9f9;
+		}
+		.container2 {
+		  display: flex;
+		  justify-content: center;
+		  align-items: center;
+		  height: 100vh; /* Adjust as needed */
+		}
+		
+		#my-table td {
+			width: 500px; /* Adjust the width as needed */
+			padding: 10px; /* Adjust the padding as needed */
+			border: 1px solid #000; /* Optional: Add borders to the cells */
+		}
+		#my-table th {
+			width: 200px; /* Adjust the width as needed */
+			padding: 10px; /* Adjust the padding as needed */
+			border: 1px solid #000; /* Optional: Add borders to the cells */
+		}
+	</style>
+  </head>
+
+  <body>
+ 
+	<br>
+	
+    <main role="main" class="container" >
+
+      
+	  <div class="card shadow p-3 mb-5 bg-white rounded" style="width:120%;margin-top:5px;">
+		<a class="btn btn-info" style="width:15%;" href="{% url 'product:new-customer'%}">Add New</a>
+		
+		<table id="product" class = "table sts table-striped rounded shadow display " style="width:100% ">
+						
+				<h2 style="color:green;font-weight:bolder;font-size:30px;margin-left:430px;">Customer Master Data</h2>
+				<thead class="sticky">
+					<tr style="background-color:powderblue;" >
+						<th style="text-align: center;color:black; width:2%">Srl.</th>
+						<th style="text-align: left;color:black; width:20%">Name</th>
+						<th style="text-align: left;color:black; width:10%">Phone</th>						
+						<th style="text-align: left;color:black; width:48%">Address</th>
+						<th style="text-align: left;color:black;width:10%">Email</th>
+						<th style="text-align: left;color:black; width:10%">&nbspActions</th>
+						
+					</tr>
+				</thead>
+				<tbody>
+				{% for item in queryset %}
+					<tr>
+						<td style="text-align: center;">{{ forloop.counter }}</td>
+						<td style="text-align: left;">{{ item.name }}</td>
+						<td style="text-align: left;">{{ item.phone }}</td>														
+						<td style="text-align: left;">{{ item.address }}</td>
+						<td style="text-align: left;">{{ item.email }}</td>
+						
+						<td class="align-middle">
+							<div class="align-middle">
+								<a href="{% url 'product:edit-customer' customer.pk %}" class="btn btn-info btn-sm">Edit Details</a>
+								
+							</div>
+						</td>
+						
+						
+					</tr>				
+				{% endfor %}
+				</tbody>
+		</table>
+				
+	</div>
+
+    </main>
+	
+
+	<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+	<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'js/Chart.min.js' %}"></script>
+
+<script type="text/javascript">
+	
+  $(document).ready(function() {
+  
+	$('#product').DataTable({
+			scrollX: true,
+			drawCallback: function () {
+		      var api = this.api();
+		      var sum = 0;
+		      var formated = 0;
+		      //to show first th
+		      $(api.column(4).footer()).html('Total:');
+
+		      for(var i=5; i<=6;i++)
+		      {
+		      	sum = api.column(i, {page:'current'}).data().sum();
+				
+		      	//to format this sum
+		      	formated = parseFloat(sum).toLocaleString(undefined, {minimumFractionDigits:2});
+		      	
+				$(api.column(i).footer()).html(formated);
+				
+		      }
+		      
+		    },
+			
+			dom: 'lBfrtip',
+			
+			columnDefs: [
+				{
+					targets: [0],
+					orderData: [0, 1],
+				},
+				{
+					targets: [1],
+					orderData: [1, 0],
+				},
+				{
+					targets: [4],
+					orderData: [4, 0],
+				},
+				
+				
+			],
+			
+			buttons: [
+            'copy', 'csv', 'print',
+			
+			{
+				extend: 'pdfHtml5',
+				exportOptions: {
+				  columns: ':not(:last-child):not(:nth-last-child(2))'
+				  
+				  /*selector excludes the first 
+				   and third columns (0-based index) 
+				   from being exported.
+				  columns: ':not(:eq(0)):not(:eq(2))'
+				  */
+				  
+				}				
+			},
+			
+			{
+			  extend: 'excelHtml5',
+			  exportOptions: {
+				columns: ':not(:last-child):not(:nth-last-child(2))'
+			  }
+			}
+			
+			
+			
+			]
+			
+			
+	});
+
+	
+  });
+  
+
+
+</script>
+
+
+{% endblock content %}
+</body>
+
+</html>
