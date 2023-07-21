@@ -3,7 +3,8 @@ from django.forms import Form, ModelForm, DateField, widgets,ValidationError
 from .models import Product, Customer, SalesBill, SalesItem, Stock
 from django.core.validators import MaxValueValidator
 from django.forms import formset_factory
-
+from django.forms import DateInput
+from django.urls import reverse_lazy
 
 class ProductTCBForm(forms.ModelForm):
     
@@ -117,3 +118,38 @@ class SalesItemForm(forms.ModelForm):
 
 # formset used to render multiple 'SalesItemForm'
 SalesItemFormset = formset_factory(SalesItemForm, extra=1)
+
+
+class StockForm(forms.ModelForm):
+
+       
+    class Meta:
+        model = Stock
+        #fields = "__all__"
+        exclude = ['fk_email', 'item_text', 'name','is_deleted', 'created_date', 'modified_date', 'id']
+        
+        widgets = {
+            'doc_no'    :  widgets.TextInput(attrs={'class': 'form-control','style': 'text-transform:uppercase'}),
+            'doc_dt'    :  widgets.DateInput(attrs={'class': 'form-control','type': 'date'}),
+            'belt_no'   :  widgets.TextInput(attrs={'class': 'form-control','style': 'text-transform:uppercase'}),
+            'width'     :  widgets.TextInput(attrs={'class': 'form-control','size':4, 'maxlength':4,'title': 'Numbers only'}),         
+            'ply'       :  widgets.TextInput(attrs={'class': 'form-control','size':1, 'maxlength':1,'title': 'Numbers only'}),
+            'tr'        :  widgets.TextInput(attrs={'class': 'form-control','size':5, 'maxlength':5,'title': 'Numbers only'}),
+            'br'        :  widgets.TextInput(attrs={'class': 'form-control','size':5, 'maxlength':5,'title': 'Numbers only'}),
+            'quantity'  :  widgets.TextInput(attrs={'class': 'form-control','size':6, 'maxlength':6,'title': 'Numbers only'}),
+        
+        }
+    
+    
+    
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control skip-enter'})
+            field.required = True
+
+    
+        
+    def get_verbose_name(self, field_name):
+        return self.fields[field_name].widget._meta.model._meta.get_field(field_name).verbose_name

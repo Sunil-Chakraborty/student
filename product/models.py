@@ -1,6 +1,9 @@
 from django.db import models
 from django.core.validators import MinValueValidator,MaxValueValidator
 from account.models import Account
+from datetime import datetime
+from django.utils import timezone
+
 
 # Create your models here.
 
@@ -37,7 +40,26 @@ class Product(models.Model):
 	)
     fab_type        = models.CharField(verbose_name='Fab-type', max_length=5,
 	                                  choices=FAB_CHOICES, null=True, blank=True)    
+    
+    FAB_DSG  = (
+         (None, 'Select'),
+         ('01', '90'),
+         ('02', '100'),
+         ('03', '125'),
+         ('04', '160'),
+         ('05', '200'),
+         ('06', '250'),
+         ('07', '315'),
+         ('08', '350'),
+         ('09', '400'),
+         ('10', '450'),
+         ('11', '500'),    
+    )
+    fab_str         = models.CharField(verbose_name='Fab-Style', max_length=3,
+	                                  choices=FAB_DSG, null=True, blank=True)
+                                      
     grade           = models.ForeignKey("Grade", verbose_name="Grade", on_delete=models.CASCADE, null=True, blank=True)
+    
     EDGE_CHOICES = (
  		 (None, 'Select'),
          ('01', 'CE'),
@@ -77,8 +99,11 @@ class Product(models.Model):
     modified_date   = models.DateTimeField(auto_now=True)
     email 	        = models.ForeignKey(Account,verbose_name="email key", on_delete=models.CASCADE, null=True, blank=True)
     
+        
     def __str__(self):
-        return self.prod_tag
+        return f'{self.prod_des}'
+        #return f'{self.prod_code} - {self.prod_des}'
+        #return f'{self.prod_code}'
         
 class Customer(models.Model):
     id              = models.AutoField(primary_key=True)
@@ -93,6 +118,7 @@ class Customer(models.Model):
 
     def __str__(self):
 	    return self.name
+    
 
 #contains the sales bills made
 class SalesBill(models.Model):
@@ -115,13 +141,27 @@ class SalesBill(models.Model):
 
 
 class Stock(models.Model):
-    id = models.AutoField(primary_key=True)    
-    name = models.CharField(max_length=30, unique=True)    
-    quantity = models.IntegerField(default=1)
-    is_deleted = models.BooleanField(default=False)
+    id              = models.AutoField(primary_key=True)    
+    doc_no          = models.CharField(verbose_name='Doc.No.', max_length=20, null=True, blank=True)
+    doc_dt          = models.DateField(verbose_name='Doc.Date', null=True, blank=True)
+    belt_no         = models.CharField(verbose_name='Belt No', max_length=20, unique=True, null=True, blank=True)
+    name            = models.CharField(verbose_name='Item Code', max_length=10, null=True, blank=True)
+    prod_des        = models.ForeignKey(Product, on_delete = models.CASCADE, related_name='proddesc')    
+    item_text       = models.CharField(verbose_name='Item Description', max_length=100, null=True, blank=True)
+    width           = models.IntegerField(verbose_name='Width(mm)',validators=[MinValueValidator(500), MaxValueValidator(1800)],null=True, blank=True)
+    ply             = models.IntegerField(verbose_name='Ply(no)',validators=[MinValueValidator(2), MaxValueValidator(8)],null=True, blank=True)
+    tr              = models.DecimalField(verbose_name='Top Rubber(mm)',validators=[MinValueValidator(1.5), MaxValueValidator(20.00)],max_digits=5, decimal_places=2,null=True,blank=True)
+    br              = models.DecimalField(verbose_name='Bot Rubber(mm)',validators=[MinValueValidator(1.5), MaxValueValidator(20.00)],max_digits=5, decimal_places=2,null=True,blank=True)
+    quantity        = models.DecimalField(verbose_name='Quantity(m)',validators=[MinValueValidator(10), MaxValueValidator(450.00)],max_digits=6, decimal_places=2,null=True,blank=True)
+    is_deleted      = models.BooleanField(default=False)
+    created_date    = models.DateTimeField(auto_now_add=True)
+    modified_date   = models.DateTimeField(auto_now=True)
+    fk_email 	    = models.ForeignKey(Account,verbose_name="email key", on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-	    return self.name
+	    return self.belt_no
+        #return f'{self.item_text} - ({self.width}x{self.ply}x{self.tr}x{self.br})'
+        #return f'{self.item_text} - ({self.width}x{self.ply}x{self.tr}x{self.br})'
         
 #contains the sales stocks made
 class SalesItem(models.Model):

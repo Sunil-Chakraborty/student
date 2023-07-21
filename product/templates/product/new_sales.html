@@ -1,38 +1,56 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load widget_tweaks %}
 
 {% block title %} New Sales {% endblock title %}
 
 
 {% block content %}
+<head>
+<style>
+	.lbl{	
+		color:blue;
+		font-size:25px;
+	}
+	.fld{	
+		color:black;
+		font-size:20px;
+	}	
+	.shared-class {
+		color:black;
+		font-size:22px;
+	}
+	
+</style>
+</head>
 
     <div style="color:#575757; font-style: bold; font-size: 3rem; border-bottom: 1px solid white;">New Sales</div>
     
-        <br><!-- Log on to codeastro.com for more projects -->
+        <!-- Log on to codeastro.com for more projects -->
 
         <div class="panel panel-default">
-            <div class="panel-heading panel-heading-text " style="font-weight:bold;">Customer Details</div>
+            <div class="panel-heading panel-heading-text " style="font-size: 2rem;"><u>Customer Details</u></div>
             <div class="panel-body">
                     
                 <div class="form-group">
-                    <label for="id_name" class="panel-body-text">Name:</label>
-                    <input type="text" class="form-control textinput" id="id_name" value="{{ customer.name }}" disabled>
-                </div>
+                    <label for="id_name" class="panel-body-text lbl">Name:</label> 					
+					<input type="text" class="form-control textinput shared-class" id="id_name" value="{{ customer.name }}" disabled>
+
+				</div>
 
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="id_phone" class="panel-body-text">Phone No:</label>
-                        <input type="text" class="form-control textinput" id="id_phone" value="{{ customer.phone }}" disabled>
+                        <label for="id_phone" class="panel-body-text lbl">Phone No:</label>
+                        <input type="text" class="form-control textinput shared-class" id="id_phone" value="{{ customer.phone }}" disabled>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="id_email" class="panel-body-text">Email:</label>
-                        <input type="text" class="form-control textinput" id="id_email" value="{{ customer.email }}" disabled>
+                        <label for="id_email" class="panel-body-text lbl">Email:</label>
+                        <input type="text" class="form-control textinput shared-class" id="id_email" value="{{ customer.email }}" disabled>
                     </div>
                 </div>
 				<div class="form-group">
-                    <label for="id_address" class="panel-body-text">Address:</label>                    
-					<textarea class="form-control textinput" id="id_address" disabled rows="4">{{ customer.address }}</textarea>
+                    <label for="id_address" class="panel-body-text lbl">Address:</label>                    
+					<textarea class="form-control textinput shared-class" id="id_address" disabled rows="3">{{ customer.address }}</textarea>
 				</div>
 
             </div><!-- Log on to codeastro.com for more projects -->
@@ -45,7 +63,7 @@
             {% csrf_token %}
             {{ formset.management_form }}
 
-            <div class="panel-heading panel-heading-text" style="font-weight:bold;">Product Details</div>
+            <div class="panel-heading panel-heading-text" style="font-size: 2rem;"><u>Product Details</u></div>
             
                 <div id="stockitem"> 
                     <div class="panel-body">
@@ -53,20 +71,20 @@
                         <div class="row form-row">
                             <div class="form-group col-md-6">
                                 {{ form.stock.errors }}
-                                <label class="panel-body-text">Stock:</label>
+                                <label class="panel-body-text lbl">Belt No:</label>
                                 {{ form.stock }}
                             </div><!-- Log on to codeastro.com for more projects -->
                             <div class="form-group col-md-2">
-                                <label class="panel-body-text">Price per item:</label>
+                                <label class="panel-body-text lbl">Price per item:</label>
                                 {{ form.perprice }}
                             </div>
                             <div class="form-group col-md-2">
                                 {{ form.quantity.errors }}
-                                <label class="panel-body-text">Quantity:</label>
+                                <label class="panel-body-text lbl">Quantity:</label>
                                 {{ form.quantity }}
                             </div><!-- Log on to codeastro.com for more projects -->
                             <div class="form-group col-md-1">
-                                <label class="panel-body-text">Price:</label>
+                                <label class="panel-body-text lbl">Price:</label>
                                 <input type="text" class="textinput form-control totalprice" value="1" disabled required>
                             </div>
                             <div class="form-group col-md-1">
@@ -97,7 +115,8 @@
     <!-- Custom JS to add and remove item forms --><!-- Log on to codeastro.com for more projects -->
     <script type="text/javascript" src="{% static 'js/jquery-3.2.1.slim.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/dialogbox.js' %}"></script>
-    <script type="text/javascript">
+    
+	<script type="text/javascript">
         
         //creates custom alert object
         var custom_alert = new custom_alert();

@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Inventory List {% endblock title %}
+<header>
+<style>
+	.dt-buttons{
+		color:black !important;
+		margin-left:120px;
+	}
+	
+	.text-right {
+		text-align: right;
+	}
+	.text-middle {
+		text-align: center;
+	}
+	.dt-toolbar {
+		text-align: center;
+	}
+	
+</style>
+
+</header>
+
+{% block content %}
+ 
+ 
+    <div class="row" style="color: #575757; font-style: bold; font-size: 3rem;">
+        <div class="col-md-8">Stock List</div>
+        <div class="col-md-4">       <!-- Log on to codeastro.com for more projects -->        
+            <div style="float:right;"> <a class="btn btn-success" href="{% url 'product:stock-create' %}">Add New Inventory</a> </div>
+        </div>
+    </div>
+
+    <br>
+
+    <table id="stock" class="table table-css table-hover table-bordered ">
+        
+        <thead class="thead-dark align-middle">
+            <tr>
+                <th width="7%">Doc.No.</th>
+                <th width="10%">Doc.Dt.</th>
+                <th width="17%">Description</th>
+				<th width="10%">Belt No</th>
+				<th width="7%" class="text-right">Width<br>(mm)</th>
+				<th width="6%">Ply<br>(no)</th>
+				<th width="9%" class="text-right">Top Rub<br>(mm)</th>
+				<th width="9%" class="text-right">Bot Rub<br>(mm)</th>
+				<th width="9%" class="text-right">Length<br>(m)</th>
+                <th width="16%">Actions</th>
+				
+			</tr>
+        </thead>
+
+{% if object_list %}
+
+        <tbody>
+            {% for item in object_list %}
+            <tr>
+				<td class="align-left"> {{ item.doc_no }} </td>
+                <td class="align-middle"> {{ item.doc_dt|date:"d-m-Y" }} </td>
+				<td class="align-left"> {{ item.prod_des }} </td>
+				<td class="align-left"> {{ item.belt_no }} </td>
+				<td class="text-right"> {{ item.width }} </td>
+				<td class="text-right"> {{ item.ply }} </td>
+				<td class="text-right"> {{ item.tr }} </td>
+				<td class="text-right"> {{ item.br }} </td>
+				<td class="text-right"> {{ item.quantity }} </td>				              
+                
+				<td class="align-middle">
+                    <div class="align-middle">                        
+						<a href="{% url 'product:edit-stock' stock_id=item.id %}" class="btn btn-info btn-sm">Edit Details</a>						
+						<a href="{% url 'product:stock-delete' stock_id=item.id %}" class="btn btn-danger btn-sm">Delete</a>
+					</div>
+                </td>
+				
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+
+{% else %}
+
+        <tbody></tbody>   
+    </table><!-- Log on to codeastro.com for more projects -->
+
+    <br><br><br><br><br><br><br><br>
+    <div style="color: #575757; font-style: bold; font-size: 1.5rem; text-align: center;">The records are empty. Please try adding some.</div>
+
+{% endif %}
+
+	<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+	<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+	
+<script type="text/javascript">
+	
+  $(document).ready(function() {
+  
+	$('#stock').DataTable({
+			
+			
+			//responsive: true,
+			//dom: 'lBfrtip',
+			
+			dom: '<"dt-toolbar"lB><"dt-wrapper"fr>t<"dt-toolbar-footer"ip>',
+			
+			columnDefs: [
+				{
+					targets: [0],
+					orderData: [0, 1],
+				},
+				{
+					targets: [1],
+					orderData: [1, 0],
+				},
+				{
+					targets: [4],
+					orderData: [4, 0],
+				},
+				
+				
+			],
+			
+			buttons: [
+            'copy', 'csv', 'print',
+			
+			{
+				extend: 'pdfHtml5',
+				exportOptions: {
+				  //columns: ':not(:last-child):not(:nth-last-child(2))'
+				  columns: ':not(:eq(9)):not(:eq(10))'
+				  /*selector excludes the first 
+				   and third columns (0-based index) 
+				   from being exported.
+				  columns: ':not(:eq(0)):not(:eq(2))'
+				  */
+				  
+				}				
+			},
+			
+			{
+			  extend: 'excelHtml5',
+			  exportOptions: {
+				columns: ':not(:last-child):not(:nth-last-child(2))'
+			  }
+			}
+			
+			
+			
+			]
+			
+			
+	});
+
+	
+  });
+  
+
+
+</script>
+
+{% endblock content %}

@@ -5,6 +5,7 @@ from product.views import (
     prod_TCB_CRUD,
     edit_tcb_product,
     product_delete,
+    prod_stock_create,
     
     customer_list,
     CustomerCreateView,
@@ -15,6 +16,10 @@ from product.views import (
     SalesView,
     SelectCustomerView,
     SalesCreateView,
+    
+    StockListView,
+    edit_stock,
+    stock_delete,
     
 	)
   
@@ -38,4 +43,9 @@ urlpatterns = [
     path('sales/new/<pk>', SalesCreateView.as_view(), name='new-sales'),
     #path('purchases/<pk>/delete', views.PurchaseDeleteView.as_view(), name='delete-purchase'),
     
+    path('stock-create/', prod_stock_create, name='stock-create'),
+    path('stock/', StockListView.as_view(), name='stock-list'),
+    path('edit-stock/<str:stock_id>/', edit_stock, name='edit-stock'),
+    path('delete-stock/<str:stock_id>/', stock_delete, name='stock-delete'),
+ 
 ]

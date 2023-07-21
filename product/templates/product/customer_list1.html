@@ -8,7 +8,9 @@
 		color:black !important;
 		margin-left:120px;	
 	}
-
+	.dataTables_filter {
+		float: none !important;
+	}
 </style>
 
 </header>
@@ -80,7 +82,7 @@
   $(document).ready(function() {
   
 	$('#product').DataTable({
-			scrollX: true,
+			responsive: true,
 			
 			
 			dom: 'lBfrtip',

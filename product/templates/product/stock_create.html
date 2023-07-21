@@ -23,7 +23,8 @@
 		   left: 0%;
 		}
 		.modal-lg {
-			max-width: 40% !important;
+			margin-left:280px !important;
+			max-width: 80% !important;
 		}
 		input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
@@ -44,7 +45,7 @@
 		  <!-- Modal content-->
 		  <div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">Insert new Product(TCB) Code </h4>
+				<h4 class="modal-title">Insert new Stock item(TCB)</h4>
 			</div>
 			<div class="modal-body">
 
@@ -59,12 +60,16 @@
                 
 					<thead>
 						<tr>
-							<th style="text-align: center;color:black;width:10%">Row&nbsp&nbsp</th>
-							<th style="text-align: left;color:black; width:17%">Fab-type</th>
-							<th style="text-align: left;color:black; width:17%">Fab-style</th>							
-							<th style="text-align: left;color:black; width:36%">Grade</th>
-							<th style="text-align: center;color:black; width:20%">Edge</th>
-							
+							<th style="text-align: center;color:black;width:5%">Row&nbsp&nbsp</th>
+							<th style="text-align: left;color:black; width:10%">Doc.No.</th>
+							<th style="text-align: left;color:black; width:10%">Doc.Dt.</th>										
+							<th style="text-align: left;color:black; width:35%">Description</th>
+							<th style="text-align: left;color:black; width:10%">Belt No</th>
+							<th style="text-align: center;color:black; width:5%">Width<br>(mm)</th>
+							<th style="text-align: center;color:black; width:5%">Ply<br>(nos)</th>
+							<th style="text-align: center;color:black; width:5%">T.Rub<br>(mm)</th>
+							<th style="text-align: center;color:black; width:5%">B.Rub<br>(mm)</th>
+							<th style="text-align: center;color:black; width:10%">Quantity<br>(m)</th>
 						</tr>
 					</thead>
 				{% endif %}
@@ -76,14 +81,14 @@
 						
 						{% if form.errors %}
 							<div class="alert alert-danger">
-							<p><strong>Error in</strong>
-								Row {{ forloop.counter }}:
-								
+							<p><strong style="color:black;">Error in
+								Row {{ forloop.counter }} :
+								</strong>
 								<span>
 									{% for field_name, field_errors in form.errors.items %}
 										{% for error in field_errors %}
 											
-												<strong>{{ form|get_field_label:field_name }}-</strong>{{ error }}{% if not forloop.last %} {% endif %}
+												<strong style="color:blue;">{{ form|get_field_label:field_name }}-</strong><strong style="color:black;">{{ error }}</strong>{% if not forloop.last %} {% endif %}
 											
 										{% endfor %}
 									{% endfor %}
@@ -93,17 +98,21 @@
 								
 							</div>
 						{% endif %}
-						
-							<tr>
+						 	<tr>
 								<td style="text-align:center;">{{ forloop.counter }}</td>
-								<td>{{ form.fab_type }}</td>
-								<td>{{ form.fab_str }}</td>
-								<td>{{ form.grade }}</td>															
-								<td style="text-align: center;">{{ form.edge }}</td>								
-								
+								<td>{{ form.doc_no }}</td>
+								<td>{{ form.doc_dt }}</td>								
+								<td>{{ form.prod_des }}</td>
+								<td style="text-align:left;">{{ form.belt_no }}</td>
+								<td style="text-align:center;">{{ form.width }}</td>
+								<td style="text-align:center;">{{ form.ply }}</td>
+								<td style="text-align:right;">{{ form.tr }}</td>
+								<td style="text-align:right;">{{ form.br }}</td>
+								<td style="text-align:right;">{{ form.quantity }}</td>															
+																
 							</tr>
 							{{ form.id }}
-							{{ form.prod_code}}
+							
 						{% endfor %}
 					</tbody>
 				</table>
@@ -115,11 +124,10 @@
                             </div>
                 {% else %}
 							<button type="submit" style="text-align:left;" class="btn btn-info">Save</button>
+							<button type="button"  class="btn btn-secondary" id="closeModalBtn" data-dismiss="modal">Close</button>
 				{% endif %}
 			</form>
-				<div class="modal-footer">				
-					<button type="button"  class="btn btn-secondary" id="closeModalBtn" data-dismiss="modal">Close</button>
-				</div>
+				
 			</div>
 		  </div>
 		</div>  
@@ -129,6 +137,7 @@
 
 
 			$(document).ready(function() {
+			
 				$('.skip-enter').keydown(function(event) {
 					var td = $(this).closest('td');
 					var tr = $(this).closest('tr');
@@ -177,20 +186,22 @@
 					}
 				});
 			});
-			
+
 	var closeModalBtn = document.getElementById("closeModalBtn");
 
 	// Add an event listener to the close button
 	closeModalBtn.addEventListener("click", function() {
 	  // Redirect to the previous page
 	  //history.back();
-	  window.location.href = "{% url 'product:prod-tcb-crud'%}";
+	  window.location.href = "{% url 'product:stock-list'%}";
 		
 	});
 	
 	$('#myModal').modal({backdrop: 'static', keyboard: false})  
 	
 	
+  
+
 	
 </script>
 

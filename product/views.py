@@ -9,10 +9,11 @@ from .forms import (
     CustomerForm,
     SelectCustomerForm,
     SalesItemFormset,
+    StockForm,
     )
     
 from account.models import Account
-from . models import Product, Customer,SalesBill
+from . models import Product, Customer,SalesBill,SalesBillDetails,Stock
 from student_app.templatetags.custom_filters import *
 from django.db import IntegrityError
 from django.views.generic import (
@@ -51,11 +52,11 @@ def prod_TCB_create(request,*args, **kwargs):
                         
                     matl.prod_code = str(matl.prod_tag)+str(matl.fab_type)+grd+str(matl.edge)
                      
-                    matl.prod_des = "TCB "+str(matl.get_fab_type_display())+" "+str(matl.grade.name)+" "+str(matl.get_edge_display())
+                    matl.prod_des = "TCB "+str(matl.get_fab_type_display())+str(matl.get_fab_str_display())+" "+str(matl.grade.name)+" "+str(matl.get_edge_display())
                     matl.email = account
                     
                     try:
-                        matl.prod_code = str(matl.prod_tag)+str(matl.fab_type)+grd+str(matl.edge)
+                        matl.prod_code = str(matl.prod_tag)+str(matl.fab_type)+str(matl.fab_str)+grd+str(matl.edge)
                        
                         form.save()
                     except IntegrityError:
@@ -101,9 +102,9 @@ def edit_tcb_product(request, product_id):
             if len(grd) == 1:
                 grd="0"+grd
                         
-            matl.prod_des = "TCB "+str(matl.get_fab_type_display())+" "+str(matl.grade.name)+" "+str(matl.get_edge_display())
+            matl.prod_des = "TCB "+str(matl.get_fab_type_display())+str(matl.get_fab_str_display())+" "+str(matl.grade.name)+" "+str(matl.get_edge_display())
             try:
-                matl.prod_code = str(matl.prod_tag)+str(matl.fab_type)+grd+str(matl.edge)
+                matl.prod_code = str(matl.prod_tag)+str(matl.fab_type)+str(matl.fab_str)+grd+str(matl.edge)
                 form.save()
                 return redirect('product:prod-tcb-crud')
             except IntegrityError:
@@ -252,7 +253,7 @@ class SalesCreateView(View):
         customerobj = get_object_or_404(Customer, pk=pk)                        # gets the supplier object
         if formset.is_valid():
             # saves bill
-            billobj = CustomerBill(customer=customerobj)                        # a new object of class 'PurchaseBill' is created with supplier field set to 'supplierobj'
+            billobj = SalesBill(customer=customerobj)                        # a new object of class 'PurchaseBill' is created with supplier field set to 'supplierobj'
             billobj.save()                                                      # saves object into the db
             # create bill details object
             billdetailsobj = SalesBillDetails(billno=billobj)
@@ -271,7 +272,8 @@ class SalesCreateView(View):
                 stock.save()
                 billitem.save()
             messages.success(request, "Sales items have been registered successfully")
-            return redirect('purchase-bill', billno=billobj.billno)
+            #return redirect('product:sales-list', billno=billobj.billno)
+            return redirect('product:customers-list')
         formset = SalesItemFormset(request.GET or None)
         context = {
             'formset'   : formset,
@@ -288,3 +290,78 @@ class SalesView(ListView):
     context_object_name = 'bills'
     ordering = ['-time']
     paginate_by = 10
+
+def prod_stock_create(request,*args, **kwargs):
+   
+    user_id = request.session['user_id']
+    account = Account.objects.get(id=user_id)
+    
+    
+    if request.method == 'POST':
+       
+        StockFormSet = formset_factory(StockForm, extra=4)
+        formset = StockFormSet(request.POST)
+        
+        
+        if formset.is_valid():
+            for form in formset:
+                if form.has_changed():
+                    stock = form.save(commit=False)                    
+                    stock.fk_email = account
+                    product = form.cleaned_data['prod_des']
+                    stock.name = product.prod_code
+                    stock.doc_no = stock.doc_no.upper()
+                    stock.belt_no = stock.belt_no.upper()                    
+                    
+                    try:
+                        stock.item_text = product
+                        stock.save()
+                    except IntegrityError as e:
+                        # Handle the error when saving the Stock instance with duplicate "belt_no"
+                        # Add an error message to the form for the "belt_no" field
+                        form.add_error('belt_no', 'A stock with this Belt_no already exists.')
+
+                    
+            return redirect('product:stock-list')
+    else:
+       
+        StockFormSet = formset_factory(StockForm, extra=4)
+        formset = StockFormSet()
+        
+    context = {
+        'formset': formset,
+              
+    }
+    return render(request, 'product/stock_create.html', context)
+
+class StockListView(ListView):
+    model = Stock
+    template_name = "product/stock_list.html"
+    queryset = Stock.objects.filter(is_deleted=False)    
+
+def edit_stock(request, stock_id):
+    stock = get_object_or_404(Stock, pk=stock_id)
+
+    if request.method == 'POST':
+        form = StockForm(request.POST, instance=stock)
+        if form.is_valid():
+            stock_item = form.save(commit=False)
+            stock_item.save()
+            return redirect('product:stock-list')
+        
+    else:
+        form = StockForm(instance=stock)
+
+    return render(request, 'product/edit_stock.html', {'form': form})
+
+def stock_delete(request, stock_id):
+    stock = get_object_or_404(Stock, pk=stock_id)
+    
+    if request.method == "POST":
+        stock.delete()
+        return redirect("product:stock-list")
+        
+    context = {'stock':stock}
+    
+    return render(request, 'product/stock_delete.html', context)
+ 

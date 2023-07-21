@@ -1,10 +1,23 @@
 {% extends "base.html" %}
 {% load static %}
+{% load widget_tweaks %}
 
 {% block title %} New Sales Order {% endblock title %}
 
 
 {% block content %}
+<head>
+<style>
+	.lbl{	
+		color:blue;
+		font-size:25px;
+	}
+	.fld{	
+		color:black;
+		font-size:20px;
+	}
+</style>
+</head>
 
     <div style="color:#575757; font-style: bold; font-size: 3rem; border-bottom: 1px solid white;">New Sales Order</div> 
     
@@ -16,8 +29,8 @@
         
         {% for field in form.visible_fields %}
             <div class="form-group">
-                {{ field.label_tag }}
-                {{ field }}
+				<label for="{{ field.id_for_label }}" class="lbl">{{ field.label }}</label>
+				{{ field|attr:"class:fld"}}
             </div>
         {% endfor %}
 
