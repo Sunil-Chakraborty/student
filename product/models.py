@@ -165,11 +165,13 @@ class Stock(models.Model):
         
 #contains the sales stocks made
 class SalesItem(models.Model):
-    billno = models.ForeignKey(SalesBill, on_delete = models.CASCADE, related_name='salesbillno')
-    stock = models.ForeignKey(Stock, on_delete = models.CASCADE, related_name='salesitem')
-    quantity = models.IntegerField(default=1)
-    perprice = models.IntegerField(default=1)
-    totalprice = models.IntegerField(default=1)
+    billno          = models.ForeignKey(SalesBill, on_delete = models.CASCADE, related_name='salesbillno')
+    stock           = models.ForeignKey(Stock, on_delete = models.CASCADE, related_name='salesitem')
+    belt_no         = models.CharField(verbose_name='Belt No', max_length=20, unique=True, null=True, blank=True)
+    prod_des        = models.CharField(verbose_name='Item Description', max_length=250, null=True, blank=True) 
+    quantity        = models.IntegerField(default=1)
+    perprice        = models.IntegerField(default=1)
+    totalprice      = models.IntegerField(default=1)
 
     def __str__(self):
 	    return "Bill no: " + str(self.billno.billno) + ", Item = " + self.stock.name

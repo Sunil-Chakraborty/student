@@ -11,7 +11,7 @@ from .forms import (
     SalesItemFormset,
     StockForm,
     )
-    
+from .forms import SalesItemForm    
 from account.models import Account
 from . models import Product, Customer,SalesBill,SalesBillDetails,Stock
 from student_app.templatetags.custom_filters import *
@@ -25,6 +25,7 @@ from django.views.generic import (
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 
+from django.db import IntegrityError
 
 
 
@@ -238,49 +239,66 @@ class SelectCustomerView(View):
 # used to generate a bill object and save items
 class SalesCreateView(View):                                                 
     template_name = 'product/new_sales.html'
-
+    
+    
     def get(self, request, pk):
-        formset = SalesItemFormset(request.GET or None)                      # renders an empty formset
-        customerobj = get_object_or_404(Customer, pk=pk)                        # gets the supplier object
+        formset = SalesItemFormset(request.GET or None, prefix='sales_item')  # renders an empty formset
+        customerobj = get_object_or_404(Customer, pk=pk)
+        
         context = {
-            'formset'   : formset,
-            'customer'  : customerobj,
-        }                                                                       # sends the supplier and formset as context
-        return render(request, self.template_name, context)
-
-    def post(self, request, pk):
-        formset = SalesItemFormset(request.POST)                             # recieves a post method for the formset
-        customerobj = get_object_or_404(Customer, pk=pk)                        # gets the supplier object
-        if formset.is_valid():
-            # saves bill
-            billobj = SalesBill(customer=customerobj)                        # a new object of class 'PurchaseBill' is created with supplier field set to 'supplierobj'
-            billobj.save()                                                      # saves object into the db
-            # create bill details object
-            billdetailsobj = SalesBillDetails(billno=billobj)
-            billdetailsobj.save()
-            for form in formset:                                                # for loop to save each individual form as its own object
-                # false saves the item and links bill to the item
-                billitem = form.save(commit=False)
-                billitem.billno = billobj                                       # links the bill object to the items
-                # gets the stock item
-                stock = get_object_or_404(Stock, name=billitem.stock.name)       # gets the item
-                # calculates the total price
-                billitem.totalprice = billitem.perprice * billitem.quantity
-                # updates quantity in stock db
-                stock.quantity += billitem.quantity                              # updates quantity
-                # saves bill item and stock
-                stock.save()
-                billitem.save()
-            messages.success(request, "Sales items have been registered successfully")
-            #return redirect('product:sales-list', billno=billobj.billno)
-            return redirect('product:customers-list')
-        formset = SalesItemFormset(request.GET or None)
-        context = {
-            'formset'   : formset,
-            'customer'  : customerobj
+            'formset': formset,
+            'customer': customerobj,
         }
         return render(request, self.template_name, context)
+    
 
+
+    def post(self, request, pk):
+        formset = SalesItemFormset(request.POST, prefix='sales_item')
+        customerobj = get_object_or_404(Customer, pk=pk)
+
+        if formset.is_valid():
+            billobj = SalesBill(customer=customerobj)
+            billobj.save()
+
+            billdetailsobj = SalesBillDetails(billno=billobj)
+            billdetailsobj.save()
+
+            for form in formset:
+                if form.has_changed():
+                    # Clean each form explicitly to populate the item_text_content field
+                    form.clean_stock()
+                    if form.is_valid():
+                        billitem = form.save(commit=False)
+                        billitem.billno = billobj
+
+                        # Set the 'prod_des' field to the value of 'item_text_content'
+                        billitem.prod_des = form.cleaned_data['item_text_content']
+                        billitem.belt_no = form.cleaned_data['stock']
+                        
+                        stock = get_object_or_404(Stock, name=billitem.stock.name)
+                        billitem.totalprice = billitem.perprice * billitem.quantity
+                        stock.quantity += billitem.quantity
+                        stock.save()
+                        
+                        try:                            
+                            billitem.save()
+                        except IntegrityError:
+                            error_message =  "<b>"+str(billitem.belt_no)+"</b> already exists.<br> Please enter a unique Belt No."
+                            messages.error(request, error_message)
+                            return render(request, self.template_name, {'formset': formset, 'customer': customerobj})
+
+                            
+
+            messages.success(request, "Sales items have been registered successfully")
+            return redirect('product:customers-list')
+
+        # If the formset is not valid, render the formset again along with the customer data
+        context = {
+            'formset': formset,
+            'customer': customerobj,
+        }
+        return render(request, self.template_name, context)
 
 
 # shows the list of bills of all purchases 

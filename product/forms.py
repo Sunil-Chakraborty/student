@@ -106,19 +106,24 @@ class SelectCustomerForm(forms.ModelForm):
         fields = ['customer']
 
 class SalesItemForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['stock'].queryset = Stock.objects.filter(is_deleted=False)
-        self.fields['stock'].widget.attrs.update({'class': 'textinput form-control setprice stock', 'required': 'true'})
-        self.fields['quantity'].widget.attrs.update({'class': 'textinput form-control setprice quantity', 'min': '0', 'required': 'true'})
-        self.fields['perprice'].widget.attrs.update({'class': 'textinput form-control setprice price', 'min': '0', 'required': 'true'})
+    item_text_content = forms.CharField(widget=forms.HiddenInput, required=False)
+
     class Meta:
         model = SalesItem
-        fields = ['stock', 'quantity', 'perprice']
+        fields = ['stock', 'quantity', 'perprice', 'item_text_content']
 
-# formset used to render multiple 'SalesItemForm'
-SalesItemFormset = formset_factory(SalesItemForm, extra=1)
+    def clean_stock(self):
+        stock_instance = self.cleaned_data['stock']
+        print("Selected Stock Instance:", stock_instance)
+        if stock_instance:
+            stock_data = Stock.objects.filter(pk=stock_instance.pk).values('item_text').first()
+            print("Stock Data:", stock_data)
+            item_text_content = stock_data['item_text'] if stock_data else ''
+            print("Setting item_text_content to:", item_text_content)
+            self.cleaned_data['item_text_content'] = item_text_content  # Assign the value to cleaned_data instead of self.instance
+        return stock_instance
 
+SalesItemFormset = formset_factory(SalesItemForm, extra=3)
 
 class StockForm(forms.ModelForm):
 
