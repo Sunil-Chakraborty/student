@@ -106,11 +106,16 @@ class SelectCustomerForm(forms.ModelForm):
         fields = ['customer']
 
 class SalesItemForm(forms.ModelForm):
-    item_text_content = forms.CharField(widget=forms.HiddenInput, required=False)
+    item_text_content = forms.CharField(required=False)
 
     class Meta:
         model = SalesItem
         fields = ['stock', 'quantity', 'perprice', 'item_text_content']
+    
+        
+            
+    def get_verbose_name(self, field_name):
+        return self.fields[field_name].widget._meta.model._meta.get_field(field_name).verbose_name
 
     def clean_stock(self):
         stock_instance = self.cleaned_data['stock']
@@ -121,9 +126,12 @@ class SalesItemForm(forms.ModelForm):
             item_text_content = stock_data['item_text'] if stock_data else ''
             print("Setting item_text_content to:", item_text_content)
             self.cleaned_data['item_text_content'] = item_text_content  # Assign the value to cleaned_data instead of self.instance
+            
         return stock_instance
 
 SalesItemFormset = formset_factory(SalesItemForm, extra=3)
+          
+    
 
 class StockForm(forms.ModelForm):
 

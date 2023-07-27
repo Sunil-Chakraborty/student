@@ -21,6 +21,8 @@ from product.views import (
     edit_stock,
     stock_delete,
     
+    get_stock_data_view,
+    
 	)
   
  
@@ -48,4 +50,6 @@ urlpatterns = [
     path('edit-stock/<str:stock_id>/', edit_stock, name='edit-stock'),
     path('delete-stock/<str:stock_id>/', stock_delete, name='stock-delete'),
  
+    path('get_stock_data_view/<int:stockInstanceId>', get_stock_data_view, name='get_stock_data_view'),
+
 ]

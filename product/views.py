@@ -26,7 +26,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 
 from django.db import IntegrityError
-
+from django.http import JsonResponse
 
 
 def prod_TCB_create(request,*args, **kwargs):
@@ -237,7 +237,8 @@ class SelectCustomerView(View):
 
 
 # used to generate a bill object and save items
-class SalesCreateView(View):                                                 
+class SalesCreateView(View):
+                                                    
     template_name = 'product/new_sales.html'
     
     
@@ -248,9 +249,9 @@ class SalesCreateView(View):
         context = {
             'formset': formset,
             'customer': customerobj,
+            
         }
         return render(request, self.template_name, context)
-    
 
 
     def post(self, request, pk):
@@ -275,7 +276,6 @@ class SalesCreateView(View):
                         # Set the 'prod_des' field to the value of 'item_text_content'
                         billitem.prod_des = form.cleaned_data['item_text_content']
                         billitem.belt_no = form.cleaned_data['stock']
-                        
                         stock = get_object_or_404(Stock, name=billitem.stock.name)
                         billitem.totalprice = billitem.perprice * billitem.quantity
                         stock.quantity += billitem.quantity
@@ -297,6 +297,7 @@ class SalesCreateView(View):
         context = {
             'formset': formset,
             'customer': customerobj,
+            
         }
         return render(request, self.template_name, context)
 
@@ -382,4 +383,18 @@ def stock_delete(request, stock_id):
     context = {'stock':stock}
     
     return render(request, 'product/stock_delete.html', context)
+
+
+def get_stock_data_view(request, stockInstanceId):
+    stock_instance = get_object_or_404(Stock, pk=stockInstanceId)
+
+    # ... Your other code ...
+
+    stock_data = {
+        'item_text': stock_instance.item_text,
+        # Add more data fields as needed...
+    }
  
+    print("Stock Data:", stock_data)  # Add this line to print the stock data to the server log
+
+    return JsonResponse(stock_data)

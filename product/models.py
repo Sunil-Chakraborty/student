@@ -160,18 +160,21 @@ class Stock(models.Model):
 
     def __str__(self):
 	    return self.belt_no
+        #return f'{self.belt_no} - {self.prod_des}'
+        
         #return f'{self.item_text} - ({self.width}x{self.ply}x{self.tr}x{self.br})'
         #return f'{self.item_text} - ({self.width}x{self.ply}x{self.tr}x{self.br})'
         
 #contains the sales stocks made
 class SalesItem(models.Model):
-    billno          = models.ForeignKey(SalesBill, on_delete = models.CASCADE, related_name='salesbillno')
-    stock           = models.ForeignKey(Stock, on_delete = models.CASCADE, related_name='salesitem')
-    belt_no         = models.CharField(verbose_name='Belt No', max_length=20, unique=True, null=True, blank=True)
-    prod_des        = models.CharField(verbose_name='Item Description', max_length=250, null=True, blank=True) 
-    quantity        = models.IntegerField(default=1)
-    perprice        = models.IntegerField(default=1)
-    totalprice      = models.IntegerField(default=1)
+    billno              = models.ForeignKey(SalesBill, on_delete = models.CASCADE, related_name='salesbillno')
+    stock               = models.ForeignKey(Stock, on_delete = models.CASCADE, related_name='salesitem')
+    belt_no             = models.CharField(verbose_name='Belt No', max_length=20, unique=True, null=True, blank=True)
+    prod_des            = models.CharField(verbose_name='Item Description', max_length=250, null=True, blank=True)
+    item_text_content   = models.CharField(verbose_name='Item Des', max_length=250)    
+    quantity            = models.IntegerField(default=1)
+    perprice            = models.IntegerField(default=1)
+    totalprice          = models.IntegerField(default=1)
 
     def __str__(self):
 	    return "Bill no: " + str(self.billno.billno) + ", Item = " + self.stock.name

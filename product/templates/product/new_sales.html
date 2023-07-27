@@ -88,19 +88,24 @@
 								<th class="lbl" style="text-align: center;width:10%;">Quantity</th>
 							</thead>
 							<tbody>
-							
+								{% for item in stocks %}
+									{{item.belt_no}}
+								{% endfor %}
+								
 								{% for form in formset %}
+								
 									<tr>
 										<td>{{ forloop.counter }}</td>
 										<td>{{ form.stock }}</td>
 										<td>
-											 {{ form.stock_data.item_text }} 											
+											{{ form.item_text_content }}
 										</td>
 										<td>{{ form.perprice }}</td>
 										<td>{{ form.quantity }}</td>
 									</tr>
-									 
+								 
 								{% endfor %}
+								
 							</tbody>
 						</table>
 										
@@ -123,9 +128,52 @@
     <!-- Custom JS to add and remove item forms --><!-- Log on to codeastro.com for more projects -->
     <script type="text/javascript" src="{% static 'js/jquery-3.2.1.slim.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/dialogbox.js' %}"></script>
-    
-	<script type="text/javascript">
-	
-    </script>
+    <!-- Include jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+	<script>
+	  // Function to fetch stock_data using AJAX
+	  var itemTextContent; // Declare itemTextContent in the global scope
+
+	  function fetchStockData(stockInstanceId) {
+		  $.ajax({
+			url: `/product/get_stock_data_view/${stockInstanceId}`,
+			method: 'GET',
+			dataType: 'json',
+			success: function (data) {
+			  console.log('Response Data:', data); // Log the entire data object
+			  if (data && data.item_text) {
+				var itemTextContent = data.item_text;
+				console.log('Stock Data:', itemTextContent);
+
+				// Update the item_text_content field or perform other actions
+				$('#id_sales_item-0-item_text_content').val(itemTextContent);
+				
+				
+				// ... Other logic ...
+			  } else {
+				console.log('Stock data not found.');
+			  }
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+			  console.error('AJAX Error:', textStatus, errorThrown);
+			}
+		  });
+		}
+
+	  // Assuming you have an event that triggers this action, for example, on change of the stock field
+	  
+	  $(document).ready(function () {
+		  $('#id_sales_item-0-stock').on('change', function () {
+			var stockInstanceId = $(this).val(); // Assuming this is the ID of the selected stock instance
+
+			if (stockInstanceId) {
+			  fetchStockData(stockInstanceId);
+			} else {
+			  console.log('Stock instance ID is missing.');
+			}
+		  });
+		});
+	</script>
+		
 {% endblock content %}

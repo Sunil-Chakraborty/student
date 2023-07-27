@@ -88,7 +88,7 @@
 									{% for field_name, field_errors in form.errors.items %}
 										{% for error in field_errors %}
 											
-												<strong style="color:blue;">{{ form|get_field_label:field_name }}-</strong><strong style="color:black;">{{ error }}</strong>{% if not forloop.last %} {% endif %}
+												<strong style="color:blue;">{{ form|get_field_label:field_name }}-</strong><strong style="color:black;">{{ error|safe }}</strong>{% if not forloop.last %} {% endif %}
 											
 										{% endfor %}
 									{% endfor %}
