@@ -98,9 +98,13 @@
 										<td>{{ forloop.counter }}</td>
 										<td>{{ form.stock }}</td>
 										<td>
-											{{ form.item_text_content }}
+										<!-- Display the item_text_content field -->
+										{{ form.item_text_content }}
 										</td>
-										<td>{{ form.perprice }}</td>
+										<td>
+										<!-- Display the item_qty_content field -->
+										{{ form.item_qty_content }}
+										</td>										<td>{{ form.perprice }}</td>
 										<td>{{ form.quantity }}</td>
 									</tr>
 								 
@@ -132,24 +136,66 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 	<script>
-	  // Function to fetch stock_data using AJAX
-	  var itemTextContent; // Declare itemTextContent in the global scope
+	
+		var itemTextContent; // Declare itemTextContent in the global scope
+		
+		$(document).ready(function () {
+		  // Loop through each form in the SalesItemFormset
+		  for (let i = 0; i < {{ formset.total_form_count }}; i++) {
+			var stockField = $('#id_sales_item-' + i + '-stock');
+			var itemTextContentField = $('#id_sales_item-' + i + '-item_text_content');
+			var itemQtyContentField = $('#id_sales_item-' + i + '-item_qty_content');
 
-	  function fetchStockData(stockInstanceId) {
+			console.log('Found stockField:', stockField.attr('id'));
+			console.log('Found itemTextContentField:', itemTextContentField.attr('id'));
+			console.log('Found itemQtyContentField:', itemQtyContentField.attr('id'));
+			
+			// Set data attributes to store relevant information
+			stockField.attr('data-text-content-field', itemTextContentField.attr('id'));
+			stockField.attr('data-qty-content-field', itemQtyContentField.attr('id'));
+
+			// Attach change event listener to each stock field
+			stockField.on('change', function () {
+			  var stockInstanceId = $(this).val();
+			  console.log('Selected stockInstanceId:', stockInstanceId);
+
+			  if (stockInstanceId) {
+				// Get the corresponding itemTextContentField using the data attribute
+				var correspondingItemTextContentFieldId = $(this).data('text-content-field');
+				var correspondingItemTextContentField = $('#' + correspondingItemTextContentFieldId);
+				
+				var correspondingItemQtyContentFieldId = $(this).data('text-content-field');
+				var correspondingItemQtyContentField = $('#' + correspondingItemQtyContentFieldId);
+
+				fetchStockData(stockInstanceId, correspondingItemTextContentField,correspondingItemQtyContentField);
+				
+			  } else {
+				console.log('Stock instance ID is missing.');
+			  }
+			});
+		  }
+		});
+
+
+		function fetchStockData(stockInstanceId, itemTextContentField,itemQtyContentField) {
+		  
+		  console.log("Inside fetchStockData function. stockInstanceId:", stockInstanceId);
 		  $.ajax({
 			url: `/product/get_stock_data_view/${stockInstanceId}`,
 			method: 'GET',
 			dataType: 'json',
 			success: function (data) {
-			  console.log('Response Data:', data); // Log the entire data object
-			  if (data && data.item_text) {
+			  console.log('Response Data:', data);
+			  if (data && data.item_text && data.item_qty) {
 				var itemTextContent = data.item_text;
-				console.log('Stock Data:', itemTextContent);
-
-				// Update the item_text_content field or perform other actions
-				$('#id_sales_item-0-item_text_content').val(itemTextContent);
+				var itemQtyContent = data.item_qty;
+				console.log('Stock Desc Data:', itemTextContent);
+                console.log('Stock Qty:', itemQtyContent);
 				
-				
+				// Update the corresponding item_text_content field
+				itemTextContentField.val(itemTextContent);
+				itemQtyContentField.val(itemQtyContent);
+				//$('#id_sales_item-0-item_text_content').val(itemTextContent);
 				// ... Other logic ...
 			  } else {
 				console.log('Stock data not found.');
@@ -161,19 +207,36 @@
 		  });
 		}
 
-	  // Assuming you have an event that triggers this action, for example, on change of the stock field
-	  
-	  $(document).ready(function () {
-		  $('#id_sales_item-0-stock').on('change', function () {
-			var stockInstanceId = $(this).val(); // Assuming this is the ID of the selected stock instance
-
-			if (stockInstanceId) {
-			  fetchStockData(stockInstanceId);
-			} else {
-			  console.log('Stock instance ID is missing.');
-			}
-		  });
-		});
 	</script>
 		
 {% endblock content %}
+
+
+<!--
+for (let i = 0; i < {{ formset.total_form_count }}; i++) { ... }: This loop iterates through each form in the SalesItemFormset. The formset.total_form_count is a Django template variable that holds the total number of forms in the formset. This loop dynamically generates the IDs of the stock and item text content fields for each form by appending the index i to the IDs.
+
+var stockField = $('#id_sales_item-' + i + '-stock');: This line selects the stock field element for the current form in the loop. The $('#id_sales_item-' + i + '-stock') selector creates an ID selector based on the current index i.
+
+var itemTextContentField = $('#id_sales_item-' + i + '-item_text_content');: This line selects the item text content field element for the current form in the loop, similar to how the stock field was selected.
+
+console.log('Found stockField:', stockField.attr('id'));: This logs the ID of the stock field to the console, just to show which element was found for each iteration.
+
+console.log('Found itemTextContentField:', itemTextContentField.attr('id'));: This logs the ID of the item text content field to the console, just to show which element was found for each iteration.
+
+stockField.attr('data-text-content-field', itemTextContentField.attr('id'));: This sets a data attribute called data-text-content-field on the stock field element. The data attribute is used to store the ID of the corresponding item text content field for later reference.
+
+stockField.on('change', function () { ... });: This attaches a change event listener to the stock field. The function inside the event listener will be executed when the value of the stock field is changed.
+
+var stockInstanceId = $(this).val();: Inside the change event listener, this line gets the selected value (stock instance ID) from the stock field.
+
+var correspondingItemTextContentFieldId = $(this).data('text-content-field');: This line retrieves the ID of the corresponding item text content field that was previously stored in the data attribute of the stock field.
+
+var correspondingItemTextContentField = $('#' + correspondingItemTextContentFieldId);: This selects the corresponding item text content field using the ID obtained in the previous step.
+
+fetchStockData(stockInstanceId, correspondingItemTextContentField);: This calls the fetchStockData function with the stock instance ID and the corresponding item text content field as parameters. This function makes an AJAX call to retrieve stock data and updates the item text content field accordingly.
+
+Overall, this script is used to dynamically attach change event listeners to each stock field in the formset and update the corresponding item text content field when the stock field value is changed. The data attribute is used to keep track of which item text content field corresponds to each stock field in the loop.
+-->
+
+
+

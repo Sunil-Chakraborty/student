@@ -107,10 +107,11 @@ class SelectCustomerForm(forms.ModelForm):
 
 class SalesItemForm(forms.ModelForm):
     item_text_content = forms.CharField(required=False)
-
+    item_qty_content = forms.CharField(required=False)
+    
     class Meta:
         model = SalesItem
-        fields = ['stock', 'quantity', 'perprice', 'item_text_content']
+        fields = ['stock', 'quantity', 'perprice', 'item_text_content','item_qty_content']
     
         
             
@@ -121,11 +122,15 @@ class SalesItemForm(forms.ModelForm):
         stock_instance = self.cleaned_data['stock']
         print("Selected Stock Instance:", stock_instance)
         if stock_instance:
-            stock_data = Stock.objects.filter(pk=stock_instance.pk).values('item_text').first()
+            stock_data = Stock.objects.filter(pk=stock_instance.pk).values('item_text','quantity').first()
+            
             print("Stock Data:", stock_data)
             item_text_content = stock_data['item_text'] if stock_data else ''
             print("Setting item_text_content to:", item_text_content)
             self.cleaned_data['item_text_content'] = item_text_content  # Assign the value to cleaned_data instead of self.instance
+            item_qty_content = stock_data['quantity'] if stock_data else ''
+            print("Setting item_qty_content to:", item_qty_content)
+            self.cleaned_data['item_qty_content'] = item_qty_content  # Assign the value to cleaned_data instead of self.instance
             
         return stock_instance
 

@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'account.Account'
 
+LOGIN_URL = 'login'  # Change 'login' to the actual name of your login view
 
 AUTHENTICATION_BACKENDS = ( 
     'django.contrib.auth.backends.AllowAllUsersModelBackend',     

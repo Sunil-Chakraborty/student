@@ -4,7 +4,6 @@ from account.models import Account
 from datetime import datetime
 from django.utils import timezone
 
-
 # Create your models here.
 
 class Grade(models.Model):
@@ -172,6 +171,7 @@ class SalesItem(models.Model):
     belt_no             = models.CharField(verbose_name='Belt No', max_length=20, unique=True, null=True, blank=True)
     prod_des            = models.CharField(verbose_name='Item Description', max_length=250, null=True, blank=True)
     item_text_content   = models.CharField(verbose_name='Item Des', max_length=250)    
+    item_qty_content   = models.CharField(verbose_name='Item Des', max_length=250)    
     quantity            = models.IntegerField(default=1)
     perprice            = models.IntegerField(default=1)
     totalprice          = models.IntegerField(default=1)
@@ -196,3 +196,5 @@ class SalesBillDetails(models.Model):
 
     def __str__(self):
 	    return "Bill no: " + str(self.billno.billno)
+
+      

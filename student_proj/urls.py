@@ -20,6 +20,8 @@ from account.views import(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('account/', include('account.urls', namespace='account')),
+    
     path('student/', include('student_app.urls', namespace='student')),
     path('product/', include('product.urls', namespace='product')),
     path('xlview', ExcelView, name='xlview'),

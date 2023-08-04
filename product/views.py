@@ -276,6 +276,8 @@ class SalesCreateView(View):
                         # Set the 'prod_des' field to the value of 'item_text_content'
                         billitem.prod_des = form.cleaned_data['item_text_content']
                         billitem.belt_no = form.cleaned_data['stock']
+                        billitem.quantity = form.cleaned_data['item_qty_content']
+                        
                         stock = get_object_or_404(Stock, name=billitem.stock.name)
                         billitem.totalprice = billitem.perprice * billitem.quantity
                         stock.quantity += billitem.quantity
@@ -392,6 +394,7 @@ def get_stock_data_view(request, stockInstanceId):
 
     stock_data = {
         'item_text': stock_instance.item_text,
+        'item_qty': stock_instance.quantity,
         # Add more data fields as needed...
     }
  

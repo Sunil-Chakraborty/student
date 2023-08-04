@@ -4,7 +4,8 @@ from django.http import HttpResponse
 from django.core.exceptions import ValidationError
 from django.forms import Form, ModelForm, DateField, widgets
 from django.contrib.auth.forms import UserCreationForm
-from .models import Account
+from .models import Account, Message
+
 
 class RegistrationForm(UserCreationForm):
         
@@ -74,3 +75,9 @@ class RegistrationForm(UserCreationForm):
             self.fields['password2'].widget.attrs['placeholder'] = 'confirm password'
             self.fields['password1'].required = False
             self.fields['password2'].required = False
+
+
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['sender','receiver', 'content']

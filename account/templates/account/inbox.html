@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+		/* static/your_app/styles.css */
+
+		/* Style the message list */
+		ul {
+		  list-style: none;
+		  padding: 0;
+		  margin: 0;
+		}
+
+		/* Style each message item */
+		li {
+		  margin-bottom: 10px;
+		  padding: 10px;
+		  border: 1px solid #ccc;
+		  border-radius: 5px;
+		}
+
+		/* Style the sender and receiver information */
+		li span {
+		  font-weight: bold;
+		}
+
+		/* Style the date */
+		li small {
+		  color: #999;
+		}
+
+		/* Optional: Center the inbox heading */
+		h1 {
+		  text-align: center;
+		}
+
+</style>
+
+{% block error_messages %}
+{% endblock error_messages %}
+
+	 <h1 class="inbox-heading">Inbox Messages</h1>
+	 {% if account.is_superuser %}
+		<a style="color:blue;" href="{% url 'account:create_message' %}">Compose New Message</a>
+		
+	 {% endif %} 
+	  <ul class="message-list">
+		{% for message in messages %}
+		  <li class="message-item">
+			<span class="message-sender">From :&nbsp&nbsp IQAC-Admin</span>
+			<small class="message-date">{{ message.timestamp|date:"F d, Y" }}</small>
+			<span style="float:right;color:blue;"><a href="{% url 'account:view-message' message_id=message.id %}">Done</a></span>			
+			
+			<br>
+			
+			{{ message.content|safe }}
+		  </li>
+		{% endfor %}
+		
+		{% for message in sending_message %}
+		  <li class="message-item">
+			<span class="message-sender">From :&nbsp&nbsp IQAC-Admin</span>
+			<small class="message-date">{{ message.timestamp|date:"F d, Y" }}</small>
+			
+			<span style="float:right;"><a href="{% url 'account:edit-message' message_id=message.id %}">Edit Message</a></span>
+			
+			<br>
+			
+			{{ message.content|safe }}
+		  </li>
+		{% endfor %}
+	  </ul>
+	  
+{% endblock %}

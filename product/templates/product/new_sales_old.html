@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %} New Sales {% endblock title %}
+
+
+{% block content %}
+<head>
+<style>
+	.lbl{	
+		color:blue;
+		font-size:25px;
+	}
+	.fld{	
+		color:black;
+		font-size:20px;
+	}	
+	.shared-class {
+		color:black;
+		font-size:22px;
+	}
+	
+</style>
+</head>
+
+    <div style="color:#575757; font-style: bold; font-size: 3rem; border-bottom: 1px solid white;">New Sales</div>
+    
+        <!-- Log on to codeastro.com for more projects -->
+
+        <div class="panel panel-default">
+            <div class="panel-heading panel-heading-text " style="font-size: 2rem;"><u>Customer Details</u></div>
+            <div class="panel-body">
+                    
+                <div class="form-group">
+                    <label for="id_name" class="panel-body-text lbl">Name:</label> 					
+					<input type="text" class="form-control textinput shared-class" id="id_name" value="{{ customer.name }}" disabled>
+
+				</div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="id_phone" class="panel-body-text lbl">Phone No:</label>
+                        <input type="text" class="form-control textinput shared-class" id="id_phone" value="{{ customer.phone }}" disabled>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="id_email" class="panel-body-text lbl">Email:</label>
+                        <input type="text" class="form-control textinput shared-class" id="id_email" value="{{ customer.email }}" disabled>
+                    </div>
+                </div>
+				<div class="form-group">
+                    <label for="id_address" class="panel-body-text lbl">Address:</label>                    
+					<textarea class="form-control textinput shared-class" id="id_address" disabled rows="3">{{ customer.address }}</textarea>
+				</div>
+
+            </div><!-- Log on to codeastro.com for more projects -->
+        </div>
+
+        <br>
+
+        <form method="post" class="panel panel-default">
+            
+            {% csrf_token %}
+            {{ formset.management_form }}
+    
+			{% block error_messages %}
+					
+			{% endblock error_messages %}
+			
+			{% if messages %}
+				<div class="alert alert-danger">
+					<ul>
+						{% for message in messages %}
+							<li>{{ message|safe }}</li>
+						{% endfor %}
+					</ul>
+				</div>
+			{% endif %}
+			
+                <div id="stockitem"> 
+                    <div class="panel-body">
+						<table>
+							<thead>
+								<th class="lbl" style="text-align: left;width:5%;">Row</th>
+								<th class="lbl" style="text-align: center;width:20%;">Belt No</th>
+								<th class="lbl" style="text-align: center;width:55%;">Description</th>								
+								<th class="lbl" style="text-align: center;width:10%;">Rate</th>
+								<th class="lbl" style="text-align: center;width:10%;">Quantity</th>
+							</thead>
+							<tbody>
+								{% for item in stocks %}
+									{{item.belt_no}}
+								{% endfor %}
+								
+								{% for form in formset %}
+								
+									<tr>
+										<td>{{ forloop.counter }}</td>
+										<td>{{ form.stock }}</td>
+										<td>
+											{{ form.item_text_content }}
+										</td>
+										<td>{{ form.perprice }}</td>
+										<td>{{ form.quantity }}</td>
+									</tr>
+								 
+								{% endfor %}
+								
+							</tbody>
+						</table>
+										
+                    </div>
+                </div>
+
+
+            <br><!-- Log on to codeastro.com for more projects -->
+
+            <div class="align-middle">
+                <button type="submit" class="btn btn-success">Add to Purchases</button>
+                <a href="{% url 'product:select-customer' %}" class="btn btn-danger">Go Back</a>
+                <a href="{% url 'product:customers-list' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+            
+        </form>
+
+    </div>
+
+    <!-- Custom JS to add and remove item forms --><!-- Log on to codeastro.com for more projects -->
+    <script type="text/javascript" src="{% static 'js/jquery-3.2.1.slim.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/dialogbox.js' %}"></script>
+    <!-- Include jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+	<script>
+	  // Function to fetch stock_data using AJAX
+	  var itemTextContent; // Declare itemTextContent in the global scope
+
+	  function fetchStockData(stockInstanceId) {
+		  $.ajax({
+			url: `/product/get_stock_data_view/${stockInstanceId}`,
+			method: 'GET',
+			dataType: 'json',
+			success: function (data) {
+			  console.log('Response Data:', data); // Log the entire data object
+			  if (data && data.item_text) {
+				var itemTextContent = data.item_text;
+				console.log('Stock Data:', itemTextContent);
+
+				// Update the item_text_content field or perform other actions
+				$('#id_sales_item-0-item_text_content').val(itemTextContent);
+				
+				
+				// ... Other logic ...
+			  } else {
+				console.log('Stock data not found.');
+			  }
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+			  console.error('AJAX Error:', textStatus, errorThrown);
+			}
+		  });
+		}
+
+	  // Assuming you have an event that triggers this action, for example, on change of the stock field
+	  
+	  $(document).ready(function () {
+		  $('#id_sales_item-0-stock').on('change', function () {
+			var stockInstanceId = $(this).val(); // Assuming this is the ID of the selected stock instance
+
+			if (stockInstanceId) {
+			  fetchStockData(stockInstanceId);
+			} else {
+			  console.log('Stock instance ID is missing.');
+			}
+		  });
+		});
+		
+	</script>
+		
+{% endblock content %}
