@@ -78,6 +78,8 @@ class Message(models.Model):
     timestamp       = models.DateTimeField(auto_now_add=True)
     read            = models.BooleanField(default=False)
     modified_date   = models.DateTimeField(auto_now=True)
+    receiver_name   = models.TextField()
+    email           = models.EmailField()
     
     def __str__(self):
         return f"{self.sender} -> {self.receiver}: {self.content}"

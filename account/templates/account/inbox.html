@@ -39,11 +39,14 @@
 {% block error_messages %}
 {% endblock error_messages %}
 
-	 <h1 class="inbox-heading">Inbox Messages</h1>
+	 
 	 {% if account.is_superuser %}
-		<a style="color:blue;" href="{% url 'account:create_message' %}">Compose New Message</a>
-		
-	 {% endif %} 
+		<h1 class="inbox-heading">Sent Messages</h1>
+		<a style="color:blue;font-size:20px;font-weight:bold;" href="{% url 'account:create_message' %}">Compose New Message</a>
+	 {% else %}
+		<h1 class="inbox-heading">Inbox Messages</h1>
+	 {% endif %}
+	 
 	  <ul class="message-list">
 		{% for message in messages %}
 		  <li class="message-item">
@@ -61,7 +64,10 @@
 		  <li class="message-item">
 			<span class="message-sender">From :&nbsp&nbsp IQAC-Admin</span>
 			<small class="message-date">{{ message.timestamp|date:"F d, Y" }}</small>
-			
+			&nbsp&nbsp<span class="message-sender">To :&nbsp&nbsp {{ message.receiver_name }} -->{{ message.email }}</span>
+			{% if message.read %}
+				&nbsp&nbsp<span class="message-sender" style="color:red;">Responded on : {{ message.modified_date|date:"F d, Y" }}</span>
+			{% endif %}
 			<span style="float:right;"><a href="{% url 'account:edit-message' message_id=message.id %}">Edit Message</a></span>
 			
 			<br>

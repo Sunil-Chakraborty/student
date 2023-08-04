@@ -99,11 +99,18 @@ def inbox(request,*args, **kwargs):
         
       
 def create_message(request):
-    
+
     if request.method == 'POST':
         form = MessageForm(request.POST)
+        
+        receiver = request.POST.get('receiver')
+        account = Account.objects.get(pk=receiver)
+        
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.receiver_name = account.username
+            user.email = account.email
+            user.save()
             return redirect('account:inbox')
     else:
         form = MessageForm()
@@ -113,8 +120,16 @@ def edit_message(request, message_id):
     message = Message.objects.get(pk=message_id)
     if request.method == 'POST':
         form = MessageForm(request.POST, instance=message)
+        receiver = request.POST.get('receiver')
+        account = Account.objects.get(pk=receiver)
+        
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.receiver_name = account.username
+            user.read = False
+            user.email = account.email
+            user.save()
+            
             return redirect('account:inbox')
     else:
         form = MessageForm(instance=message)
