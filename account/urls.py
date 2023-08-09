@@ -8,6 +8,7 @@ from account.views import (
     create_message,
     edit_message,
     view_message,
+    delete_message,
  )
  
 app_name = 'account'
@@ -19,4 +20,5 @@ urlpatterns = [
     path('view/<int:message_id>/', view_message, name='view-message'),
     path('create/', create_message, name='create_message'),
     path('edit/<int:message_id>/', edit_message, name='edit-message'),
+    path('delete/<int:message_id>/', delete_message, name='delete-message'),
 ]

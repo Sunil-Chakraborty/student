@@ -78,6 +78,19 @@ class RegistrationForm(UserCreationForm):
 
 
 class MessageForm(forms.ModelForm):
+
     class Meta:
         model = Message
-        fields = ['sender','receiver', 'content']
+        fields = ['sender','receiver', 'content','feedback']
+        
+        widgets =  {
+            'sender'    : widgets.Select(attrs={'class': 'form-control'}),
+            'receiver'  : widgets.Select(attrs={'class': 'form-control'}),
+            'content'   : widgets.Textarea(attrs={'class': 'form-control', 'rows': 3 }),           
+        }
+    
+    def __init__(self, *args, **kwargs):
+            super(MessageForm,self).__init__(*args, **kwargs)
+            self.fields['feedback'].required = False
+            self.fields['content'].required = False
+            

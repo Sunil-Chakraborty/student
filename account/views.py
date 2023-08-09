@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .email_backend import EmailBackend
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import RegistrationForm, MessageForm
+from account.forms import RegistrationForm, MessageForm
 #from django.contrib.auth.views import LoginView
 from . models import Account,Department
 #from django.contrib.auth.models import User
@@ -86,20 +86,19 @@ def send_message(request, receiver_id):
 def inbox(request,*args, **kwargs):    
     user_id = request.session['user_id']
     account = Account.objects.get(pk=user_id)
-    user_sts = request.user
-    print("l-89 ",account.is_superuser)
+    
     print("l-90 ",user_id)
     received_messages = Message.objects.filter(receiver=user_id,read=False)
     sending_message = Message.objects.filter(sender=user_id) 
     
-    if received_messages or sending_message or account.is_superuser: 
+    if received_messages or sending_message or user_id == 1 : 
         return render(request, 'account/inbox.html', {'messages': received_messages,'sending_message': sending_message,'account':account})
     else:
         return redirect('dashboard')
         
       
 def create_message(request):
-
+    
     if request.method == 'POST':
         form = MessageForm(request.POST)
         
@@ -112,12 +111,24 @@ def create_message(request):
             user.email = account.email
             user.save()
             return redirect('account:inbox')
-    else:
-        form = MessageForm()
+        
+        
+    form = MessageForm()     
     return render(request, 'account/create_message.html', {'form': form})
 
 def edit_message(request, message_id):
     message = Message.objects.get(pk=message_id)
+    content_text=message.content
+    user_id = request.session['user_id']
+    account = Account.objects.get(pk=user_id)
+    hide_sender = False
+    hide_receiver = False
+    
+    if not account.is_superuser: 
+        hide_sender = True  # Set this to True or False based on your condition
+        hide_receiver = True  # Set this to True or False based on your condition
+        
+        
     if request.method == 'POST':
         form = MessageForm(request.POST, instance=message)
         receiver = request.POST.get('receiver')
@@ -125,27 +136,38 @@ def edit_message(request, message_id):
         
         if form.is_valid():
             user = form.save(commit=False)
+            print('l-137')
             user.receiver_name = account.username
-            user.read = False
+            if hide_sender and hide_receiver:
+                user.read = True
+            else:
+                user.timestamp = user.modified_date
+                user.read = False
             user.email = account.email
             user.save()
             
             return redirect('account:inbox')
     else:
         form = MessageForm(instance=message)
-    return render(request, 'account/edit_message.html', {'form': form, 'message': message})
+    return render(request, 'account/edit_message.html', {'form': form, 'message': message,'hide_sender': hide_sender, 'hide_receiver': hide_receiver,'content_text':content_text})
 
 
 def view_message(request,message_id):     
     
     message = get_object_or_404(Message, pk=message_id)
-    print(message.read)
-    print(message_id)
     
     if not message.read:        
-        message.read = True
-        print(message.read)
-        print(message_id)
+        message.read = True       
         message.save()
        
     return redirect('dashboard')
+    
+
+def delete_message(request, message_id):
+    message = get_object_or_404(Message, pk=message_id)
+    message_subject = message.content  # Save the subject for displaying in the message
+
+    message.delete()
+
+    # Redirect to inbox after deletion
+    return redirect('account:inbox')

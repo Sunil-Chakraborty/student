@@ -56,17 +56,27 @@ INSTALLED_APPS = [
     'bootstrap_modal_forms',
     'crispy_forms',
     'widget_tweaks',
+    'ckeditor',
     
 ]
+
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'debug': True,  # Enable CKEditor's debug mode
+        # Other CKEditor configuration options...
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',    
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'student_proj.urls'
@@ -85,7 +95,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-        },
+        },        
+        
     },
 ]
 
