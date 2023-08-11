@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.forms import Form, ModelForm, DateField, widgets
 from django.contrib.auth.forms import UserCreationForm
 from .models import Account, Message
-
+from ckeditor.widgets import CKEditorWidget
 
 class RegistrationForm(UserCreationForm):
         
@@ -78,7 +78,7 @@ class RegistrationForm(UserCreationForm):
 
 
 class MessageForm(forms.ModelForm):
-
+    content = forms.CharField(widget=CKEditorWidget())
     class Meta:
         model = Message
         fields = ['sender','receiver', 'content','feedback']

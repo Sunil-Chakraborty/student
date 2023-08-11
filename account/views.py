@@ -10,6 +10,8 @@ from . models import Account,Department
 #from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .models import Message
+from django.utils.html import strip_tags
+
 
 def account_register(request):
     userForm = RegistrationForm(request.POST or None)
@@ -131,15 +133,18 @@ def edit_message(request, message_id):
         
     if request.method == 'POST':
         form = MessageForm(request.POST, instance=message)
-        receiver = request.POST.get('receiver')
+        receiver = request.POST.get('receiver')        
         account = Account.objects.get(pk=receiver)
         
         if form.is_valid():
             user = form.save(commit=False)
-            print('l-137')
+            
             user.receiver_name = account.username
+           
             if hide_sender and hide_receiver:
                 user.read = True
+                
+                print('l-145',user.content)
             else:
                 user.timestamp = user.modified_date
                 user.read = False

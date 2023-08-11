@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
 <head>
   
@@ -29,15 +28,19 @@
 		}
 	</style>
   </head>
+	{% block error_messages %}
+	{% endblock error_messages %}
 	<div class="modal fade" id="myModal" role="dialog">
 		<div class="modal-dialog">
     
 		  <!-- Modal content-->
 		  <div class="modal-content">
 			<div class="modal-header">
-			  
+			  <h2 class="modal-title">Edit Message</h2>
+				
+					
 			  <form id="editForm" method="post">
-				<h2 class="modal-title">Edit Message</h2>
+				
 				
 			</div>
 			<div class="modal-body">
@@ -45,8 +48,12 @@
 				
 				{% if hide_sender %}
 					{{ form.sender.as_hidden }}
-					{{ form.receiver.as_hidden }}					
-					{{ form.content }}
+					{{ form.receiver.as_hidden }}
+					<div id="contentDiv" style="display:none;">
+						{{ form.content }}
+					</div>
+					<textarea class="form-control" name="feedback" cols="20" rows="3" readonly required id="id_cont" style="color: blue;font-weight:bold;font-size:20px;"></textarea>
+				
 					
 				{% else %}
 					From : {{ form.sender }} To : {{ form.receiver }}
@@ -61,7 +68,7 @@
 				<br>
 				<br>
 				<p style="color:black;font-weight:bold;"><u>Your feedback</u></p>
-				<textarea class="form-control" name="feedback" cols="20" rows="3" required id="id_feedback" style="background-color: yellow;">{{ form.feedback.value }}</textarea>
+				<textarea class="form-control" name="feedback" cols="20" rows="3" required id="id_feedback" style="color: black;">{{ form.feedback.value }}</textarea>
 				
 				<br>
 				<button type="submit" class="btn-info" >Save Changes</button>
@@ -77,6 +84,9 @@
     $(document).ready(function() {
       {% if hide_sender %}
         $('select[name="sender"]').hide();
+		var value = $("#id_content").val();	
+		var textWithoutTags = value.replace(/<[^>]*>/g, '');		
+		$("#id_cont").val(textWithoutTags);
 		$('label[for="{{ form.sender.id_for_label }}"]').hide();
 		document.querySelector('textarea[name="content"]').readOnly = true;
 		
