@@ -259,52 +259,28 @@ class SalesCreateView(View):
         customerobj = get_object_or_404(Customer, pk=pk)
 
         if formset.is_valid():
-            #billobj = SalesBill(customer=customerobj)
-            #billobj.save()
-            #print("l-264")
-            #billdetailsobj = SalesBillDetails(billno=billobj)
-            #billdetailsobj.save()
-
             for form in formset:
-                if form.has_changed() and form.is_valid():
-                    #form.clean_stock()
+                if form.has_changed():
                     billitem = form.save(commit=False)
-                    # Clean each form explicitly to populate the item_text_content field
-                    print("l-273",billitem.stock)
-                    """
-                    if billitem.belt_no is not None:
-                        # Check if the belt_no already exists before saving
-                        if SalesItem.objects.filter(belt_no=billitem.belt_no).exists():
-                            error_message = f"<b>{billitem.belt_no}</b> already exists - 277. Please enter a unique Belt No.l-278"
+                    
+                    if form.cleaned_data['stock']:
+                        billitem.belt_no = form.cleaned_data['stock'].belt_no     
+                        billitem.prod_des = form.cleaned_data['item_text_content']
+                        billitem.quantity = form.cleaned_data['item_qty_content']
+                     
+                        try:  
+                            billitem.save()
+                        except IntegrityError:
+                            error_message =  "<b>"+str(billitem.belt_no)+"</b> already exists.<br> Please enter a unique Belt No."
                             messages.error(request, error_message)
                             return render(request, self.template_name, {'formset': formset, 'customer': customerobj})
-                    """
-                    billitem.belt_no = form.cleaned_data['stock'].belt_no     
-                    billitem.prod_des = form.cleaned_data['item_text_content']
-                    billitem.quantity = form.cleaned_data['item_qty_content']
-                        
-                    #stock = get_object_or_404(Stock, name=billitem.stock.name)
-                    #billitem.totalprice = billitem.perprice * billitem.quantity
-                    #stock.quantity += billitem.quantity
-                    #stock.save()
-                    
-                    print("l-285",billitem.quantity)
-                    print("l-286",billitem.prod_des)
-                   
-                    try:  
-                        billitem.save()
-                    except IntegrityError:
-                        error_message =  "<b>"+str(billitem.belt_no)+"</b> already exists.<br> Please enter a unique Belt No."
-                        messages.error(request, error_message)
-                        return render(request, self.template_name, {'formset': formset, 'customer': customerobj})
-          
-                           
-
+              
             messages.success(request, "Sales items have been registered successfully")
             return redirect('product:customers-list')
+
         else:
-            print("l-301")
-        # If the formset is not valid, render the formset again along with the customer data
+            formset = SalesItemFormset()
+            
         context = {
             'formset': formset,
             'customer': customerobj,
@@ -312,6 +288,8 @@ class SalesCreateView(View):
         }
         return render(request, self.template_name, context)
 
+
+                
 
 # shows the list of bills of all purchases 
 class SalesView(ListView):

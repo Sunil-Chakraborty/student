@@ -139,7 +139,7 @@ class SalesItemForm(forms.ModelForm):
             
         return stock_instance
 
-SalesItemFormset = formset_factory(SalesItemForm, extra=4)
+SalesItemFormset = formset_factory(SalesItemForm, extra=3)
           
     
 
