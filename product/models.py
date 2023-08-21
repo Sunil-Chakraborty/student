@@ -168,17 +168,17 @@ class Stock(models.Model):
 class SalesItem(models.Model):
     billno              = models.ForeignKey(SalesBill, on_delete = models.CASCADE, related_name='salesbillno')
     stock               = models.ForeignKey(Stock, on_delete = models.CASCADE, related_name='salesitem')
-    belt_no             = models.CharField(verbose_name='Belt No', max_length=20, unique=True, null=True, blank=True)
+    belt_no             = models.CharField(verbose_name='Belt No', max_length=20, unique=False, null=True, blank=True)
     prod_des            = models.CharField(verbose_name='Item Description', max_length=250, null=True, blank=True)
     item_text_content   = models.CharField(verbose_name='Item Des', max_length=250)    
-    item_qty_content   = models.CharField(verbose_name='Item Des', max_length=250)    
-    quantity            = models.IntegerField(default=1)
+    item_qty_content    = models.CharField(verbose_name='Item Des', max_length=250)    
+    quantity            = models.DecimalField(verbose_name='Quantity(m)',validators=[MinValueValidator(10), MaxValueValidator(450.00)],max_digits=6, decimal_places=2,null=True,blank=True)
     perprice            = models.IntegerField(default=1)
     totalprice          = models.IntegerField(default=1)
 
     def __str__(self):
-	    return "Bill no: " + str(self.billno.billno) + ", Item = " + self.stock.name
-
+	    return self.stock.name
+    
 class SalesBillDetails(models.Model):
     billno = models.ForeignKey(SalesBill, on_delete = models.CASCADE, related_name='purchasedetailsbillno')
     

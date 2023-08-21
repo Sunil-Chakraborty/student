@@ -81,11 +81,11 @@
                     <div class="panel-body">
 						<table>
 							<thead>
-								<th class="lbl" style="text-align: left;width:5%;">Row</th>
-								<th class="lbl" style="text-align: center;width:20%;">Belt No</th>
-								<th class="lbl" style="text-align: center;width:55%;">Description</th>								
-								<th class="lbl" style="text-align: center;width:10%;">Rate</th>
-								<th class="lbl" style="text-align: center;width:10%;">Quantity</th>
+								<th class="lbl" style="text-align: left;">Row</th>
+								<th class="lbl" style="text-align: left;">Belt No</th>
+								<th class="lbl" style="text-align: left;">Description</th>								
+								<th class="lbl" style="text-align: left;">Quantity</th>
+								<th class="lbl" style="text-align: left;">Rate</th>
 							</thead>
 							<tbody>
 								{% for item in stocks %}
@@ -97,15 +97,10 @@
 									<tr>
 										<td>{{ forloop.counter }}</td>
 										<td>{{ form.stock }}</td>
-										<td>
-										<!-- Display the item_text_content field -->
-										{{ form.item_text_content }}
-										</td>
-										<td>
-										<!-- Display the item_qty_content field -->
-										{{ form.item_qty_content }}
-										</td>										<td>{{ form.perprice }}</td>
-										<td>{{ form.quantity }}</td>
+										<td>{{ form.item_text_content }}</td>										
+										<td>{{ form.item_qty_content }}</td>
+										<td></td>
+										
 									</tr>
 								 
 								{% endfor %}
@@ -164,7 +159,7 @@
 				var correspondingItemTextContentFieldId = $(this).data('text-content-field');
 				var correspondingItemTextContentField = $('#' + correspondingItemTextContentFieldId);
 				
-				var correspondingItemQtyContentFieldId = $(this).data('text-content-field');
+				var correspondingItemQtyContentFieldId = $(this).data('qty-content-field');
 				var correspondingItemQtyContentField = $('#' + correspondingItemQtyContentFieldId);
 
 				fetchStockData(stockInstanceId, correspondingItemTextContentField,correspondingItemQtyContentField);

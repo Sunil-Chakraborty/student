@@ -113,7 +113,12 @@ class SalesItemForm(forms.ModelForm):
         model = SalesItem
         fields = ['stock', 'quantity', 'perprice', 'item_text_content','item_qty_content']
     
-        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})
+            field.required = False
+         
             
     def get_verbose_name(self, field_name):
         return self.fields[field_name].widget._meta.model._meta.get_field(field_name).verbose_name
@@ -134,7 +139,7 @@ class SalesItemForm(forms.ModelForm):
             
         return stock_instance
 
-SalesItemFormset = formset_factory(SalesItemForm, extra=3)
+SalesItemFormset = formset_factory(SalesItemForm, extra=4)
           
     
 
