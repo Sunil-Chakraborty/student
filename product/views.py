@@ -376,15 +376,19 @@ def stock_delete(request, stock_id):
 
 def get_stock_data_view(request, stockInstanceId):
     stock_instance = get_object_or_404(Stock, pk=stockInstanceId)
-
-    # ... Your other code ...
+    
 
     stock_data = {
-        'item_text': stock_instance.item_text,
-        'item_qty': stock_instance.quantity,
-        # Add more data fields as needed...
+            'stock_id':stock_instance.id,                
+            'item_text': stock_instance.item_text,
+            'item_qty': stock_instance.quantity,            
+            # Add more data fields as needed...
     }
- 
-    print("Stock Data:", stock_data)  # Add this line to print the stock data to the server log
+
+    
+    print("l-387 Stock Data:", stock_data)  # Add this line to print the stock data to the server log
 
     return JsonResponse(stock_data)
+    
+    
+    #return JsonResponse(stock_data)
