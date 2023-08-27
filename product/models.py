@@ -172,7 +172,7 @@ class SalesItem(models.Model):
     item_text_content   = models.CharField(verbose_name='Item Des', max_length=250)    
     item_qty_content    = models.CharField(verbose_name='Item Qnty', max_length=250)    
     quantity            = models.DecimalField(verbose_name='Quantity(m)',validators=[MinValueValidator(10), MaxValueValidator(450.00)],max_digits=6, decimal_places=2,null=True,blank=True)
-    perprice            = models.DecimalField(verbose_name='Rate (Rs./m)',max_digits=6, decimal_places=2,null=True,blank=True,default=1)
+    perprice            = models.DecimalField(verbose_name='Rate (Rs./m)',max_digits=6, decimal_places=2,null=True,blank=True)
     totalprice          = models.DecimalField(verbose_name='Total(Rs./m)',max_digits=10, decimal_places=2,null=True,blank=True)
 
     def __str__(self):

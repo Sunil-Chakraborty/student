@@ -8,6 +8,12 @@
 {% block content %}
 <head>
 <style>
+	input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+           -webkit-appearance: none; 
+           margin: 0; 
+    }
+
 	.lbl{	
 		color:blue;
 		font-size:25px;
@@ -20,7 +26,12 @@
 		color:black;
 		font-size:22px;
 	}
-	
+	tr td {
+		text-align: center;
+	}
+	.td-center{
+		text-align: center;
+	}
 </style>
 </head>
 
@@ -83,9 +94,10 @@
 							<thead>
 								<th class="lbl" style="text-align: left;">Row</th>
 								<th class="lbl" style="text-align: center;">Belt No</th>
-								<th class="lbl" style="text-align: center;">Description</th>								
+								<th class="lbl" style="text-align: center;width:40%;">Description</th>								
 								<th class="lbl" style="text-align: center;">Quantity</th>
 								<th class="lbl" style="text-align: center;">Rate</th>
+								<th class="lbl" style="text-align: center;">Amount</th>
 							</thead>
 							<tbody>
 							
@@ -95,10 +107,9 @@
 										<td>{{ forloop.counter }}</td>
 										<td>{{ form.stock }}</td>										
 										<td>{{ form.item_text_content }}</td>                                        
-										<td>{{ form.item_qty_content }}</td>
-									
-									
-										<td></td>
+										<td class="td-center">{{ form.item_qty_content }}</td>
+										<td class="td-center">{{ form.perprice }}</td>
+										<td class="td-center">{{ form.totalprice }}</td>
 										
 									</tr>
 								 
@@ -139,15 +150,19 @@
 			var stockField = $('#id_sales_item-' + i + '-stock');
 			var itemTextContentField = $('#id_sales_item-' + i + '-item_text_content');
 			var itemQtyContentField = $('#id_sales_item-' + i + '-item_qty_content');
-
+			var itemRateField = $('#id_sales_item-' + i + '-perprice');
+			
 			console.log('Found stockField:', stockField.attr('id'));
 			console.log('Found itemTextContentField:', itemTextContentField.attr('id'));
 			console.log('Found itemQtyContentField:', itemQtyContentField.attr('id'));
+			console.log('Found itemRateField:', itemRateField.attr('id'));
+			
 			
 			// Set data attributes to store relevant information
 			stockField.attr('data-text-content-field', itemTextContentField.attr('id'));
 			stockField.attr('data-qty-content-field', itemQtyContentField.attr('id'));
-
+			stockField.attr('data-perprice-field', itemRateField.attr('id'));
+			
 			// Attach change event listener to each stock field
 			
 			stockField.on('change', function () {
@@ -163,7 +178,11 @@
 				
 				var correspondingItemQtyContentFieldId = $(this).data('qty-content-field');
 				var correspondingItemQtyContentField = $('#' + correspondingItemQtyContentFieldId);
+				
+				var correspondingItemRateFieldId = $(this).data('perprice-field');
+				var correspondingItemRateField = $('#' + correspondingItemRateFieldId);
 
+				
 				fetchStockData(stockInstanceId, correspondingItemTextContentField,correspondingItemQtyContentField);
 				
 			  } else {			    
@@ -173,9 +192,15 @@
 				 var correspondingItemQtyContentFieldId = $(this).data('qty-content-field');
 				 var correspondingItemQtyContentField = $('#' + correspondingItemQtyContentFieldId);
 
+				 var correspondingItemRateFieldId = $(this).data('perprice-field');
+				 var correspondingItemRateField = $('#' + correspondingItemRateFieldId);
+				 var itemRate = correspondingItemRateField.val();
+
 				 correspondingItemTextContentField.val('');
 				 correspondingItemQtyContentField.val('');				 
+				 correspondingItemRateField.val('');
 				 
+				 console.log('Stock Rate.',itemRate);
 				 console.log('Stock instance ID is missing.');
 			  }
 			});

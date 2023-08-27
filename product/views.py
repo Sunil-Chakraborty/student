@@ -259,7 +259,25 @@ class SalesCreateView(View):
         customerobj = get_object_or_404(Customer, pk=pk)
 
         if formset.is_valid():
+        
             for form in formset:
+                if form.cleaned_data.get('item_qty_content') and form.cleaned_data.get('perprice'):
+                    quantity = form.cleaned_data['item_qty_content']
+                    print('Total Qty:', quantity)
+                    perprice = form.cleaned_data['perprice']
+                    print('Total Rate:', perprice)
+                    totalprice = quantity * perprice
+                    form.cleaned_data['totalprice'] = totalprice
+                    print('Total Price-l-271:', totalprice)
+                    
+            # Now you can iterate through the formset to access the calculated totalprice
+            for form in formset:
+                totalprice = form.cleaned_data.get('totalprice', 0)
+                print('Total Price-l-276:', totalprice)
+
+            # ... (rest of your view logic)
+            
+                    
                 if form.has_changed():
                     billitem = form.save(commit=False)
                     
@@ -267,7 +285,7 @@ class SalesCreateView(View):
                         billitem.belt_no = form.cleaned_data['stock'].belt_no     
                         billitem.prod_des = form.cleaned_data['item_text_content']
                         billitem.quantity = form.cleaned_data['item_qty_content']
-                     
+                        billitem.totalprice = form.cleaned_data['perprice']*form.cleaned_data['item_qty_content']
                         try:  
                             billitem.save()
                         except IntegrityError:
@@ -276,6 +294,7 @@ class SalesCreateView(View):
                             return render(request, self.template_name, {'formset': formset, 'customer': customerobj})
               
             messages.success(request, "Sales items have been registered successfully")
+            #return render(request, self.template_name, context)
             return redirect('product:customers-list')
 
         else:
@@ -284,7 +303,6 @@ class SalesCreateView(View):
         context = {
             'formset': formset,
             'customer': customerobj,
-            
         }
         return render(request, self.template_name, context)
 

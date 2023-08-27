@@ -106,23 +106,46 @@ class SelectCustomerForm(forms.ModelForm):
         fields = ['customer']
 
 class SalesItemForm(forms.ModelForm):
-    item_text_content = forms.CharField(required=False)
-    item_qty_content = forms.CharField(required=False)
-   
+    item_text_content = forms.CharField(
+        required=True,  # Make the field required
+        widget=forms.TextInput(attrs={'readonly': 'readonly','style': 'text-align: center;'})  # Make the field readonly
+    )
+    
+    item_qty_content = forms.DecimalField(
+        required=True,  # Make the field required
+        max_digits=10,
+        decimal_places=2,
+        widget=forms.TextInput(attrs={'readonly': 'readonly','style': 'text-align: center;'})  # Make the field readonly
+    )
+    perprice = forms.DecimalField(
+        required=False,  # Make the field required
+        max_digits=10,
+        decimal_places=2,
+        widget=forms.NumberInput(attrs={'style': 'text-align: center;'})  # Make the field readonly
+    )
+    totalprice = forms.DecimalField(
+        required=False,
+        max_digits=10,
+        decimal_places=2,
+        widget=forms.NumberInput(attrs={'style': 'text-align: center;', 'class': 'total-price-field', 'readonly': 'readonly', 'placeholder': '0.00'})
+    )
+
+    
     class Meta:
         model = SalesItem
-        fields = ['stock', 'quantity', 'perprice', 'item_text_content','item_qty_content']
+        fields = ['stock', 'quantity', 'perprice', 'item_text_content','item_qty_content','totalprice']
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs.update({'class': 'form-control'})
-            field.required = False
+            
          
             
     def get_verbose_name(self, field_name):
         return self.fields[field_name].widget._meta.model._meta.get_field(field_name).verbose_name
-
+    
+    """
     def clean_stock(self):
         stock_instance = self.cleaned_data['stock']
         print("Selected Stock Instance:", stock_instance)
@@ -138,7 +161,8 @@ class SalesItemForm(forms.ModelForm):
             self.cleaned_data['item_qty_content'] = item_qty_content  # Assign the value to cleaned_data instead of self.instance
             
         return stock_instance
-
+    """
+    
 SalesItemFormset = formset_factory(SalesItemForm, extra=3)
           
     
