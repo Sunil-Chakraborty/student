@@ -298,14 +298,18 @@ class SalesCreateView(View):
             return redirect('product:customers-list')
 
         else:
-            formset = SalesItemFormset()
+            #formset = SalesItemFormset()
+            formset = SalesItemFormset(request.GET or None, prefix='sales_item')  # renders an empty formset
+            print('formset is not valid')
+            messages.error(request, "Wrong data")
             
+                
+                
         context = {
             'formset': formset,
             'customer': customerobj,
         }
         return render(request, self.template_name, context)
-
 
                 
 
@@ -390,6 +394,7 @@ def stock_delete(request, stock_id):
     context = {'stock':stock}
     
     return render(request, 'product/stock_delete.html', context)
+
 
 
 def get_stock_data_view(request, stockInstanceId):

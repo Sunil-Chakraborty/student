@@ -2,7 +2,6 @@
 {% load static %}
 {% load widget_tweaks %}
 
-
 {% block title %} New Sales {% endblock title %}
 
 
@@ -34,6 +33,7 @@
 		text-align: center;
 	}
 </style>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </head>
@@ -80,6 +80,7 @@
 			{% block error_messages %}
 					
 			{% endblock error_messages %}
+			
 			{% if messages %}
 				<div class="alert alert-danger">
 					<ul>
@@ -89,8 +90,6 @@
 					</ul>
 				</div>
 			{% endif %}
-			
-			
 			
                 <div id="stockitem"> 
                     <div class="panel-body">
@@ -107,68 +106,34 @@
 							
 								{% for form in formset %}
 								
-								
 									<tr>
 										<td>{{ forloop.counter }}</td>
 										<td>{{ form.stock }}</td>										
 										<td>{{ form.item_text_content }}</td>                                        
-										<td class="td-center">{{ form.item_qty_content }}</td>
-										<td class="td-center">{{ form.perprice }}</td>
+										<td class="td-center">{{ form.item_qty_content }}</td>										
+										<td id="perprice" class="td-center">{{ form.perprice }}</td>
 										<script>
-											
 											$(document).ready(function() {
 											  // Listen for the 'input' event on the input field
 											  var id='{{ forloop.counter }}'-1;
 											  console.log('id...',id);
-											  
-											  $("#id_sales_item-"+id+"-perprice").on('input', function () {
+											  $("#id_sales_item-"+id+"-perprice").on("input", function() {
 												
 												var perprice = parseFloat($(this).val());
-												
-												var parsedValue = parseFloat(perprice).toFixed(2);
-												var max_value = 9999999.99;
-												var min_value = 0.00;
-												
-												var decimalPattern = /^\d+(\.\d{0,2})?$/; // Regular expression to allow up to 2 decimal places
-
-												if (!decimalPattern.test(perprice)) {
-													// If the input doesn't match the pattern, clear the field
-													$(this).val('');
-												}
-												
-												if (parsedValue > max_value) {
-													console.log("l-128-Exceeds limit:", parsedValue);
-													// Set the input value to the maximum allowed value
-													$(this).val(min_value.toFixed(2));
-													parsedValue = 0;
-													perprice = 0;
-												}
-																																		
-												
-												if (!isNaN(perprice) && parsedValue > 0) {
+												if (!isNaN(perprice)) {
 												  // Calculate the total price (e.g., multiply by a quantity)
 												  console.log("perprice Value:", perprice);
 												  var quantity = $("#id_sales_item-"+id+"-item_qty_content").val(); // Replace this with the actual quantity
 												  console.log("Quantity Value:", quantity);
-												  var totalprice = parseFloat(parsedValue * quantity).toFixed(2); // Define totalprice here
-												  
-												  
-												  console.log('id...',id);		
-												  
+												  var totalprice = perprice * quantity; // Define totalprice here
+													console.log('id...',id);		
 												  // Set the calculated total price in the totalprice input field
-												  
+												  $("#id_sales_item-"+id+"-totalprice").val(totalprice);
 												
 												} else {
 												  var perprice = 0;
-												  var totalprice = 0;
-												  var parsedValue = 0;
-												  $("#id_sales_item-"+id+"-totalprice").val(parsedValue);
 												  console.log("Invalid input. Not a valid number.");
 												}
-												if (perprice>0){
-													$("#id_sales_item-"+id+"-totalprice").val(totalprice);
-												}
-												
 												console.log("perprice Value:", perprice);
 												
 												
@@ -178,6 +143,8 @@
 										</script>
 										<td class="td-center">{{ form.totalprice }}</td>
 										
+										
+									
 									</tr>
 								 
 								{% endfor %}
@@ -211,34 +178,78 @@
 	
 		//var itemTextContent; // Declare itemTextContent in the global scope
 		
-		
 		$(document).ready(function () {
 		  // Loop through each form in the SalesItemFormset
+		  console.log('Document ready function is executing.');
+		  
 		  for (let i = 0; i < {{ formset.total_form_count }}; i++) {
 			var stockField = $('#id_sales_item-' + i + '-stock');
 			var itemTextContentField = $('#id_sales_item-' + i + '-item_text_content');
 			var itemQtyContentField = $('#id_sales_item-' + i + '-item_qty_content');
 			var itemRateField = $('#id_sales_item-' + i + '-perprice');
+			var totalPriceField = $('#id_sales_item-' + i + '-totalprice');
 			
 			console.log('Found stockField:', stockField.attr('id'));
 			console.log('Found itemTextContentField:', itemTextContentField.attr('id'));
 			console.log('Found itemQtyContentField:', itemQtyContentField.attr('id'));
 			console.log('Found itemRateField:', itemRateField.attr('id'));
+			console.log('Found totalPriceField:', totalPriceField.attr('id'));
+			
+			
 			
 			
 			// Set data attributes to store relevant information
 			stockField.attr('data-text-content-field', itemTextContentField.attr('id'));
 			stockField.attr('data-qty-content-field', itemQtyContentField.attr('id'));
 			stockField.attr('data-perprice-field', itemRateField.attr('id'));
+			stockField.attr('data-totalprice-field', totalPriceField.attr('id'));
 			
 			// Attach change event listener to each stock field
+			var correspondingItemQtyContentFieldId = $(this).data('qty-content-field');
+			var correspondingItemQtyContentField = $('#' + correspondingItemQtyContentFieldId);
+				
+			var correspondingItemRateFieldId = $(this).data('perprice-field');
+			var correspondingItemRateField = $('#' + correspondingItemRateFieldId);
+			//var itemRate = correspondingItemRateField.val();
+
+			function updateTotalPrice() {
+				var itemRate = parseFloat(correspondingItemRateField.val()) || 0; // Get the value and convert to float, default to 0 if not a number
+				var quantity = parseFloat(correspondingItemQtyContentField.val()) || 0; // Get the value and convert to float, default to 0 if not a number
+				var totalprice = itemRate * quantity; // Calculate totalprice
+
+				totalPriceField.val(totalprice.toFixed(2)); // Update the totalprice field with 2 decimal places
+			}
+			
+			itemRateField.on('change', updateTotalPrice);
+			console.log('Item Rate:-l-190 :', itemRateField.val());
+			
+			updateTotalPrice();
+			
+			
 			
 			stockField.on('change', function () {
 			  var stockInstanceId = $(this).val();
 			  var selectedValue = $(this).val();
-			 		  
+			  var correspondingItemRateFieldId = $(this).data('perprice-field');
+			  var correspondingItemRateField = $('#' + correspondingItemRateFieldId);
+			  var correspondingtotalPriceFieldId = $(this).data('totalprice-field');
+			  var correspondingtotalPriceField = $('#' + correspondingtotalPriceFieldId);
+			  
+				// Debug: Log relevant information
+				console.log('Debug: correspondingItemRateFieldId:', correspondingItemRateFieldId);
+				console.log('Debug: correspondingItemRateField:', correspondingItemRateField);
+				console.log('Debug: l-210 correspondingItemRateField.val():', correspondingItemRateField.val());
+				console.log('Debug: correspondingtotalPriceField.val():', correspondingtotalPriceField.val());
+				console.log('Debug: l-212 Selected value', selectedValue);
+				
+				//var rate = parseFloat("{{ form.perprice|default_if_none:'0' }}");
+				//console.log('l-186 Per Price:', rate);
+				//console.log('L-187 Stock Rate:', '{{ form.perprice }}');
+				//console.log('{{ form.perprice }}');
+					  
 			  console.log('Selected stockInstanceId:', stockInstanceId);
-
+			  var itemRate;
+			  
 			  if (stockInstanceId) {
 				// Get the corresponding itemTextContentField using the data attribute
 				var correspondingItemTextContentFieldId = $(this).data('text-content-field');
@@ -246,13 +257,29 @@
 				
 				var correspondingItemQtyContentFieldId = $(this).data('qty-content-field');
 				var correspondingItemQtyContentField = $('#' + correspondingItemQtyContentFieldId);
+				var itemQty = correspondingItemQtyContentField.val();
 				
 				var correspondingItemRateFieldId = $(this).data('perprice-field');
 				var correspondingItemRateField = $('#' + correspondingItemRateFieldId);
-				
+				var itemRate = parseFloat(correspondingItemRateField.val()) || 0;
+
+				// Check if itemRate is NaN (i.e., not a valid number)
+				if (isNaN(itemRate)) {
+					console.log('Debug: l-237-Item Rate is not a valid number.');
+				} else {
+					console.log('Debug: l-237-Item Rate:', itemRate);
+				}
+								// Debug: Log relevant information
+				console.log('Debug: correspondingItemRateFieldId:', correspondingItemRateFieldId);
+				console.log('Debug: l-235 correspondingItemRateField:', correspondingItemRateField);
+				console.log('Debug: l-237-Item Rate:', correspondingItemRateField.val());
+				console.log('Debug: l-238-Item Qty:', itemQty);
+				console.log('Data type of correspondingItemRateField.val():', typeof correspondingItemRateField.val());
 				
 				
 				fetchStockData(stockInstanceId, correspondingItemTextContentField,correspondingItemQtyContentField);
+				
+				
 				
 			  } else {			    
 				 var correspondingItemTextContentFieldId = $(this).data('text-content-field');
@@ -263,13 +290,16 @@
 
 				 var correspondingItemRateFieldId = $(this).data('perprice-field');
 				 var correspondingItemRateField = $('#' + correspondingItemRateFieldId);
-				
+				 var itemRate = correspondingItemRateField.val();
+
 				 correspondingItemTextContentField.val('');
 				 correspondingItemQtyContentField.val('');				 
 				 correspondingItemRateField.val('');
 				 
+				 console.log('L-258 Stock Rate.',itemRate);
 				 console.log('Stock instance ID is missing.');
 			  }
+			  console.log(' L-261 Item Rate:', itemRate);
 			});
 		  }
 		});
@@ -287,12 +317,15 @@
 			  if (data && data.item_text && data.item_qty) {
 				var itemTextContent = data.item_text;
 				var itemQtyContent = data.item_qty;
+				
 				console.log('Stock Desc Data:', itemTextContent);
                 console.log('Stock Qty:', itemQtyContent);
+				
 				
 				// Update the corresponding item_text_content field				
 				correspondingItemTextContentField.val(itemTextContent);
 				correspondingItemQtyContentField.val(itemQtyContent);
+				
 				//$('#id_sales_item-0-item_text_content').val(itemTextContent);
 				// ... Other logic ...
 			  } else {
@@ -308,3 +341,4 @@
 	</script>
 		
 {% endblock content %}
+

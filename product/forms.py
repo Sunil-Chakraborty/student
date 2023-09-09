@@ -1,7 +1,8 @@
 from django import forms
 from django.forms import Form, ModelForm, DateField, widgets,ValidationError
 from .models import Product, Customer, SalesBill, SalesItem, Stock
-from django.core.validators import MaxValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator, DecimalValidator
+from django.core.exceptions import ValidationError
 from django.forms import formset_factory
 from django.forms import DateInput
 from django.urls import reverse_lazy
@@ -105,27 +106,46 @@ class SelectCustomerForm(forms.ModelForm):
         model = SalesBill
         fields = ['customer']
 
+
+class PositiveDecimalValidator(MinValueValidator):
+    def __init__(self, message=None):
+        super().__init__(limit_value=0.01, message=message)
+
+
+
+
 class SalesItemForm(forms.ModelForm):
+    
     item_text_content = forms.CharField(
-        required=True,  # Make the field required
+        required=False,  # Make the field required
         widget=forms.TextInput(attrs={'readonly': 'readonly','style': 'text-align: center;'})  # Make the field readonly
     )
     
     item_qty_content = forms.DecimalField(
-        required=True,  # Make the field required
+        required=False,  # Make the field required
         max_digits=10,
         decimal_places=2,
         widget=forms.TextInput(attrs={'readonly': 'readonly','style': 'text-align: center;'})  # Make the field readonly
     )
+    
+    
+    
     perprice = forms.DecimalField(
-        required=False,  # Make the field required
+        required=True,  # Make the field required
         max_digits=10,
         decimal_places=2,
-        widget=forms.NumberInput(attrs={'style': 'text-align: center;'})  # Make the field readonly
+        label="Rate",
+        widget=forms.NumberInput(attrs={
+                    'style': 'text-align: center;',
+                    'placeholder': '0.00'                    
+                    })  # Make the field readonly
     )
+  
+    
     totalprice = forms.DecimalField(
         required=False,
         max_digits=10,
+        
         decimal_places=2,
         widget=forms.NumberInput(attrs={'style': 'text-align: center;', 'class': 'total-price-field', 'readonly': 'readonly', 'placeholder': '0.00'})
     )
@@ -133,13 +153,13 @@ class SalesItemForm(forms.ModelForm):
     
     class Meta:
         model = SalesItem
-        fields = ['stock', 'quantity', 'perprice', 'item_text_content','item_qty_content','totalprice']
+        fields = ['stock', 'perprice', 'item_text_content','item_qty_content','totalprice']
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs.update({'class': 'form-control'})
-            
+            field.required = True
          
             
     def get_verbose_name(self, field_name):
@@ -163,7 +183,7 @@ class SalesItemForm(forms.ModelForm):
         return stock_instance
     """
     
-SalesItemFormset = formset_factory(SalesItemForm, extra=3)
+SalesItemFormset = formset_factory(SalesItemForm, extra=4)
           
     
 
