@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% load widget_tweaks %}
-
+{% load custom_filters %}
 
 {% block title %} New Sales {% endblock title %}
 
@@ -35,7 +34,8 @@
 	}
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	
 </head>
 
     <div style="color:#575757; font-style: bold; font-size: 3rem; border-bottom: 1px solid white;">New Sales</div>
@@ -80,6 +80,7 @@
 			{% block error_messages %}
 					
 			{% endblock error_messages %}
+			
 			{% if messages %}
 				<div class="alert alert-danger">
 					<ul>
@@ -89,7 +90,6 @@
 					</ul>
 				</div>
 			{% endif %}
-			
 			
 			
                 <div id="stockitem"> 
@@ -106,6 +106,25 @@
 							<tbody>
 							
 								{% for form in formset %}
+								{% if form.errors %}
+									<div  style="background-color:powderblue;">
+									<p><strong style="color:black;">Error in
+										Row {{ forloop.counter }}:</strong>
+										
+										<span>
+											{% for field_name, field_errors in form.errors.items %}
+												{% for error in field_errors %}
+													
+														<strong style="color:black;">{{ form|get_field_label:field_name }}-</strong><span style="color: red;">{{ error }}</span>{% if not forloop.last %} {% endif %}
+													
+												{% endfor %}
+											{% endfor %}
+										</span>
+										
+										
+										
+									</div>
+								{% endif %}
 								
 								
 									<tr>
@@ -113,69 +132,78 @@
 										<td>{{ form.stock }}</td>										
 										<td>{{ form.item_text_content }}</td>                                        
 										<td class="td-center">{{ form.item_qty_content }}</td>
-										<td class="td-center">{{ form.perprice }}</td>
-										<script>
-											
-											$(document).ready(function() {
-											  // Listen for the 'input' event on the input field
-											  var id='{{ forloop.counter }}'-1;
-											  console.log('id...',id);
-											  
-											  $("#id_sales_item-"+id+"-perprice").on('input', function () {
-												
-												var perprice = parseFloat($(this).val());
-												
-												var parsedValue = parseFloat(perprice).toFixed(2);
-												var max_value = 9999999.99;
-												var min_value = 0.00;
-												
-												var decimalPattern = /^\d+(\.\d{0,2})?$/; // Regular expression to allow up to 2 decimal places
+										<td class="td-center">{{ form.perprice }} </td>
+										
+<script>
 
-												if (!decimalPattern.test(perprice)) {
-													// If the input doesn't match the pattern, clear the field
-													$(this).val('');
-												}
+$(document).ready(function() {
+	  // Listen for the 'input' event on the input field
+	  var id='{{ forloop.counter }}'-1;
+	  console.log('id...',id);
+	  
+	  $("#id_sales_item-"+id+"-stock").on('change', function () {
+		$("#id_sales_item-"+id+"-perprice").val('');
+		$("#id_sales_item-"+id+"-totalprice").val('');		
+	  });
+	  
+	  $("#id_sales_item-"+id+"-perprice").on('input', function () {
+		
+		var perprice = parseFloat($(this).val());
+		
+		var parsedValue = parseFloat(perprice).toFixed(2);
+		var max_value = 9999999.99;
+		var min_value = 0.00;
+		
+		var decimalPattern = /^\d+(\.\d{0,2})?$/; // Regular expression to allow up to 2 decimal places
+
+		if (!decimalPattern.test(perprice)) {
+			// If the input doesn't match the pattern, clear the field
+			$(this).val('');
+		}
+		
+		if (parsedValue > max_value) {
+			console.log("l-128-Exceeds limit:", parsedValue);
+			// Set the input value to the maximum allowed value
+			$(this).val(min_value.toFixed(2));
+			parsedValue = 0;
+			perprice = 0;
+		}
+																								
+		
+		if (!isNaN(perprice) && parsedValue > 0) {
+		  // Calculate the total price (e.g., multiply by a quantity)
+		  console.log("perprice Value:", perprice);
+		  var quantity = $("#id_sales_item-"+id+"-item_qty_content").val(); // Replace this with the actual quantity
+		  console.log("Quantity Value:", quantity);
+		  var totalprice = parseFloat(parsedValue * quantity).toFixed(2); // Define totalprice here
+		  $("#id_sales_item-"+id+"-totalprice").val(totalprice);
+	
+		  
+		  console.log('id...',id);		
+		  
+		  // Set the calculated total price in the totalprice input field
+		  
+		
+		} else {
+		  var perprice = 0;
+		  var totalprice = 0;
+		  var parsedValue = 0;
+		  $("#id_sales_item-"+id+"-totalprice").val(parsedValue);
+		  console.log("Invalid input. Not a valid number.");
+		}
+		if (perprice>0){
+			$("#id_sales_item-"+id+"-totalprice").val(totalprice);
+		}
+		
+		console.log("perprice Value:", perprice);
+		
+		
+		
+	  });
+	 
+	});
 												
-												if (parsedValue > max_value) {
-													console.log("l-128-Exceeds limit:", parsedValue);
-													// Set the input value to the maximum allowed value
-													$(this).val(min_value.toFixed(2));
-													parsedValue = 0;
-													perprice = 0;
-												}
-																																		
-												
-												if (!isNaN(perprice) && parsedValue > 0) {
-												  // Calculate the total price (e.g., multiply by a quantity)
-												  console.log("perprice Value:", perprice);
-												  var quantity = $("#id_sales_item-"+id+"-item_qty_content").val(); // Replace this with the actual quantity
-												  console.log("Quantity Value:", quantity);
-												  var totalprice = parseFloat(parsedValue * quantity).toFixed(2); // Define totalprice here
-												  
-												  
-												  console.log('id...',id);		
-												  
-												  // Set the calculated total price in the totalprice input field
-												  
-												
-												} else {
-												  var perprice = 0;
-												  var totalprice = 0;
-												  var parsedValue = 0;
-												  $("#id_sales_item-"+id+"-totalprice").val(parsedValue);
-												  console.log("Invalid input. Not a valid number.");
-												}
-												if (perprice>0){
-													$("#id_sales_item-"+id+"-totalprice").val(totalprice);
-												}
-												
-												console.log("perprice Value:", perprice);
-												
-												
-												
-											  });
-											});
-										</script>
+</script>
 										<td class="td-center">{{ form.totalprice }}</td>
 										
 									</tr>
@@ -184,6 +212,8 @@
 								
 							</tbody>
 						</table>
+						
+						
 										
                     </div>
                 </div>
@@ -191,7 +221,7 @@
 
             <br><!-- Log on to codeastro.com for more projects -->
 
-            <div class="align-middle">
+            <div class="align-middle">			
                 <button type="submit" class="btn btn-success">Add to Purchases</button>
                 <a href="{% url 'product:select-customer' %}" class="btn btn-danger">Go Back</a>
                 <a href="{% url 'product:customers-list' %}" class="btn btn-secondary">Cancel</a>

@@ -128,8 +128,6 @@ class SalesItemForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'readonly': 'readonly','style': 'text-align: center;'})  # Make the field readonly
     )
     
-    
-    
     perprice = forms.DecimalField(
         required=True,  # Make the field required
         max_digits=10,
@@ -144,10 +142,12 @@ class SalesItemForm(forms.ModelForm):
     
     totalprice = forms.DecimalField(
         required=False,
-        max_digits=10,
-        
+        max_digits=10,        
         decimal_places=2,
-        widget=forms.NumberInput(attrs={'style': 'text-align: center;', 'class': 'total-price-field', 'readonly': 'readonly', 'placeholder': '0.00'})
+        widget=forms.NumberInput(attrs={
+            'style': 'text-align: center;',
+            'placeholder': '0.00',
+            'readonly': 'readonly'})
     )
 
     
@@ -159,7 +159,7 @@ class SalesItemForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs.update({'class': 'form-control'})
-            field.required = True
+            
          
             
     def get_verbose_name(self, field_name):

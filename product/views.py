@@ -257,27 +257,10 @@ class SalesCreateView(View):
     def post(self, request, pk):
         formset = SalesItemFormset(request.POST, prefix='sales_item')
         customerobj = get_object_or_404(Customer, pk=pk)
+                                       
 
-        if formset.is_valid():
-        
-            for form in formset:
-                if form.cleaned_data.get('item_qty_content') and form.cleaned_data.get('perprice'):
-                    quantity = form.cleaned_data['item_qty_content']
-                    print('Total Qty:', quantity)
-                    perprice = form.cleaned_data['perprice']
-                    print('Total Rate:', perprice)
-                    totalprice = quantity * perprice
-                    form.cleaned_data['totalprice'] = totalprice
-                    print('Total Price-l-271:', totalprice)
-                    
-            # Now you can iterate through the formset to access the calculated totalprice
-            for form in formset:
-                totalprice = form.cleaned_data.get('totalprice', 0)
-                print('Total Price-l-276:', totalprice)
-
-            # ... (rest of your view logic)
-            
-                    
+        if formset.is_valid():        
+            for form in formset:         
                 if form.has_changed():
                     billitem = form.save(commit=False)
                     
@@ -298,13 +281,11 @@ class SalesCreateView(View):
             return redirect('product:customers-list')
 
         else:
-            #formset = SalesItemFormset()
-            formset = SalesItemFormset(request.GET or None, prefix='sales_item')  # renders an empty formset
-            print('formset is not valid')
-            messages.error(request, "Wrong data")
+            formset = SalesItemFormset(request.POST, prefix='sales_item')
             
-                
-                
+            print('formset is not valid')
+            
+        
         context = {
             'formset': formset,
             'customer': customerobj,
