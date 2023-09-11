@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% load widget_tweaks %}
+{% load custom_filters %}
 
 {% block title %} New Sales {% endblock title %}
 
@@ -8,6 +8,12 @@
 {% block content %}
 <head>
 <style>
+	input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+           -webkit-appearance: none; 
+           margin: 0; 
+    }
+
 	.lbl{	
 		color:blue;
 		font-size:25px;
@@ -20,8 +26,16 @@
 		color:black;
 		font-size:22px;
 	}
-	
+	tr td {
+		text-align: center;
+	}
+	.td-center{
+		text-align: center;
+	}
 </style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	
 </head>
 
     <div style="color:#575757; font-style: bold; font-size: 3rem; border-bottom: 1px solid white;">New Sales</div>
@@ -77,37 +91,129 @@
 				</div>
 			{% endif %}
 			
+			
                 <div id="stockitem"> 
                     <div class="panel-body">
 						<table>
 							<thead>
-								<th class="lbl" style="text-align: left;width:5%;">Row</th>
-								<th class="lbl" style="text-align: center;width:20%;">Belt No</th>
-								<th class="lbl" style="text-align: center;width:55%;">Description</th>								
-								<th class="lbl" style="text-align: center;width:10%;">Rate</th>
-								<th class="lbl" style="text-align: center;width:10%;">Quantity</th>
+								<th class="lbl" style="text-align: left;">Row</th>
+								<th class="lbl" style="text-align: center;">Belt No</th>
+								<th class="lbl" style="text-align: center;width:40%;">Description</th>								
+								<th class="lbl" style="text-align: center;">Quantity</th>
+								<th class="lbl" style="text-align: center;">Rate</th>
+								<th class="lbl" style="text-align: center;">Amount</th>
 							</thead>
 							<tbody>
-								{% for item in stocks %}
-									{{item.belt_no}}
-								{% endfor %}
-								
+							
 								{% for form in formset %}
+								{% if form.errors %}
+									<div  style="background-color:powderblue;">
+									<p><strong style="color:black;">Error in
+										Row {{ forloop.counter }}:</strong>
+										
+										<span>
+											{% for field_name, field_errors in form.errors.items %}
+												{% for error in field_errors %}
+													
+														<strong style="color:black;">{{ form|get_field_label:field_name }}-</strong><span style="color: red;">{{ error }}</span>{% if not forloop.last %} {% endif %}
+													
+												{% endfor %}
+											{% endfor %}
+										</span>
+										
+										
+										
+									</div>
+								{% endif %}
+								
 								
 									<tr>
 										<td>{{ forloop.counter }}</td>
-										<td>{{ form.stock }}</td>
-										<td>
-											{{ form.item_text_content }}
-										</td>
-										<td>{{ form.perprice }}</td>
-										<td>{{ form.quantity }}</td>
+										<td>{{ form.stock }}</td>										
+										<td>{{ form.item_text_content }}</td>                                        
+										<td class="td-center">{{ form.item_qty_content }}</td>
+										<td class="td-center">{{ form.perprice }} </td>
+										
+<script>
+
+$(document).ready(function() {
+	  // Listen for the 'input' event on the input field
+	  var id='{{ forloop.counter }}'-1;
+	  console.log('id...',id);
+	  
+	  $("#id_sales_item-"+id+"-stock").on('change', function () {
+		$("#id_sales_item-"+id+"-perprice").val('');
+		$("#id_sales_item-"+id+"-totalprice").val('');		
+	  });
+	  
+	  $("#id_sales_item-"+id+"-perprice").on('input', function () {
+		
+		var perprice = parseFloat($(this).val());
+		
+		var parsedValue = parseFloat(perprice).toFixed(2);
+		var max_value = 9999999.99;
+		var min_value = 0.00;
+		
+		var decimalPattern = /^\d+(\.\d{0,2})?$/; // Regular expression to allow up to 2 decimal places
+
+		if (!decimalPattern.test(perprice)) {
+			// If the input doesn't match the pattern, clear the field
+			$(this).val('');
+		}
+		
+		if (parsedValue > max_value) {
+			console.log("l-128-Exceeds limit:", parsedValue);
+			// Set the input value to the maximum allowed value
+			$(this).val(min_value.toFixed(2));
+			parsedValue = 0;
+			perprice = 0;
+		}
+																								
+		
+		if (!isNaN(perprice) && parsedValue > 0) {
+		  // Calculate the total price (e.g., multiply by a quantity)
+		  console.log("perprice Value:", perprice);
+		  var quantity = $("#id_sales_item-"+id+"-item_qty_content").val(); // Replace this with the actual quantity
+		  console.log("Quantity Value:", quantity);
+		  var totalprice = parseFloat(parsedValue * quantity).toFixed(2); // Define totalprice here
+		  $("#id_sales_item-"+id+"-totalprice").val(totalprice);
+	
+		  
+		  console.log('id...',id);		
+		  
+		  // Set the calculated total price in the totalprice input field
+		  
+		
+		} else {
+		  var perprice = 0;
+		  var totalprice = 0;
+		  var parsedValue = 0;
+		  $("#id_sales_item-"+id+"-totalprice").val(parsedValue);
+		  console.log("Invalid input. Not a valid number.");
+		}
+		if (perprice>0){
+			$("#id_sales_item-"+id+"-totalprice").val(totalprice);
+		}
+		
+		console.log("perprice Value:", perprice);
+		
+		
+		
+	  });
+	 
+	});
+												
+</script>
+										<td class="td-center">{{ form.totalprice }}</td>
+										
 									</tr>
 								 
 								{% endfor %}
 								
 							</tbody>
 						</table>
+						
+						
 										
                     </div>
                 </div>
@@ -115,7 +221,7 @@
 
             <br><!-- Log on to codeastro.com for more projects -->
 
-            <div class="align-middle">
+            <div class="align-middle">			
                 <button type="submit" class="btn btn-success">Add to Purchases</button>
                 <a href="{% url 'product:select-customer' %}" class="btn btn-danger">Go Back</a>
                 <a href="{% url 'product:customers-list' %}" class="btn btn-secondary">Cancel</a>
@@ -132,49 +238,103 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 	<script>
-	  // Function to fetch stock_data using AJAX
-	  var itemTextContent; // Declare itemTextContent in the global scope
+	
+		//var itemTextContent; // Declare itemTextContent in the global scope
+		
+		
+		$(document).ready(function () {
+		  // Loop through each form in the SalesItemFormset
+		  for (let i = 0; i < {{ formset.total_form_count }}; i++) {
+			var stockField = $('#id_sales_item-' + i + '-stock');
+			var itemTextContentField = $('#id_sales_item-' + i + '-item_text_content');
+			var itemQtyContentField = $('#id_sales_item-' + i + '-item_qty_content');
+			var itemRateField = $('#id_sales_item-' + i + '-perprice');
+			
+			console.log('Found stockField:', stockField.attr('id'));
+			console.log('Found itemTextContentField:', itemTextContentField.attr('id'));
+			console.log('Found itemQtyContentField:', itemQtyContentField.attr('id'));
+			console.log('Found itemRateField:', itemRateField.attr('id'));
+			
+			
+			// Set data attributes to store relevant information
+			stockField.attr('data-text-content-field', itemTextContentField.attr('id'));
+			stockField.attr('data-qty-content-field', itemQtyContentField.attr('id'));
+			stockField.attr('data-perprice-field', itemRateField.attr('id'));
+			
+			// Attach change event listener to each stock field
+			
+			stockField.on('change', function () {
+			  var stockInstanceId = $(this).val();
+			  var selectedValue = $(this).val();
+			 		  
+			  console.log('Selected stockInstanceId:', stockInstanceId);
 
-	  function fetchStockData(stockInstanceId) {
+			  if (stockInstanceId) {
+				// Get the corresponding itemTextContentField using the data attribute
+				var correspondingItemTextContentFieldId = $(this).data('text-content-field');
+				var correspondingItemTextContentField = $('#' + correspondingItemTextContentFieldId);
+				
+				var correspondingItemQtyContentFieldId = $(this).data('qty-content-field');
+				var correspondingItemQtyContentField = $('#' + correspondingItemQtyContentFieldId);
+				
+				var correspondingItemRateFieldId = $(this).data('perprice-field');
+				var correspondingItemRateField = $('#' + correspondingItemRateFieldId);
+				
+				
+				
+				fetchStockData(stockInstanceId, correspondingItemTextContentField,correspondingItemQtyContentField);
+				
+			  } else {			    
+				 var correspondingItemTextContentFieldId = $(this).data('text-content-field');
+				 var correspondingItemTextContentField = $('#' + correspondingItemTextContentFieldId);
+				 
+				 var correspondingItemQtyContentFieldId = $(this).data('qty-content-field');
+				 var correspondingItemQtyContentField = $('#' + correspondingItemQtyContentFieldId);
+
+				 var correspondingItemRateFieldId = $(this).data('perprice-field');
+				 var correspondingItemRateField = $('#' + correspondingItemRateFieldId);
+				
+				 correspondingItemTextContentField.val('');
+				 correspondingItemQtyContentField.val('');				 
+				 correspondingItemRateField.val('');
+				 
+				 console.log('Stock instance ID is missing.');
+			  }
+			});
+		  }
+		});
+
+
+		function fetchStockData(stockInstanceId, correspondingItemTextContentField,correspondingItemQtyContentField) {
+		  
+		  console.log("Inside fetchStockData function. stockInstanceId:", stockInstanceId);
 		  $.ajax({
 			url: `/product/get_stock_data_view/${stockInstanceId}`,
 			method: 'GET',
 			dataType: 'json',
 			success: function (data) {
-			  console.log('Response Data:', data); // Log the entire data object
-			  if (data && data.item_text) {
+			  console.log('Response Data:', data);
+			  if (data && data.item_text && data.item_qty) {
 				var itemTextContent = data.item_text;
-				console.log('Stock Data:', itemTextContent);
-
-				// Update the item_text_content field or perform other actions
-				$('#id_sales_item-0-item_text_content').val(itemTextContent);
+				var itemQtyContent = data.item_qty;
+				console.log('Stock Desc Data:', itemTextContent);
+                console.log('Stock Qty:', itemQtyContent);
 				
-				
+				// Update the corresponding item_text_content field				
+				correspondingItemTextContentField.val(itemTextContent);
+				correspondingItemQtyContentField.val(itemQtyContent);
+				//$('#id_sales_item-0-item_text_content').val(itemTextContent);
 				// ... Other logic ...
 			  } else {
-				console.log('Stock data not found.');
-			  }
+                console.log('Stock data not found.');
+              }
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
 			  console.error('AJAX Error:', textStatus, errorThrown);
 			}
 		  });
-		}
+		};
 
-	  // Assuming you have an event that triggers this action, for example, on change of the stock field
-	  
-	  $(document).ready(function () {
-		  $('#id_sales_item-0-stock').on('change', function () {
-			var stockInstanceId = $(this).val(); // Assuming this is the ID of the selected stock instance
-
-			if (stockInstanceId) {
-			  fetchStockData(stockInstanceId);
-			} else {
-			  console.log('Stock instance ID is missing.');
-			}
-		  });
-		});
-		
 	</script>
 		
 {% endblock content %}

@@ -272,19 +272,19 @@ class SalesCreateView(View):
                         try:  
                             billitem.save()
                         except IntegrityError:
-                            error_message =  "<b>"+str(billitem.belt_no)+"</b> already exists.<br> Please enter a unique Belt No."
+                            error_message =  "<b>"+str(billitem.belt_no)+"</b> already exists. Please enter a unique Belt No."
                             messages.error(request, error_message)
                             return render(request, self.template_name, {'formset': formset, 'customer': customerobj})
               
-            messages.success(request, "Sales items have been registered successfully")
-            #return render(request, self.template_name, context)
-            return redirect('product:customers-list')
+                    messages.success(request, "Sales items have been registered successfully")
+                    #return render(request, self.template_name, context)
+                    return redirect('product:select-customer')
 
         else:
             formset = SalesItemFormset(request.POST, prefix='sales_item')
             
             print('formset is not valid')
-            
+           
         
         context = {
             'formset': formset,
