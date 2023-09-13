@@ -55,7 +55,7 @@
 				<u>Customer Details</u>
 				<button class="btn btn-link pull-right" id="togglePanel">Toggle</button>
 			</div>
-			<div class="panel-body">
+			<div class="panel-body" style="display:none;">
 				<table class="table table-bordered">
 					<tr>
 						<th class="lbl">Name:</th>
@@ -124,6 +124,14 @@
 			
                 <div id="stockitem"> 
                     <div class="panel-body-2">
+					
+					<p>
+						<label for="docno" style="color:black;font-weight:bold;">Doc No:</label>
+						<input type="text" id="docno" name="docno" required>
+						<label for="docdt" style="margin-left:5px;color:black;font-weight:bold;">Date:</label>
+						<input type="date" id="docdt" name="docdt" required><br>
+					</p>
+					
 						<table>
 							<thead>
 								<th class="lbl" style="text-align: left;">Row</th>
