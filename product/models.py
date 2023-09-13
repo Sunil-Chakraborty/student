@@ -166,6 +166,8 @@ class Stock(models.Model):
         
 #contains the sales stocks made
 class SalesItem(models.Model):
+    doc_no              = models.CharField(verbose_name='Docu No.', max_length=50, null=True, blank=True)
+    doc_dt              = models.DateField(verbose_name='Dt.', null=True, blank=True)
     stock               = models.ForeignKey(Stock, on_delete = models.CASCADE, related_name='salesitem')
     belt_no             = models.CharField(verbose_name='Belt No', max_length=20, unique=True, null=True, blank=True)
     prod_des            = models.CharField(verbose_name='Item Description', max_length=250, null=True, blank=True)
@@ -174,6 +176,8 @@ class SalesItem(models.Model):
     quantity            = models.DecimalField(verbose_name='Quantity(m)',validators=[MinValueValidator(10), MaxValueValidator(450.00)],max_digits=6, decimal_places=2,null=True,blank=True)
     perprice            = models.DecimalField(verbose_name='Rate (Rs./m)',max_digits=6, decimal_places=2,validators=[MinValueValidator(0.01)],null=True,blank=True)
     totalprice          = models.DecimalField(verbose_name='Total(Rs./m)',max_digits=10, decimal_places=2,null=True,blank=True)
+    created_date        = models.DateTimeField(auto_now_add=True)
+    modified_date       = models.DateTimeField(auto_now=True)
 
     def __str__(self):
 	    return self.stock.name

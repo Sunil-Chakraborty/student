@@ -269,16 +269,16 @@ class SalesCreateView(View):
                         billitem.prod_des = form.cleaned_data['item_text_content']
                         billitem.quantity = form.cleaned_data['item_qty_content']
                         billitem.totalprice = form.cleaned_data['perprice']*form.cleaned_data['item_qty_content']
-                        try:  
-                            billitem.save()
-                        except IntegrityError:
-                            error_message =  "<b>"+str(billitem.belt_no)+"</b> already exists. Please enter a unique Belt No."
-                            messages.error(request, error_message)
-                            return render(request, self.template_name, {'formset': formset, 'customer': customerobj})
+                    try:  
+                        form.save()
+                    except IntegrityError:
+                        error_message =  "<b>"+str(billitem.belt_no)+"</b> already exists. Please enter a unique Belt No."
+                        messages.error(request, error_message)
+                        return render(request, self.template_name, {'formset': formset, 'customer': customerobj})
               
-                    messages.success(request, "Sales items have been registered successfully")
-                    #return render(request, self.template_name, context)
-                    return redirect('product:select-customer')
+            messages.success(request, "Sales items have been registered successfully")
+            #return render(request, self.template_name, context)
+            return redirect('product:select-customer')
 
         else:
             formset = SalesItemFormset(request.POST, prefix='sales_item')
@@ -291,7 +291,6 @@ class SalesCreateView(View):
             'customer': customerobj,
         }
         return render(request, self.template_name, context)
-
                 
 
 # shows the list of bills of all purchases 

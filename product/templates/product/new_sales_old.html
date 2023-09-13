@@ -13,7 +13,14 @@
            -webkit-appearance: none; 
            margin: 0; 
     }
+	.panel-default .form-group {
+		margin-bottom: 5px; /* Increase or decrease the margin as needed */
+	}
 
+	/* Adjust the height of the textareas within the panel */
+	.panel-default textarea {
+		height: 80px; /* Change the height as needed */
+	}
 	.lbl{	
 		color:blue;
 		font-size:25px;
@@ -33,7 +40,8 @@
 		text-align: center;
 	}
 </style>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	
 </head>
@@ -43,38 +51,61 @@
         <!-- Log on to codeastro.com for more projects -->
 
         <div class="panel panel-default">
-            <div class="panel-heading panel-heading-text " style="font-size: 2rem;"><u>Customer Details</u></div>
-            <div class="panel-body">
-                    
-                <div class="form-group">
-                    <label for="id_name" class="panel-body-text lbl">Name:</label> 					
-					<input type="text" class="form-control textinput shared-class" id="id_name" value="{{ customer.name }}" disabled>
+			 <div class="panel-heading panel-heading-text" style="font-size: 2rem;">
+				<u>Customer Details</u>
+				<button class="btn btn-link pull-right" id="togglePanel">Toggle</button>
+			</div>
+			<div class="panel-body" style="display:none;">
+				<table class="table table-bordered">
+					<tr>
+						<th class="lbl">Name:</th>
+						<td>
+							<input type="text" class="form-control textinput shared-class" value="{{ customer.name }}" disabled>
+						</td>
+					</tr>
+					<tr>
+						<th class="lbl">Phone No:</th>
+						<td>
+							<input type="text" class="form-control textinput shared-class" value="{{ customer.phone }}" disabled>
+						</td>
+					</tr>
+					<tr>
+						<th class="lbl">Email:</th>
+						<td>
+							<input type="text" class="form-control textinput shared-class" value="{{ customer.email }}" disabled>
+						</td>
+					</tr>
+					<tr>
+						<th class="lbl">Address:</th>
+						<td>
+							<textarea class="form-control textinput shared-class" disabled rows="3">{{ customer.address }}</textarea>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<script>
+		
+			$(document).ready(function() {
+			
+				// Initially, hide the panel body
+				$(".panel-body").hide();
 
-				</div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label for="id_phone" class="panel-body-text lbl">Phone No:</label>
-                        <input type="text" class="form-control textinput shared-class" id="id_phone" value="{{ customer.phone }}" disabled>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="id_email" class="panel-body-text lbl">Email:</label>
-                        <input type="text" class="form-control textinput shared-class" id="id_email" value="{{ customer.email }}" disabled>
-                    </div>
-                </div>
-				<div class="form-group">
-                    <label for="id_address" class="panel-body-text lbl">Address:</label>                    
-					<textarea class="form-control textinput shared-class" id="id_address" disabled rows="3">{{ customer.address }}</textarea>
-				</div>
-
-            </div><!-- Log on to codeastro.com for more projects -->
-        </div>
-
+				// Toggle the panel body when the button is clicked
+				$("#togglePanel").click(function() {
+					$(".panel-body").slideToggle();
+				});
+				
+			});
+																
+		</script>
+		
         <br>
 
         <form method="post" class="panel panel-default">
             
             {% csrf_token %}
+			
             {{ formset.management_form }}
     
 			{% block error_messages %}
@@ -93,12 +124,13 @@
 			
 			
                 <div id="stockitem"> 
-                    <div class="panel-body">
+                    <div class="panel-body-2">
+						
 						<table>
 							<thead>
 								<th class="lbl" style="text-align: left;">Row</th>
-								<th class="lbl" style="text-align: center;">Belt No</th>
-								<th class="lbl" style="text-align: center;width:40%;">Description</th>								
+								<th class="lbl" style="text-align: center;width:12%;">Belt No</th>
+								<th class="lbl" style="text-align: center;width:30%;">Description</th>								
 								<th class="lbl" style="text-align: center;">Quantity</th>
 								<th class="lbl" style="text-align: center;">Rate</th>
 								<th class="lbl" style="text-align: center;">Amount</th>
@@ -106,8 +138,10 @@
 							<tbody>
 							
 								{% for form in formset %}
+								
 								{% if form.errors %}
 									<div  style="background-color:powderblue;">
+									<h5>
 									<p><strong style="color:black;">Error in
 										Row {{ forloop.counter }}:</strong>
 										
@@ -116,6 +150,10 @@
 												{% for error in field_errors %}
 													
 														<strong style="color:black;">{{ form|get_field_label:field_name }}-</strong><span style="color: red;">{{ error }}</span>{% if not forloop.last %} {% endif %}
+									</h5>
+													<script>
+														$(".panel-body").hide();
+													</script>
 													
 												{% endfor %}
 											{% endfor %}
@@ -134,16 +172,25 @@
 										<td class="td-center">{{ form.item_qty_content }}</td>
 										<td class="td-center">{{ form.perprice }} </td>
 										
+
+
 <script>
 
 $(document).ready(function() {
-	  // Listen for the 'input' event on the input field
+
+			
+
+	 
 	  var id='{{ forloop.counter }}'-1;
 	  console.log('id...',id);
 	  
+	  
+	  	
+	  
 	  $("#id_sales_item-"+id+"-stock").on('change', function () {
 		$("#id_sales_item-"+id+"-perprice").val('');
-		$("#id_sales_item-"+id+"-totalprice").val('');		
+		$("#id_sales_item-"+id+"-totalprice").val('');
+		
 	  });
 	  
 	  $("#id_sales_item-"+id+"-perprice").on('input', function () {
@@ -177,7 +224,6 @@ $(document).ready(function() {
 		  console.log("Quantity Value:", quantity);
 		  var totalprice = parseFloat(parsedValue * quantity).toFixed(2); // Define totalprice here
 		  $("#id_sales_item-"+id+"-totalprice").val(totalprice);
-	
 		  
 		  console.log('id...',id);		
 		  
@@ -244,6 +290,7 @@ $(document).ready(function() {
 		
 		$(document).ready(function () {
 		  // Loop through each form in the SalesItemFormset
+		  
 		  for (let i = 0; i < {{ formset.total_form_count }}; i++) {
 			var stockField = $('#id_sales_item-' + i + '-stock');
 			var itemTextContentField = $('#id_sales_item-' + i + '-item_text_content');
@@ -254,7 +301,6 @@ $(document).ready(function() {
 			console.log('Found itemTextContentField:', itemTextContentField.attr('id'));
 			console.log('Found itemQtyContentField:', itemQtyContentField.attr('id'));
 			console.log('Found itemRateField:', itemRateField.attr('id'));
-			
 			
 			// Set data attributes to store relevant information
 			stockField.attr('data-text-content-field', itemTextContentField.attr('id'));
@@ -281,7 +327,6 @@ $(document).ready(function() {
 				var correspondingItemRateField = $('#' + correspondingItemRateFieldId);
 				
 				
-				
 				fetchStockData(stockInstanceId, correspondingItemTextContentField,correspondingItemQtyContentField);
 				
 			  } else {			    
@@ -297,7 +342,7 @@ $(document).ready(function() {
 				 correspondingItemTextContentField.val('');
 				 correspondingItemQtyContentField.val('');				 
 				 correspondingItemRateField.val('');
-				 
+				
 				 console.log('Stock instance ID is missing.');
 			  }
 			});
@@ -323,6 +368,8 @@ $(document).ready(function() {
 				// Update the corresponding item_text_content field				
 				correspondingItemTextContentField.val(itemTextContent);
 				correspondingItemQtyContentField.val(itemQtyContent);
+				
+				
 				//$('#id_sales_item-0-item_text_content').val(itemTextContent);
 				// ... Other logic ...
 			  } else {

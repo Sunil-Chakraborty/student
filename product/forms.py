@@ -116,6 +116,7 @@ class PositiveDecimalValidator(MinValueValidator):
 
 class SalesItemForm(forms.ModelForm):
     
+    
     item_text_content = forms.CharField(
         required=False,  # Make the field required
         widget=forms.TextInput(attrs={'readonly': 'readonly','style': 'text-align: center;'})  # Make the field readonly
@@ -149,12 +150,12 @@ class SalesItemForm(forms.ModelForm):
             'placeholder': '0.00',
             'readonly': 'readonly'})
     )
-
     
     class Meta:
         model = SalesItem
         fields = ['stock', 'perprice', 'item_text_content','item_qty_content','totalprice']
     
+        
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():

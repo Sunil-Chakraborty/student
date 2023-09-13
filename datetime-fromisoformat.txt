@@ -1,0 +1,14 @@
+
+The error encountered is related to the datetime.fromisoformat() method,
+which expects a string in ISO format.
+
+Correct the created_date Default Value: 
+Update the default value for the created_date field to 
+a valid datetime string. For example:
+
+migrations.AddField(
+    model_name='salesitem',
+    name='created_date',
+    field=models.DateTimeField(auto_now_add=True, default=datetime.datetime(2023, 8, 19, 14, 30, tzinfo=datetime.timezone.utc)),
+    preserve_default=False,
+),
