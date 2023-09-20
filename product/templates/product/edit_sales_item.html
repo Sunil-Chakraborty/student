@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<head>
+<style>
+	input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+           -webkit-appearance: none; 
+           margin: 0; 
+    }
+	.form-control { display: inline-block !important; }	
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</head>
+
+  <h2>Edit Sales Items of M/s. {{ customer.name }}</h2>
+  <p style="color: black; font-weight: bold;">Doc No. {{ doc_no }} Date: {{ doc_dt }}</p>
+  <form method="POST">
+    {% csrf_token %}
+	{{ formset.management_form }}
+    <p>
+		{% for form in forms_with_errors %}
+			{% for error in form.errors %}
+				<li>{{ error }}</li>
+			{% endfor %}
+		{% endfor %}
+    </p>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+		  <th>Doc No</th>
+		  <th>Date</th>
+          <th>Belt No</th>
+          <th>Item Description</th>
+          <th style="width:8%;text-align: center;">Qty.(Mtrs.)</th>
+          <th style="width:8%;text-align: center;">Rate(Rs/m)</th>
+          <th style="width:10%;text-align: center;">Total Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for form in formset %}
+          <tr>
+			<td style="display: none;">{{ form.id }}</td>  <!-- Hide the id field -->
+            <td>{{ form.instance.doc_no }}</td>
+			<td>{{ form.instance.doc_dt|date:"d-m-Y" }}</td> 			
+			<td>{{ form.instance.belt_no }}</td>  
+            <td>{{ form.prod_des }}</td>
+            <td>{{ form.quantity}}</td>
+            <td>{{ form.perprice}}</td>
+            <td>{{ form.totalprice }}</td>
+			
+		</tr>
+		  
+        {% endfor %}
+      </tbody>
+    </table>
+	<button type="submit" class="btn btn-primary">Save Changes</button>
+    <a href="{% url 'product:new-sales' customer.pk %}" class="btn btn-secondary">Cancel</a>
+  </form>
+
+
+{% endblock %}

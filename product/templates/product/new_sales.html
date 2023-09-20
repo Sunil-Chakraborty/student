@@ -16,7 +16,11 @@
 	.panel-default .form-group {
 		margin-bottom: 5px; /* Increase or decrease the margin as needed */
 	}
-
+	
+	input {
+		font-family: "Verdana", sans-serif;
+	}
+	
 	/* Adjust the height of the textareas within the panel */
 	.panel-default textarea {
 		height: 80px; /* Change the height as needed */
@@ -39,22 +43,39 @@
 	.td-center{
 		text-align: center;
 	}
-</style>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	thead.sticky {
+		  position: -webkit-sticky;
+		  position: sticky;
+		  top: 0;
+		  background-color: red;		  
+		  padding: 50px;
+		  font-size: 20px;
+		  
+		  
+	}
 	
+	.dataTables_length {		
+			color: black !important;
+			margin-right:435px !important;
+	}
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </head>
 
-    <div style="color:#575757; font-style: bold; font-size: 3rem; border-bottom: 1px solid white;">New Sales</div>
+    <div style="color:#575757; font-style: bold; font-size: 2.5rem; border-bottom: 1px solid white;">Sales Order
+		<a href="{% url 'product:select-customer' %}" class="previous" style="text-decoration:none;float:left;margin-right:10px;"><i class="fa fa-window-close" style="font-size:36px"></i></a>
+	</div>
     
         <!-- Log on to codeastro.com for more projects -->
+		<div class="card shadow p-3 mb-5 bg-white rounded" style="width:100%;">
 
         <div class="panel panel-default">
 			 <div class="panel-heading panel-heading-text" style="font-size: 2rem;">
 				<u>Customer Details</u>
 				<button class="btn btn-link pull-right" id="togglePanel">Toggle</button>
-			</div>
+			 </div>
 			<div class="panel-body" style="display:none;">
 				<table class="table table-bordered">
 					<tr>
@@ -99,43 +120,67 @@
 			});
 																
 		</script>
+		</div>
 		
         <br>
+		
+		<div class="card shadow p-3 mb-5 bg-white rounded" style="width:100%;">
+			<div class="panel panel-default">
 
-        <form method="post" class="panel panel-default">
-            
-            {% csrf_token %}
-            {{ formset.management_form }}
-    
-			{% block error_messages %}
-					
-			{% endblock error_messages %}
-			
-			{% if messages %}
-				<div class="alert alert-danger">
-					<ul>
-						{% for message in messages %}
-							<li>{{ message|safe }}</li>
-						{% endfor %}
-					</ul>
+				<div class="panel-heading panel-heading-text" style="font-size: 2rem;">
+					<u>Sales Data Entry</u>
+					<button class="btn btn-link pull-right" id="togglePanel2">Toggle</button>		
 				</div>
-			{% endif %}
-			
-			
-                <div id="stockitem"> 
-                    <div class="panel-body-2">
+				<div class="panel-body2" style="display:none;">
+				<form method="post" >
 					
-					<p>
-						<label for="docno" style="color:black;font-weight:bold;">Doc No:</label>
-						<input type="text" id="docno" name="docno" required>
-						<label for="docdt" style="margin-left:5px;color:black;font-weight:bold;">Date:</label>
-						<input type="date" id="docdt" name="docdt" required><br>
-					</p>
+					{% csrf_token %}
+					{{ formset.management_form }}
+			
+					{% block error_messages %}
+							
+					{% endblock error_messages %}
 					
+					{% if messages %}
+						<div class="alert alert-danger">
+							<ul>
+								{% for message in messages %}
+									<li>{{ message|safe }}</li>
+								{% endfor %}
+							</ul>
+						</div>
+						<script>
+										// Show the errorDiv when there are errors
+										$(".panel-body2").show();
+						</script>
+					{% endif %}
+					
+						
+					
+
+					<div id="stockitem"> 
+					   
+						
+						<p>
+							<label for="docno" style="color:black;font-weight:bold;">Doc No:</label>
+							<input type="text" id="docno" name="docno" required value="{{ doc_form.docno.value }}">
+							<label for="docdt" style="margin-left:5px;color:black;font-weight:bold;">Date:</label>
+							<input type="date" id="docdt" name="docdt" required value="{{ doc_form.docdt.value }}"><br>
+
+							<!-- Display form errors for doc_form -->
+							{% if doc_form.errors %}
+								<ul class="errorlist">
+									{% for error in doc_form.errors %}
+										<li>{{ error }}</li>
+									{% endfor %}
+								</ul>
+							{% endif %}
+						</p>
+						
 						<table>
 							<thead>
 								<th class="lbl" style="text-align: left;">Row</th>
-								<th class="lbl" style="text-align: center;">Belt No</th>
+								<th class="lbl" style="text-align: center;width:12%;">Belt No</th>
 								<th class="lbl" style="text-align: center;width:40%;">Description</th>								
 								<th class="lbl" style="text-align: center;">Quantity</th>
 								<th class="lbl" style="text-align: center;">Rate</th>
@@ -145,7 +190,7 @@
 							
 								{% for form in formset %}
 								{% if form.errors %}
-									<div  style="background-color:powderblue;">
+									<div  id="errorDiv" style="background-color:powderblue;">
 									<h5>
 									<p><strong style="color:black;">Error in
 										Row {{ forloop.counter }}:</strong>
@@ -167,6 +212,10 @@
 										
 										
 									</div>
+									<script>
+										// Show the errorDiv when there are errors
+										$(".panel-body2").show();
+									</script>
 								{% endif %}
 								
 								
@@ -257,11 +306,7 @@ $(document).ready(function() {
 							</tbody>
 						</table>
 						
-						
-										
-                    </div>
-                </div>
-
+			
 
             <br><!-- Log on to codeastro.com for more projects -->
 
@@ -270,11 +315,86 @@ $(document).ready(function() {
                 <a href="{% url 'product:select-customer' %}" class="btn btn-danger">Go Back</a>
                 <a href="{% url 'product:customers-list' %}" class="btn btn-secondary">Cancel</a>
             </div>
-            
+       	
+	
+		</div>
+		
+	
+	
         </form>
+		</div>
+		
+		</div>
+		
+	</div>
+	
+		<br>
+	
+		<div class="card shadow p-3 mb-5 bg-white rounded" style="width:100%;">
+		  <div class="panel panel-default">
+			  <div class="panel-heading panel-heading-text" style="font-size: 2rem;">
+				<u>Sales Order View</u>
+					<button class="btn btn-link pull-right" id="togglePanel1">Toggle</button>
+			  </div>
+			<div class="panel-body3" >
+	
+					<table id="product" class = "table sts table-striped rounded shadow display " style="width:100%;">
+									
+							<h2 style="color:green;font-weight:bolder;font-size:30px;margin-left:680px;">Sales Data</h2>
+							<thead class="sticky">
+								<tr style="background-color:powderblue;" >
+									<th style="text-align: center;color:black;width:2%;">Srl.</th>
+									<th style="text-align: center;color:black;width:5%;">Doc No.</th>
+									<th style="text-center: center;color:black;width:10%;">Date</th>
+									<th style="text-align: left;color:black;width:20%;">Belt No</th>
+									<th style="text-align: left;color:black;width:47%;">Description</th>						
+									<th style="text-align: center;color:black;width:5%;">Mtrs.</th>
+									<th style="text-align: center;color:black;width:5%;">Rate<br>(Rs/m)</th>
+									<th style="text-align: center;color:black;width:6%;">Amount<br>(Rs.)</th>
+									<th style="text-align: center;color:black; width:10%">&nbspActions</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+							
+							{% for item in queryset %}
+								<tr>
+									<td style="text-align: center;">{{ forloop.counter }}</td>
+									<td style="text-align: center;">{{ item.doc_no }}</td>
+									<td style="text-align: center;">{{ item.doc_dt|date:"d-m-Y" }}</td>
+									<td style="text-align: left;">{{ item.belt_no }}</td>														
+									<td style="text-align: left;">{{ item.prod_des }}</td>
+									<td style="text-align: center;">{{ item.quantity }}</td>
+									<td style="text-align: center;">{{ item.perprice }}</td>
+									<td style="text-align: center;">{{ item.totalprice }}</td>
+									<td><a style="text-align: right;color:blue;" href="{% url 'product:edit_sales_item' doc_no=item.doc_no %}">Edit</a></td>
+									<td><a style="text-align: right;color:blue;" href="{% url 'product:delete-sales-item' pk=item.id %}">Delete</a></td>
 
-    </div>
+								</tr>				
+							{% endfor %}
+							</tbody>
+					</table>
+			</div>
+		  </div>
+		<script>
+		
+			$(document).ready(function() {
+			
+				// Initially, hide the panel body
+				//$(".panel-body3").hide();
 
+				// Toggle the panel body when the button is clicked
+				$("#togglePanel1").click(function() {
+					$(".panel-body3").slideToggle();
+				});
+				
+			});
+																
+		</script>
+	
+		  
+		</div>
+		
     <!-- Custom JS to add and remove item forms --><!-- Log on to codeastro.com for more projects -->
     <script type="text/javascript" src="{% static 'js/jquery-3.2.1.slim.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/dialogbox.js' %}"></script>
@@ -287,6 +407,14 @@ $(document).ready(function() {
 		
 		
 		$(document).ready(function () {
+		// Initially, hide the panel body
+				//$(".panel-body2").hide();
+
+				// Toggle the panel body when the button is clicked
+				$("#togglePanel2").click(function() {
+					$(".panel-body2").slideToggle();
+					console.log("l-322-Button2 clicked"); // Add this line for debugging
+				});
 		  // Loop through each form in the SalesItemFormset
 		  for (let i = 0; i < {{ formset.total_form_count }}; i++) {
 			var stockField = $('#id_sales_item-' + i + '-stock');
@@ -380,5 +508,68 @@ $(document).ready(function() {
 		};
 
 	</script>
+	
+		<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+
+	<script>
+	
+				$(document).ready(function() {
+			  
+				$('#product').DataTable({
+						//scrollX: true,
+						
+						
+						dom: 'lBfrtip',
+						
+						columnDefs: [
+							{
+								targets: [0],
+								orderData: [0, 1],
+							},
+							{
+								targets: [1],
+								orderData: [1, 0],
+							},
+							{
+								targets: [4],
+								orderData: [4, 0],
+							},
+							
+							
+						],
+						
+						buttons: [
+						'copy', 'csv', 'excel', 'pdf', 'print',
+						
+						{
+						  extend: 'excelHtml5',
+						  exportOptions: {
+							columns: ':not(:last-child):not(:nth-last-child(2))'
+						  }
+						}
+						
+						]
+						
+						
+				});
+
+				
+			  });
+  
+
+
+	</script>
+
 		
 {% endblock content %}
+
+<!--
+						<th style="text-align: left;color:black; width:9%">&nbspActions</th>
+
+						<td><a style="text-align: right;color:blue;" href="{% url 'product:edit-tcb-product' product_id=item.id %}">Edit</a></td>
+						<td><a style="text-align: right;color:red;" href="{% url 'product:product-delete' product_id=item.id %}">Delete</a></td>
+
+
+<td><a style="text-align: right;color:blue;" href="{% url 'product:edit_sales_item' doc_no=item.doc_no %}">Edit</a></td>
+
+-->					

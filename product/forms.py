@@ -3,9 +3,10 @@ from django.forms import Form, ModelForm, DateField, widgets,ValidationError
 from .models import Product, Customer, SalesBill, SalesItem, Stock
 from django.core.validators import MaxValueValidator, MinValueValidator, DecimalValidator
 from django.core.exceptions import ValidationError
-from django.forms import formset_factory
+from django.forms import formset_factory, modelformset_factory
 from django.forms import DateInput
 from django.urls import reverse_lazy
+
 
 class ProductTCBForm(forms.ModelForm):
     
@@ -153,15 +154,15 @@ class SalesItemForm(forms.ModelForm):
     
     class Meta:
         model = SalesItem
-        fields = ['stock', 'perprice', 'item_text_content','item_qty_content','totalprice']
+        fields = ['stock', 'belt_no','perprice', 'item_text_content','item_qty_content','totalprice']
     
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['stock'].queryset = Stock.objects.filter(is_deleted=False)     
         for field_name, field in self.fields.items():
             field.widget.attrs.update({'class': 'form-control'})
-            
-         
+    
             
     def get_verbose_name(self, field_name):
         return self.fields[field_name].widget._meta.model._meta.get_field(field_name).verbose_name
@@ -221,3 +222,63 @@ class StockForm(forms.ModelForm):
         
     def get_verbose_name(self, field_name):
         return self.fields[field_name].widget._meta.model._meta.get_field(field_name).verbose_name
+
+
+class DocForm(forms.Form):
+    docno = forms.CharField(
+        label='Doc No',
+        max_length=50,
+        widget=forms.TextInput(attrs={'required': 'true'})
+    )
+
+    docdt = forms.DateField(
+        label='Date',
+        widget=forms.DateInput(attrs={'type': 'date', 'required': 'true'})
+    )
+
+
+class SalesEditForm(forms.ModelForm):
+    
+    perprice = forms.DecimalField(
+        required=True,  # Make the field required
+        max_digits=10,
+        decimal_places=2,
+        label="Rate",
+        widget=forms.NumberInput(attrs={
+            'style': 'text-align: center;',
+            'placeholder': '0.00'
+        })
+    )
+    
+    
+    class Meta:
+        model = SalesItem
+        #fields = ['belt_no','item_text_content', 'perprice', 'quantity','totalprice']  # Include 'quantity' here
+        exclude = ['id','doc_no','doc_dt','stock','belt_no','item_text_content','item_qty_content','cust_id']  # Exclude id and belt_no from the form
+
+
+        widgets = {
+            'belt_no'   :  widgets.TextInput(attrs={'class': 'form-control','readonly': 'readonly'}),
+            'doc_no'    :  widgets.TextInput(attrs={'class': 'form-control','readonly': 'readonly'}),
+            'doc_dt'    :  widgets.DateInput(attrs={'class': 'form-control','readonly': 'readonly'}),
+            'totalprice':  widgets.NumberInput(attrs={'class': 'form-control','readonly': 'readonly'}),
+            
+        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)        
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})
+
+    def clean(self):
+        cleaned_data = super().clean()
+        perprice = cleaned_data.get('perprice')
+        quantity = cleaned_data.get('quantity')
+
+        if perprice is not None and quantity is not None:
+            totalprice = round(perprice * quantity, 2) 
+            cleaned_data['totalprice'] = totalprice
+       
+        return cleaned_data
+        
+SalesEditFormSet = modelformset_factory(SalesItem, form=SalesEditForm, extra=0)
+    

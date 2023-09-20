@@ -190,25 +190,7 @@
   
 	$('#product').DataTable({
 			scrollX: true,
-			drawCallback: function () {
-		      var api = this.api();
-		      var sum = 0;
-		      var formated = 0;
-		      //to show first th
-		      $(api.column(4).footer()).html('Total:');
-
-		      for(var i=5; i<=6;i++)
-		      {
-		      	sum = api.column(i, {page:'current'}).data().sum();
-				
-		      	//to format this sum
-		      	formated = parseFloat(sum).toLocaleString(undefined, {minimumFractionDigits:2});
-		      	
-				$(api.column(i).footer()).html(formated);
-				
-		      }
-		      
-		    },
+			
 			
 			dom: 'lBfrtip',
 			
@@ -230,21 +212,7 @@
 			],
 			
 			buttons: [
-            'copy', 'csv', 'print',
-			
-			{
-				extend: 'pdfHtml5',
-				exportOptions: {
-				  columns: ':not(:last-child):not(:nth-last-child(2))'
-				  
-				  /*selector excludes the first 
-				   and third columns (0-based index) 
-				   from being exported.
-				  columns: ':not(:eq(0)):not(:eq(2))'
-				  */
-				  
-				}				
-			},
+            'copy', 'csv', 'excel', 'pdf', 'print',
 			
 			{
 			  extend: 'excelHtml5',
@@ -252,8 +220,6 @@
 				columns: ':not(:last-child):not(:nth-last-child(2))'
 			  }
 			}
-			
-			
 			
 			]
 			

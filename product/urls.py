@@ -16,6 +16,8 @@ from product.views import (
     SalesView,
     SelectCustomerView,
     SalesCreateView,
+    edit_sales_item,
+    delete_sales_item,
     
     StockListView,
     edit_stock,
@@ -44,6 +46,8 @@ urlpatterns = [
     path('sales/new', SelectCustomerView.as_view(), name='select-customer'), 
     path('sales/new/<pk>', SalesCreateView.as_view(), name='new-sales'),
     #path('purchases/<pk>/delete', views.PurchaseDeleteView.as_view(), name='delete-purchase'),
+    path('edit_sales_item/<str:doc_no>/', edit_sales_item, name='edit_sales_item'),
+    path('delete_sales_item/<int:pk>/', delete_sales_item, name='delete-sales-item'),
     
     path('stock-create/', prod_stock_create, name='stock-create'),
     path('stock/', StockListView.as_view(), name='stock-list'),

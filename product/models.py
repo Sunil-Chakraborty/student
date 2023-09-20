@@ -178,7 +178,9 @@ class SalesItem(models.Model):
     totalprice          = models.DecimalField(verbose_name='Total(Rs./m)',max_digits=10, decimal_places=2,null=True,blank=True)
     created_date        = models.DateTimeField(auto_now_add=True)
     modified_date       = models.DateTimeField(auto_now=True)
-
+    cust_id             = models.PositiveIntegerField()
+    
+    
     def __str__(self):
 	    return self.stock.name
     

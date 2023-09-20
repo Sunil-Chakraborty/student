@@ -2,18 +2,22 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.db.models import Q
 from django.db.models import Avg,Sum
 from django.http import HttpResponse
-from django.forms import formset_factory, inlineformset_factory
+from django.forms import formset_factory, inlineformset_factory, modelformset_factory
+
 from .forms import (
     ProductTCBForm,
     ProductSCBForm,
     CustomerForm,
     SelectCustomerForm,
     SalesItemFormset,
+    SalesEditFormSet,    
     StockForm,
+    DocForm,
     )
-from .forms import SalesItemForm    
+from .forms import SalesItemForm,SalesEditForm
+    
 from account.models import Account
-from . models import Product, Customer,SalesBill,SalesBillDetails,Stock
+from . models import Product, Customer,SalesBill,SalesBillDetails,Stock,SalesItem
 from student_app.templatetags.custom_filters import *
 from django.db import IntegrityError
 from django.views.generic import (
@@ -244,12 +248,16 @@ class SalesCreateView(View):
     
     def get(self, request, pk):
         formset = SalesItemFormset(request.GET or None, prefix='sales_item')  # renders an empty formset
+        
         customerobj = get_object_or_404(Customer, pk=pk)
+        qs = SalesItem.objects.filter(cust_id=customerobj.id)
+        
         
         context = {
             'formset': formset,
             'customer': customerobj,
-            
+            "queryset": qs,
+           
         }
         return render(request, self.template_name, context)
 
@@ -257,46 +265,66 @@ class SalesCreateView(View):
     def post(self, request, pk):
         formset = SalesItemFormset(request.POST, prefix='sales_item')
         customerobj = get_object_or_404(Customer, pk=pk)
-                                       
+        print('l-263',customerobj)              
+       
+        msg_tag = "No item has been addded"                                   
+        
+        # Create a separate form for the 'docno' and 'docdt' fields
+        doc_form = DocForm(request.POST)  # Replace 'YourDocForm' with your actual form class name
+        
+       
 
-        if formset.is_valid():        
+        if formset.is_valid() and doc_form.is_valid():        
             for form in formset:         
                 if form.has_changed():
                     billitem = form.save(commit=False)
                     
                     if form.cleaned_data['stock']:
+                        billitem.cust_id = customerobj.id
                         billitem.belt_no = form.cleaned_data['stock'].belt_no     
                         billitem.prod_des = form.cleaned_data['item_text_content']
                         billitem.quantity = form.cleaned_data['item_qty_content']
                         billitem.totalprice = form.cleaned_data['perprice']*form.cleaned_data['item_qty_content']
                         billitem.doc_no = request.POST['docno']
                         billitem.doc_dt = request.POST['docdt']
-                       
+                        # gets the stock item
+                        stock = get_object_or_404(Stock, belt_no=billitem.belt_no)       # gets the item
+                        # updates status of stock db
+                        stock.is_deleted = True                              # updates quantity
+                        # saves bill item and stock
+                        stock.save()
                         
                     try:  
-                        form.save()
+                        billitem.save()
+                       
                        
                     except IntegrityError:
                         error_message =  "<b>"+str(billitem.belt_no)+"</b> already exists. Please enter a unique Belt No."
                         messages.error(request, error_message)
                         return render(request, self.template_name, {'formset': formset, 'customer': customerobj})
-                
-    
-            messages.success(request, "Sales items have been registered successfully")
+                    
+                    msg_tag = "Sales items have been registered successfully"    
+                    messages.success(request, msg_tag)
+                    msg_tag=""
+               
+            messages.info(request, msg_tag)
 
             #return render(request, self.template_name, context)
-            return redirect('product:select-customer')
+            #return redirect('product:select-customer')
+            return redirect(request.path)
             #messages.info(request, "No item has been created..!")
 
         else:
             formset = SalesItemFormset(request.POST, prefix='sales_item')
-            
+            doc_form = DocForm(request.POST)  # Replace 'YourDocForm' with your actual form class name
             print('formset is not valid')
            
         
         context = {
             'formset': formset,
             'customer': customerobj,
+            'doc_form': doc_form,  # Pass the doc_form to the template
+            
         }
         return render(request, self.template_name, context)
 
@@ -403,3 +431,65 @@ def get_stock_data_view(request, stockInstanceId):
     
     
     #return JsonResponse(stock_data)
+
+
+def edit_sales_item(request, doc_no):
+    # Filter the queryset to retrieve only records with the specified doc_no
+    sales_items = SalesItem.objects.filter(doc_no=doc_no)
+
+    # Initialize other variables (customer, doc_no, doc_dt) as needed
+    customer = None
+    doc_no = None
+    doc_dt = None
+
+    for sales_item in sales_items:        
+        if not customer:
+            customer = get_object_or_404(Customer, pk=sales_item.cust_id)
+            doc_no = sales_item.doc_no
+            doc_dt = sales_item.doc_dt
+    
+    formset = modelformset_factory(SalesItem, form=SalesEditForm, extra=0)(queryset=sales_items, prefix='sales_item')
+    forms_with_errors = [form for form in formset if form.errors]        
+    
+    if request.method == 'POST':
+        formset = modelformset_factory(SalesItem, form=SalesEditForm, extra=0)(request.POST, queryset=sales_items, prefix='sales_item')
+        
+        if formset.is_valid():
+       
+            if formset.has_changed():
+                formset.save()
+                messages.success(request, "Record has been modified!")
+                return redirect(request.path)
+                #return redirect('product:new-sales', customer.id)  # Use customer_id instead of customer.pk
+            messages.info(request, "No Changes made!")
+        
+    context = {
+        'formset': formset,
+        'forms_with_errors': forms_with_errors,
+        'customer': customer,
+        'doc_no': doc_no,
+        'doc_dt': doc_dt,
+    }
+
+    return render(request, 'product/edit_sales_item.html', context)
+
+
+def delete_sales_item(request, pk):
+    # Filter the queryset to retrieve only records with the specified doc_no
+    
+    sales_item = get_object_or_404(SalesItem, id=pk)
+    customer = get_object_or_404(Customer, pk=sales_item.cust_id)  
+            
+    if request.method == 'POST':
+        # Check if the user has confirmed the deletion
+        if request.POST.get('confirm_delete'):
+            # gets the stock item
+            stock = get_object_or_404(Stock, belt_no=sales_item.belt_no)       # gets the item
+            # updates status of stock db
+            stock.is_deleted = False                          # updates quantity
+            # saves bill item and stock
+            stock.save()
+            sales_item.delete()
+            return redirect('product:new-sales', customer.id)  # Replace 'product:some_url' with the desired URL name
+
+    return render(request, 'product/delete_sales_item.html', {'sales_item': sales_item})
