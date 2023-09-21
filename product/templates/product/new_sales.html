@@ -311,7 +311,7 @@ $(document).ready(function() {
             <br><!-- Log on to codeastro.com for more projects -->
 
             <div class="align-middle">			
-                <button type="submit" class="btn btn-success">Add to Purchases</button>
+                <button type="submit" class="btn btn-success">Add to Sales</button>
                 <a href="{% url 'product:select-customer' %}" class="btn btn-danger">Go Back</a>
                 <a href="{% url 'product:customers-list' %}" class="btn btn-secondary">Cancel</a>
             </div>
@@ -351,8 +351,8 @@ $(document).ready(function() {
 									<th style="text-align: center;color:black;width:5%;">Mtrs.</th>
 									<th style="text-align: center;color:black;width:5%;">Rate<br>(Rs/m)</th>
 									<th style="text-align: center;color:black;width:6%;">Amount<br>(Rs.)</th>
-									<th style="text-align: center;color:black; width:10%">&nbspActions</th>
-									<th></th>
+									<th  colspan="3" class="align-middle" style="color:black; width:10%">&nbspActions</th>
+									
 								</tr>
 							</thead>
 							<tbody>
@@ -364,12 +364,12 @@ $(document).ready(function() {
 									<td style="text-align: center;">{{ item.doc_dt|date:"d-m-Y" }}</td>
 									<td style="text-align: left;">{{ item.belt_no }}</td>														
 									<td style="text-align: left;">{{ item.prod_des }}</td>
-									<td style="text-align: center;">{{ item.quantity }}</td>
-									<td style="text-align: center;">{{ item.perprice }}</td>
-									<td style="text-align: center;">{{ item.totalprice }}</td>
+									<td class="align-right">{{ item.quantity }}</td>
+									<td class="align-right">{{ item.perprice }}</td>
+									<td class="align-right">{{ item.totalprice }}</td>
 									<td><a style="text-align: right;color:blue;" href="{% url 'product:edit_sales_item' doc_no=item.doc_no %}">Edit</a></td>
 									<td><a style="text-align: right;color:blue;" href="{% url 'product:delete-sales-item' pk=item.id %}">Delete</a></td>
-
+									<td class="align-right"><a href="#" class="btn btn-secondary btn-sm">View Bill</a></td>
 								</tr>				
 							{% endfor %}
 							</tbody>
@@ -571,5 +571,5 @@ $(document).ready(function() {
 
 
 <td><a style="text-align: right;color:blue;" href="{% url 'product:edit_sales_item' doc_no=item.doc_no %}">Edit</a></td>
-
+{% url 'sale-bill' item.doc_no %}
 -->					

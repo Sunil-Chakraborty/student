@@ -305,7 +305,7 @@ class SalesCreateView(View):
                     
                     msg_tag = "Sales items have been registered successfully"    
                     messages.success(request, msg_tag)
-                    msg_tag=""
+                   
                
             messages.info(request, msg_tag)
 
