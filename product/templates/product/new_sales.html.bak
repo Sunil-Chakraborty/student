@@ -1,0 +1,580 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %} New Sales {% endblock title %}
+
+
+{% block content %}
+<head>
+<style>
+	input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+           -webkit-appearance: none; 
+           margin: 0; 
+    }
+	.panel-default .form-group {
+		margin-bottom: 5px; /* Increase or decrease the margin as needed */
+	}
+	
+	input {
+		font-family: "Verdana", sans-serif;
+	}
+	
+	/* Adjust the height of the textareas within the panel */
+	.panel-default textarea {
+		height: 80px; /* Change the height as needed */
+	}
+	.lbl{	
+		color:blue;
+		font-size:25px;
+	}
+	.fld{	
+		color:black;
+		font-size:20px;
+	}	
+	.shared-class {
+		color:black;
+		font-size:22px;
+	}
+	tr td {
+		text-align: center;
+	}
+	.td-center{
+		text-align: center;
+	}
+	thead.sticky {
+		  position: -webkit-sticky;
+		  position: sticky;
+		  top: 0;
+		  background-color: red;		  
+		  padding: 50px;
+		  font-size: 20px;
+		  
+		  
+	}
+	
+	.dataTables_length {		
+			color: black !important;
+			margin-right:435px !important;
+	}
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</head>
+
+    <div style="color:#575757; font-style: bold; font-size: 2.5rem; border-bottom: 1px solid white;">Sales Order
+		<a href="{% url 'product:select-customer' %}" class="previous" style="text-decoration:none;float:left;margin-right:10px;"><i class="fa fa-window-close" style="font-size:36px"></i></a>
+	</div>
+    
+        <!-- Log on to codeastro.com for more projects -->
+		<div class="card shadow p-3 mb-5 bg-white rounded" style="width:100%;">
+
+        <div class="panel panel-default">
+			 <div class="panel-heading panel-heading-text" style="font-size: 2rem;">
+				<u>Customer Details</u>
+				<button class="btn btn-link pull-right" id="togglePanel">Toggle</button>
+			 </div>
+			<div class="panel-body" style="display:none;">
+				<table class="table table-bordered">
+					<tr>
+						<th class="lbl">Name:</th>
+						<td>
+							<input type="text" class="form-control textinput shared-class" value="{{ customer.name }}" disabled>
+						</td>
+					</tr>
+					<tr>
+						<th class="lbl">Phone No:</th>
+						<td>
+							<input type="text" class="form-control textinput shared-class" value="{{ customer.phone }}" disabled>
+						</td>
+					</tr>
+					<tr>
+						<th class="lbl">Email:</th>
+						<td>
+							<input type="text" class="form-control textinput shared-class" value="{{ customer.email }}" disabled>
+						</td>
+					</tr>
+					<tr>
+						<th class="lbl">Address:</th>
+						<td>
+							<textarea class="form-control textinput shared-class" disabled rows="3">{{ customer.address }}</textarea>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<script>
+		
+			$(document).ready(function() {
+			
+				// Initially, hide the panel body
+				$(".panel-body").hide();
+
+				// Toggle the panel body when the button is clicked
+				$("#togglePanel").click(function() {
+					$(".panel-body").slideToggle();
+				});
+				
+			});
+																
+		</script>
+		</div>
+		
+        <br>
+		
+		<div class="card shadow p-3 mb-5 bg-white rounded" style="width:100%;">
+			<div class="panel panel-default">
+
+				<div class="panel-heading panel-heading-text" style="font-size: 2rem;">
+					<u>Sales Data Entry</u>
+					<button class="btn btn-link pull-right" id="togglePanel2">Toggle</button>		
+				</div>
+				<div class="panel-body2" style="display:none;">
+				<form method="post" >
+					
+					{% csrf_token %}
+					{{ formset.management_form }}
+			
+					{% block error_messages %}
+							
+					{% endblock error_messages %}
+					
+					{% if messages %}
+						<div class="alert alert-danger">
+							<ul>
+								{% for message in messages %}
+									<li>{{ message|safe }}</li>
+								{% endfor %}
+							</ul>
+						</div>
+						<script>
+										// Show the errorDiv when there are errors
+										$(".panel-body2").show();
+						</script>
+					{% endif %}
+					
+						
+					
+
+					<div id="stockitem"> 
+					   
+						
+						<p>
+							<label for="docno" style="color:black;font-weight:bold;">Bill No:</label>
+							<input type="text" id="docno" name="docno" required value="{{ doc_form.docno.value }}">
+							<label for="docdt" style="margin-left:5px;color:black;font-weight:bold;">Date:</label>
+							<input type="date" id="docdt" name="docdt" required value="{{ doc_form.docdt.value }}">
+							<label for="po" style="margin-left:5px;color:black;font-weight:bold;">P.No:</label>
+							<input type="text" id="po" name="po" required value="{{ doc_form.po.value }}" autocomplete="off">
+							<label for="veh" style="margin-left:5px;color:black;font-weight:bold;">Vehicle:</label>
+							<input type="text" id="veh" name="veh" required value="{{ doc_form.veh.value }}"><br>
+
+							<!-- Display form errors for doc_form -->
+							{% if doc_form.errors %}
+								<ul class="errorlist">
+									{% for error in doc_form.errors %}
+										<li>{{ error }}</li>
+									{% endfor %}
+								</ul>
+							{% endif %}
+						</p>
+						
+						<table>
+							<thead>
+								<th class="lbl" style="text-align: left;">Row</th>
+								<th class="lbl" style="text-align: center;width:12%;">Belt No</th>
+								<th class="lbl" style="text-align: center;width:40%;">Description</th>								
+								<th class="lbl" style="text-align: center;">Quantity</th>
+								<th class="lbl" style="text-align: center;">Rate</th>
+								<th class="lbl" style="text-align: center;">Amount</th>
+							</thead>
+							<tbody>
+							
+								{% for form in formset %}
+								{% if form.errors %}
+									<div  id="errorDiv" style="background-color:powderblue;">
+									<h5>
+									<p><strong style="color:black;">Error in
+										Row {{ forloop.counter }}:</strong>
+										
+										<span>
+											{% for field_name, field_errors in form.errors.items %}
+												{% for error in field_errors %}
+													
+														<strong style="color:black;">{{ form|get_field_label:field_name }}-</strong><span style="color: red;">{{ error }}</span>{% if not forloop.last %} {% endif %}
+									</h5>
+													<script>
+														$(".panel-body").hide();
+													</script>
+													
+												{% endfor %}
+											{% endfor %}
+										</span>
+										
+										
+										
+									</div>
+									<script>
+										// Show the errorDiv when there are errors
+										$(".panel-body2").show();
+									</script>
+								{% endif %}
+								
+								
+									<tr>
+										<td>{{ forloop.counter }}</td>
+										<td>{{ form.stock }}</td>										
+										<td>{{ form.item_text_content }}</td>                                        
+										<td class="td-center">{{ form.item_qty_content }}</td>
+										<td class="td-center">{{ form.perprice }} </td>
+										
+<script>
+
+$(document).ready(function() {
+
+	  // Listen for the 'input' event on the input field
+	  var id='{{ forloop.counter }}'-1;
+	  console.log('id...',id);
+	  
+	  $("#id_sales_item-"+id+"-stock").on('change', function () {
+		$("#id_sales_item-"+id+"-perprice").val('');
+		$("#id_sales_item-"+id+"-totalprice").val('');		
+	  });
+	  
+	  $("#id_sales_item-"+id+"-perprice").on('input', function () {
+		
+		var perprice = parseFloat($(this).val());
+		
+		var parsedValue = parseFloat(perprice).toFixed(2);
+		var max_value = 9999999.99;
+		var min_value = 0.00;
+		
+		var decimalPattern = /^\d+(\.\d{0,2})?$/; // Regular expression to allow up to 2 decimal places
+
+		if (!decimalPattern.test(perprice)) {
+			// If the input doesn't match the pattern, clear the field
+			$(this).val('');
+		}
+		
+		if (parsedValue > max_value) {
+			console.log("l-128-Exceeds limit:", parsedValue);
+			// Set the input value to the maximum allowed value
+			$(this).val(min_value.toFixed(2));
+			parsedValue = 0;
+			perprice = 0;
+		}
+																								
+		
+		if (!isNaN(perprice) && parsedValue > 0) {
+		  // Calculate the total price (e.g., multiply by a quantity)
+		  console.log("perprice Value:", perprice);
+		  var quantity = $("#id_sales_item-"+id+"-item_qty_content").val(); // Replace this with the actual quantity
+		  console.log("Quantity Value:", quantity);
+		  var totalprice = parseFloat(parsedValue * quantity).toFixed(2); // Define totalprice here
+		  $("#id_sales_item-"+id+"-totalprice").val(totalprice);
+	
+		  
+		  console.log('id...',id);		
+		  
+		  // Set the calculated total price in the totalprice input field
+		  
+		
+		} else {
+		  var perprice = 0;
+		  var totalprice = 0;
+		  var parsedValue = 0;
+		  $("#id_sales_item-"+id+"-totalprice").val(parsedValue);
+		  console.log("Invalid input. Not a valid number.");
+		}
+		if (perprice>0){
+			$("#id_sales_item-"+id+"-totalprice").val(totalprice);
+		}
+		
+		console.log("perprice Value:", perprice);
+		
+		
+		
+	  });
+	 
+	});
+
+													
+</script>
+										<td class="td-center">{{ form.totalprice }}</td>
+										
+									</tr>
+								 
+								{% endfor %}
+								
+							</tbody>
+						</table>
+						
+			
+
+            <br><!-- Log on to codeastro.com for more projects -->
+
+            <div class="align-middle">			
+                <button type="submit" class="btn btn-success">Add to Sales</button>
+               	
+				<a href="{% url 'product:select-customer' %}" class="btn btn-danger">Go Back</a>
+				<a href="{% url 'product:customers-list' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+       	
+	
+		</div>
+		
+	
+	
+        </form>
+		</div>
+		
+		</div>
+		
+	</div>
+	
+		<br>
+	
+		<div class="card shadow p-3 mb-5 bg-white rounded" style="width:100%;">
+		  <div class="panel panel-default">
+			  <div class="panel-heading panel-heading-text" style="font-size: 2rem;">
+				<u>Sales Order View</u>
+					<button class="btn btn-link pull-right" id="togglePanel1">Toggle</button>
+			  </div>
+			<div class="panel-body3" >
+	
+					<table id="product" class = "table sts table-striped rounded shadow display " style="width:100%;">
+									
+							<h2 style="color:green;font-weight:bolder;font-size:30px;margin-left:680px;">Sales Data</h2>
+							<thead class="sticky">
+								<tr style="background-color:powderblue;" >
+									<th style="text-align: center;color:black;width:2%;">Srl.</th>
+									<th style="text-align: center;color:black;width:5%;">Doc No.</th>
+									<th style="text-center: center;color:black;width:10%;">Date</th>
+									<th style="text-align: left;color:black;width:17%;">Belt No</th>
+									<th style="text-align: left;color:black;width:30%;">Description</th>						
+									<th style="text-align: center;color:black;width:5%;">Mtrs.</th>
+									<th style="text-align: center;color:black;width:5%;">Rate<br>(Rs/m)</th>
+									<th style="text-align: center;color:black;width:6%;">Amount<br>(Rs.)</th>
+									<th style="text-align: center;color:black; width:30%">Actions</th>
+									
+								</tr>
+							</thead>
+							<tbody>
+							
+							{% for item in queryset %}
+								<tr>
+									<td style="text-align: center;">{{ forloop.counter }}</td>
+									<td style="text-align: center;">{{ item.doc_no }}</td>
+									<td style="text-align: center;">{{ item.doc_dt|date:"d-m-Y" }}</td>
+									<td style="text-align: left;">{{ item.belt_no }}</td>														
+									<td style="text-align: left;">{{ item.prod_des }}</td>
+									<td class="align-right">{{ item.quantity }}</td>
+									<td class="align-right">{{ item.perprice }}</td>
+									<td class="align-right">{{ item.totalprice }}</td>
+									<td class="align-middle"><a style="color:blue;" href="{% url 'product:edit_sales_item' doc_no=item.doc_no %}">Edit</a>&nbsp&nbsp<a class="align-middle" style="color:blue;" href="{% url 'product:delete-sales-item' pk=item.id %}">Delete</a>&nbsp&nbsp<a href="{% url 'product:sale-bill' item.doc_no %}" class="btn btn-secondary btn-sm">View Bill</a></td>
+									
+								</tr>				
+							{% endfor %}
+							</tbody>
+					</table>
+			</div>
+		  </div>
+		<script>
+		
+			$(document).ready(function() {
+			
+				// Initially, hide the panel body
+				//$(".panel-body3").hide();
+
+				// Toggle the panel body when the button is clicked
+				$("#togglePanel1").click(function() {
+					$(".panel-body3").slideToggle();
+				});
+				
+			});
+																
+		</script>
+	
+		  
+		</div>
+		
+    <!-- Custom JS to add and remove item forms --><!-- Log on to codeastro.com for more projects -->
+    <script type="text/javascript" src="{% static 'js/jquery-3.2.1.slim.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/dialogbox.js' %}"></script>
+    <!-- Include jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+	<script>
+	
+		//var itemTextContent; // Declare itemTextContent in the global scope
+		
+		
+		$(document).ready(function () {
+		// Initially, hide the panel body
+				//$(".panel-body2").hide();
+
+				// Toggle the panel body when the button is clicked
+				$("#togglePanel2").click(function() {
+					$(".panel-body2").slideToggle();
+					console.log("l-322-Button2 clicked"); // Add this line for debugging
+				});
+		  // Loop through each form in the SalesItemFormset
+		  for (let i = 0; i < {{ formset.total_form_count }}; i++) {
+			var stockField = $('#id_sales_item-' + i + '-stock');
+			var itemTextContentField = $('#id_sales_item-' + i + '-item_text_content');
+			var itemQtyContentField = $('#id_sales_item-' + i + '-item_qty_content');
+			var itemRateField = $('#id_sales_item-' + i + '-perprice');
+			
+			console.log('Found stockField:', stockField.attr('id'));
+			console.log('Found itemTextContentField:', itemTextContentField.attr('id'));
+			console.log('Found itemQtyContentField:', itemQtyContentField.attr('id'));
+			console.log('Found itemRateField:', itemRateField.attr('id'));
+			
+			
+			// Set data attributes to store relevant information
+			stockField.attr('data-text-content-field', itemTextContentField.attr('id'));
+			stockField.attr('data-qty-content-field', itemQtyContentField.attr('id'));
+			stockField.attr('data-perprice-field', itemRateField.attr('id'));
+			
+			// Attach change event listener to each stock field
+			
+			stockField.on('change', function () {
+			  var stockInstanceId = $(this).val();
+			  var selectedValue = $(this).val();
+			 		  
+			  console.log('Selected stockInstanceId:', stockInstanceId);
+
+			  if (stockInstanceId) {
+				// Get the corresponding itemTextContentField using the data attribute
+				var correspondingItemTextContentFieldId = $(this).data('text-content-field');
+				var correspondingItemTextContentField = $('#' + correspondingItemTextContentFieldId);
+				
+				var correspondingItemQtyContentFieldId = $(this).data('qty-content-field');
+				var correspondingItemQtyContentField = $('#' + correspondingItemQtyContentFieldId);
+				
+				var correspondingItemRateFieldId = $(this).data('perprice-field');
+				var correspondingItemRateField = $('#' + correspondingItemRateFieldId);
+				
+				
+				
+				fetchStockData(stockInstanceId, correspondingItemTextContentField,correspondingItemQtyContentField);
+				
+			  } else {			    
+				 var correspondingItemTextContentFieldId = $(this).data('text-content-field');
+				 var correspondingItemTextContentField = $('#' + correspondingItemTextContentFieldId);
+				 
+				 var correspondingItemQtyContentFieldId = $(this).data('qty-content-field');
+				 var correspondingItemQtyContentField = $('#' + correspondingItemQtyContentFieldId);
+
+				 var correspondingItemRateFieldId = $(this).data('perprice-field');
+				 var correspondingItemRateField = $('#' + correspondingItemRateFieldId);
+				
+				 correspondingItemTextContentField.val('');
+				 correspondingItemQtyContentField.val('');				 
+				 correspondingItemRateField.val('');
+				 
+				 console.log('Stock instance ID is missing.');
+			  }
+			});
+		  }
+		});
+
+
+		function fetchStockData(stockInstanceId, correspondingItemTextContentField,correspondingItemQtyContentField) {
+		  
+		  console.log("Inside fetchStockData function. stockInstanceId:", stockInstanceId);
+		  $.ajax({
+			url: `/product/get_stock_data_view/${stockInstanceId}`,
+			method: 'GET',
+			dataType: 'json',
+			success: function (data) {
+			  console.log('Response Data:', data);
+			  if (data && data.item_text && data.item_qty) {
+				var itemTextContent = data.item_text;
+				var itemQtyContent = data.item_qty;
+				console.log('Stock Desc Data:', itemTextContent);
+                console.log('Stock Qty:', itemQtyContent);
+				
+				// Update the corresponding item_text_content field				
+				correspondingItemTextContentField.val(itemTextContent);
+				correspondingItemQtyContentField.val(itemQtyContent);
+				//$('#id_sales_item-0-item_text_content').val(itemTextContent);
+				// ... Other logic ...
+			  } else {
+                console.log('Stock data not found.');
+              }
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+			  console.error('AJAX Error:', textStatus, errorThrown);
+			}
+		  });
+		};
+
+	</script>
+	
+		<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+
+	<script>
+	
+				$(document).ready(function() {
+			  
+				$('#product').DataTable({
+						//scrollX: true,
+						"colspan": 3, // Specify the colspan value
+						
+						dom: 'lBfrtip',
+						
+						columnDefs: [
+							{
+								targets: [0],
+								orderData: [0, 1],
+							},
+							{
+								targets: [1],
+								orderData: [1, 0],
+							},
+							{
+								targets: [4],
+								orderData: [4, 0],
+							},
+							
+							
+						],
+						
+						buttons: [
+						'copy', 'csv', 'excel', 'pdf', 'print',
+						
+						{
+						  extend: 'excelHtml5',
+						  exportOptions: {
+							columns: ':not(:last-child):not(:nth-last-child(2))'
+						  }
+						}
+						
+						]
+						
+						
+				});
+
+				
+			  });
+  
+
+
+	</script>
+
+		
+{% endblock content %}
+
+<!--
+						<th style="text-align: left;color:black; width:9%">&nbspActions</th>
+
+						<td><a style="text-align: right;color:blue;" href="{% url 'product:edit-tcb-product' product_id=item.id %}">Edit</a></td>
+						<td><a style="text-align: right;color:red;" href="{% url 'product:product-delete' product_id=item.id %}">Delete</a></td>
+
+
+<td><a style="text-align: right;color:blue;" href="{% url 'product:edit_sales_item' doc_no=item.doc_no %}">Edit</a></td>
+{% url 'sale-bill' item.doc_no %}
+-->					

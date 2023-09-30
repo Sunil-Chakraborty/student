@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import Form, ModelForm, DateField, widgets,ValidationError
-from .models import Product, Customer, SalesBill, SalesItem, Stock
+from .models import Product, Customer, SalesBill, SalesItem, Stock, SalesBillDetails
 from django.core.validators import MaxValueValidator, MinValueValidator, DecimalValidator
 from django.core.exceptions import ValidationError
 from django.forms import formset_factory, modelformset_factory
@@ -235,6 +235,23 @@ class DocForm(forms.Form):
         label='Date',
         widget=forms.DateInput(attrs={'type': 'date', 'required': 'true'})
     )
+    
+    po = forms.CharField(
+        label='Po No',
+        max_length=50,
+        widget=forms.TextInput(attrs={'required': 'true'})
+    )
+    veh = forms.CharField(
+        label='Vehicle',
+        max_length=50,
+        widget=forms.TextInput(attrs={'required': 'true'})
+    )
+    
+class SaleDetailsForm(forms.ModelForm):
+    class Meta:
+        model = SalesBillDetails
+        fields = ['eway','veh', 'destination', 'po', 'cgst', 'sgst', 'igst', 'cess', 'tcs', 'total']
+    
 
 
 class SalesEditForm(forms.ModelForm):

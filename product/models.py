@@ -114,7 +114,7 @@ class Customer(models.Model):
     modified_date   = models.DateTimeField(auto_now=True)
     fk_email 	    = models.ForeignKey(Account,verbose_name="email key", on_delete=models.CASCADE, null=True, blank=True)
     is_deleted      = models.BooleanField(default=False)
-
+    
     def __str__(self):
 	    return self.name
     
@@ -166,7 +166,7 @@ class Stock(models.Model):
         
 #contains the sales stocks made
 class SalesItem(models.Model):
-    doc_no              = models.CharField(verbose_name='Docu No.', max_length=50, null=True, blank=True)
+    doc_no              = models.CharField(verbose_name='Doc No.', max_length=50, null=True, blank=True)
     doc_dt              = models.DateField(verbose_name='Dt.', null=True, blank=True)
     stock               = models.ForeignKey(Stock, on_delete = models.CASCADE, related_name='salesitem')
     belt_no             = models.CharField(verbose_name='Belt No', max_length=20, unique=True, null=True, blank=True)
@@ -185,21 +185,20 @@ class SalesItem(models.Model):
 	    return self.stock.name
     
 class SalesBillDetails(models.Model):
-    billno = models.ForeignKey(SalesBill, on_delete = models.CASCADE, related_name='purchasedetailsbillno')
-    
-    eway = models.CharField(max_length=50, blank=True, null=True)    
-    veh = models.CharField(max_length=50, blank=True, null=True)
-    destination = models.CharField(max_length=50, blank=True, null=True)
-    po = models.CharField(max_length=50, blank=True, null=True)
-    
-    cgst = models.CharField(max_length=50, blank=True, null=True)
-    sgst = models.CharField(max_length=50, blank=True, null=True)
-    igst = models.CharField(max_length=50, blank=True, null=True)
-    cess = models.CharField(max_length=50, blank=True, null=True)
-    tcs = models.CharField(max_length=50, blank=True, null=True)
-    total = models.CharField(max_length=50, blank=True, null=True)
+    doc_no              = models.CharField(verbose_name='Doc No.', max_length=50, null=True, blank=True)
+    doc_dt              = models.DateField(verbose_name='Dt.', null=True, blank=True)
+    eway                = models.CharField(max_length=50, blank=True, null=True)    
+    veh                 = models.CharField(max_length=50, blank=True, null=True)
+    destination         = models.CharField(max_length=50, blank=True, null=True)
+    po                  = models.CharField(max_length=250, blank=True, null=True)
+    cgst                = models.CharField(max_length=50, blank=True, null=True)
+    sgst                = models.CharField(max_length=50, blank=True, null=True)
+    igst                = models.CharField(max_length=50, blank=True, null=True)
+    cess                = models.CharField(max_length=50, blank=True, null=True)
+    tcs                 = models.CharField(max_length=50, blank=True, null=True)
+    total               = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
-	    return "Bill no: " + str(self.billno.billno)
+	    return "Bill no: " + str(self.doc_no)
 
       

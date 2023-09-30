@@ -10,7 +10,8 @@ from .forms import (
     CustomerForm,
     SelectCustomerForm,
     SalesItemFormset,
-    SalesEditFormSet,    
+    SalesEditFormSet,
+    SaleDetailsForm,    
     StockForm,
     DocForm,
     )
@@ -265,16 +266,26 @@ class SalesCreateView(View):
     def post(self, request, pk):
         formset = SalesItemFormset(request.POST, prefix='sales_item')
         customerobj = get_object_or_404(Customer, pk=pk)
-        print('l-263',customerobj)              
+        print('l-269',customerobj)              
        
         msg_tag = "No item has been addded"                                   
         
         # Create a separate form for the 'docno' and 'docdt' fields
         doc_form = DocForm(request.POST)  # Replace 'YourDocForm' with your actual form class name
         
-       
 
-        if formset.is_valid() and doc_form.is_valid():        
+        if formset.is_valid() and doc_form.is_valid():
+            doc_no = request.POST['docno']
+            doc_dt = request.POST['docdt']
+            po = request.POST['po']
+            veh = request.POST['veh']  # Replace with the actual field name
+
+        
+            # Check if a SalesBillDetails instance with the given doc_no already exists
+            # If it exists, update it; otherwise, create a new instance
+                     
+            
+            tot_price=0            
             for form in formset:         
                 if form.has_changed():
                     billitem = form.save(commit=False)
@@ -293,21 +304,29 @@ class SalesCreateView(View):
                         stock.is_deleted = True                              # updates quantity
                         # saves bill item and stock
                         stock.save()
-                        
-                    try:  
+                        tot_price=tot_price+billitem.totalprice
+                    try:                                            
                         billitem.save()
-                       
+                        msg_tag = "Sales items have been registered successfully"    
+   
                        
                     except IntegrityError:
                         error_message =  "<b>"+str(billitem.belt_no)+"</b> already exists. Please enter a unique Belt No."
                         messages.error(request, error_message)
                         return render(request, self.template_name, {'formset': formset, 'customer': customerobj})
-                    
-                    msg_tag = "Sales items have been registered successfully"    
-                    messages.success(request, msg_tag)
-                   
-               
-            messages.info(request, msg_tag)
+            
+            if tot_price > 0:                 
+                sales, created = SalesBillDetails.objects.get_or_create(doc_no=doc_no)
+                # updates status of SalesBill db
+                sales.doc_no = doc_no
+                sales.doc_dt = doc_dt
+                sales.po = po
+                sales.veh = veh            
+                sales.total = tot_price 
+                sales.save()            
+                messages.success(request, msg_tag)
+            else:
+                messages.info(request, msg_tag)
 
             #return render(request, self.template_name, context)
             #return redirect('product:select-customer')
@@ -317,13 +336,14 @@ class SalesCreateView(View):
         else:
             formset = SalesItemFormset(request.POST, prefix='sales_item')
             doc_form = DocForm(request.POST)  # Replace 'YourDocForm' with your actual form class name
+            
             print('formset is not valid')
            
         
         context = {
             'formset': formset,
             'customer': customerobj,
-            'doc_form': doc_form,  # Pass the doc_form to the template
+            'doc_form': doc_form  # Pass the doc_form to the template
             
         }
         return render(request, self.template_name, context)
@@ -436,7 +456,13 @@ def get_stock_data_view(request, stockInstanceId):
 def edit_sales_item(request, doc_no):
     # Filter the queryset to retrieve only records with the specified doc_no
     sales_items = SalesItem.objects.filter(doc_no=doc_no)
-
+    sale = SalesBillDetails.objects.filter(doc_no=doc_no)
+    
+    if sale.exists():
+            veh = sale.first().veh
+            po  = sale.first().po
+            total = sale.first().total
+        
     # Initialize other variables (customer, doc_no, doc_dt) as needed
     customer = None
     doc_no = None
@@ -455,7 +481,14 @@ def edit_sales_item(request, doc_no):
         formset = modelformset_factory(SalesItem, form=SalesEditForm, extra=0)(request.POST, queryset=sales_items, prefix='sales_item')
         
         if formset.is_valid():
-       
+            # gets the SalesBillDetails rec
+            salesDetails = get_object_or_404(SalesBillDetails, doc_no=doc_no)
+            # updates status of stock db
+            salesDetails.po = request.POST['po']
+            salesDetails.veh = request.POST['veh']
+            # saves bill item and stock
+            salesDetails.save()
+            messages.success(request, "Record has been modified!")
             if formset.has_changed():
                 formset.save()
                 messages.success(request, "Record has been modified!")
@@ -469,6 +502,10 @@ def edit_sales_item(request, doc_no):
         'customer': customer,
         'doc_no': doc_no,
         'doc_dt': doc_dt,
+        'veh': veh,
+        'po': po,
+        'total': total
+        
     }
 
     return render(request, 'product/edit_sales_item.html', context)
@@ -493,3 +530,50 @@ def delete_sales_item(request, pk):
             return redirect('product:new-sales', customer.id)  # Replace 'product:some_url' with the desired URL name
 
     return render(request, 'product/delete_sales_item.html', {'sales_item': sales_item})
+
+
+class SaleBillView(View):
+    model = SalesItem
+    template_name = "product/sale_bill.html"   
+
+    def get(self, request, doc_no):
+        # Query the SalesItem objects for the given doc_no
+        bills = SalesItem.objects.filter(doc_no=doc_no)
+        sale = SalesBillDetails.objects.filter(doc_no=doc_no)
+        # Assuming there's only one customer for all 'bills'
+        total=0
+        if bills.exists():
+            customer = Customer.objects.get(pk=bills.first().cust_id)
+            bill_no = bills.first().doc_no
+            bill_dt = bills.first().doc_dt
+            
+            for bill in bills:
+                total=total+bill.totalprice
+                
+            # gets the SalesBillDetails rec
+            salesDetails = get_object_or_404(SalesBillDetails, doc_no=doc_no)
+            # updates status of stock db        
+            salesDetails.total = total
+            # saves bill item and stock
+            salesDetails.save()
+            
+        else:
+            customer = None
+            
+        if sale.exists():
+            veh = sale.first().veh
+            po  = sale.first().po
+            
+        
+            
+        context = {
+            'bills': bills,
+            'customer': customer,
+            'bill_no': bill_no,
+            'bill_dt': bill_dt,
+            'veh': veh,
+            'po': po,
+            'total': total
+            
+        }
+        return render(request, self.template_name, context)

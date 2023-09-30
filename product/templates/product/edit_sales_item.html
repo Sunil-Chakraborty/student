@@ -57,6 +57,12 @@
 		</tr>
 		  
         {% endfor %}
+		
+		<label for="po" style="margin-left:5px;color:black;font-weight:bold;">PO.No:</label>
+		<input type="text" id="po" name="po" required value="{{ po }}" autocomplete="off">
+		<label for="veh" style="margin-left:5px;color:black;font-weight:bold;">Vehicle:</label>
+		<input type="text" id="veh" name="veh" required value="{{ veh }}"><br>
+
       </tbody>
     </table>
 	<button type="submit" class="btn btn-primary">Save Changes</button>

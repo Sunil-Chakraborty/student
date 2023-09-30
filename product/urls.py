@@ -18,6 +18,7 @@ from product.views import (
     SalesCreateView,
     edit_sales_item,
     delete_sales_item,
+    SaleBillView,
     
     StockListView,
     edit_stock,
@@ -48,6 +49,7 @@ urlpatterns = [
     #path('purchases/<pk>/delete', views.PurchaseDeleteView.as_view(), name='delete-purchase'),
     path('edit_sales_item/<str:doc_no>/', edit_sales_item, name='edit_sales_item'),
     path('delete_sales_item/<int:pk>/', delete_sales_item, name='delete-sales-item'),
+    path('sale-bill/<str:doc_no>/', SaleBillView.as_view(), name='sale-bill'),
     
     path('stock-create/', prod_stock_create, name='stock-create'),
     path('stock/', StockListView.as_view(), name='stock-list'),

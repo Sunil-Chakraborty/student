@@ -1,14 +1,14 @@
-{% extends bill_base %}
+{% extends "bill_base.html" %}
 {% load static %}
 
 
-{% block title %} Purchases Bill No : {{ bill.billno }}{% endblock title %}
-
-
+{% block title %} Sale Bill No : {{ bills.doc_no }}{% endblock title %}
+<head>
+  
+</head>
 {% block content %}
 
-    <div style="color:#575757; font-style: bold; font-size: 3rem;  border-bottom: 1px solid white;">Purchase Bill No : {{ bill.billno }}</div>
-
+    
     <!-- <br><br> --><!-- Log on to codeastro.com for more projects -->
     
     <form method="post">
@@ -23,19 +23,19 @@
                 <table class="outer-box inner-box" style="width: 840px; margin-left: auto; margin-right: auto;">
                     <tbody>
                         
-                        <tr style="height: 1px;">
-                            <td> <p style="text-align: center;">TAX INVOICE - PURCHASE</p> </td>
+                        <tr style="height: 1.5px;">
+                            <td> <p style="text-align: center;font-weight:bold;">SALES TAX INVOICE</p> </td>
                         </tr>
                         
                         <tr style="text-align: center;">
                             <td >
-                                <span style="font-size: 350%;">DJANGOIMS</span> <br>
-                                <span style="font-size: 120%; font-weight: bold;">DEALERS IN : Products</span> <br>
-                                <span style="font-weight: bold;">REGD ADDRESS :</span> 971 Center Street<br>Umatilla, OR 97882<br>
-                                <span style="font-weight: bold;">EMAIL : djangoims@mail.com</span> <br><br>
+                                <span style="font-size: 230%;"><u>Phoenix Conveyor Belt India (Pvt) Ltd.</u></span> <br>
+                                <span style="font-size: 120%; font-weight: bold;">MANUFACTURER : Conveyor Belt</span> <br>
+                                <span style="font-weight: bold;">REGD ADDRESS :</span> P.O: Gayeshpur, District: Nadia,PIN-741234<br>
+                                <span style="font-weight: bold;">EMAIL account : pcbi@gmail.com</span> <br><br>
                             </td><!-- Log on to codeastro.com for more projects -->
                         </tr>
-                        
+						
                         <tr>
                             <td>
                             <table class="outer-box" style="width: 800px; margin-left: auto; margin-right: auto;">
@@ -46,30 +46,30 @@
                                     <tr>
                                         <td class="inner-box" style="width: 50%; font-weight: bold;">&nbsp;NAME OF CONSIGNEE / BUYER</td>
                                         <td class="inner-box" style="width: 25%; font-weight: bold;">&nbsp;INVOICE NO</td>
-                                        <td class="inner-box" style="width: 25%;">&nbsp;{{ bill.billno }}</td>
+                                        <td class="inner-box" style="width: 25%;">&nbsp;{{ bill_no }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="inner-box" style="width: 50%;">&nbsp;{{ bill.supplier.name }}</td>
+                                        <td class="inner-box" style="width: 50%;font-size: 120%;">&nbsp;M/S.{{ customer.name }}</td>
                                         <td class="inner-box" style="width: 25%; font-weight: bold;">&nbsp;DATE</td>
-                                        <td class="inner-box" style="width: 25%;">&nbsp;{{ bill.time.date }}</td>
+                                        <td class="inner-box" style="width: 25%;">&nbsp;{{ bill_dt }}</td>
                                     </tr>
                                     <tr><!-- Log on to codeastro.com for more projects -->
-                                        <td class="inner-box" style="width: 50%;" rowspan="3">{{ bill.supplier.address|linebreaks }}</td>
+                                        <td class="inner-box" style="width: 50%;" rowspan="3">{{ customer.address }}</td>
                                         <td class="inner-box" style="width: 25%; font-weight: bold;">&nbsp;EWAY NO</td>
                                         <td class="inner-box align-middle" style="width: 25%;"> <input type="text" name="eway" class="align-middle" style="border: 0; overflow: hidden;" value="{% if billdetails.eway %}{{ billdetails.eway }}{% endif %}"> </td>
                                     </tr>
                                     <tr>
                                         <td class="inner-box" style="width: 25%; font-weight: bold;">&nbsp;VEH NO</td>
-                                        <td class="inner-box align-middle" style="width: 25%;"> <input type="text" name="veh" class="align-middle" style="border: 0; overflow: hidden;" value="{% if billdetails.veh %}{{ billdetails.veh }}{% endif %}"> </td>
+                                        <td class="inner-box align-middle" style="width: 25%;"> <input type="text" name="veh" class="align-middle" style="border: 0; overflow: hidden;" value="{{ veh }}"> </td>
                                     </tr>
                                     <tr>
                                         <td class="inner-box" style="width: 25%; font-weight: bold;">&nbsp;DESTINATION</td>
                                         <td class="inner-box align-middle" style="width: 25%;"> <input type="text" name="destination" class="align-middle" style="border: 0; overflow: hidden;" value="{% if billdetails.destination %}{{ billdetails.destination }}{% endif %}"> </td>
                                     </tr>
                                     <tr>
-                                        <td class="inner-box" style="font-weight: bold;">&nbsp;GSTIN No : {{ bill.supplier.gstin }}</td>
+                                        <td class="inner-box" style="font-weight: bold;">&nbsp;GSTIN No : </td>
                                         <td class="inner-box" style="width: 25%; font-weight: bold;">&nbsp;PO NO &amp; DATE</td>
-                                        <td class="inner-box align-middle" style="width: 25%;"> <input type="text" name="po" class="align-middle" style="border: 0; overflow: hidden;" value="{% if billdetails.po %}{{ billdetails.po }}{% endif %}"> </td>
+                                        <td class="inner-box align-middle" style="width: 25%;"> <input type="text" name="po" class="align-middle" style="border: 0; overflow: hidden;" value="{{ po }}"> </td>
                                     </tr><!-- Log on to codeastro.com for more projects -->
                                 </tbody>
                             </table>
@@ -81,23 +81,23 @@
                             <table class="outer-box" style="width: 800px; margin-left: auto; margin-right: auto;">
                                 <tbody>
                                     <tr>
-                                        <td class="inner-box" style="width: 05%; font-weight: bold; text-align: center;">&nbsp;SL</td>
-                                        <td class="inner-box" style="width: 30%; font-weight: bold; text-align: center;">GOODS</td>
+                                        <td class="inner-box" style="width: 05%; font-weight: bold; text-align: left;">&nbsp;SL</td>
+                                        <td class="inner-box" style="width: 30%; font-weight: bold; text-align: left;">GOODS</td>
                                         <td class="inner-box" style="width: 12%; font-weight: bold; text-align: center;">&nbsp;HSN/SAC</td>
-                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: center;">QTY MTS</td>
-                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: center;">RATE PMT</td>
-                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: center;">AMOUNT $</td>
-                                        <td class="inner-box" style="width: 05%; font-weight: bold; text-align: center;">PS</td>
+                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: right;">QTY(Mtr)</td>
+                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: right;">RATE/Mtr</td>
+                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: right;">AMOUNT(Rs.)</td>
+                                        
                                     </tr>
-                                    {% for item in items %}
+                                    {% for item in bills %}
                                         <tr style="height: auto;">
                                             <td class="inner-box" style="width: 5%;">&nbsp; {{ forloop.counter }}</td>
-                                            <td class="inner-box" style="width: 30%;">&nbsp; {{ item.stock.name }}</td>
+                                            <td class="inner-box" style="width: 30%;">&nbsp; {{ item.belt_no }}</td>
                                             <td class="inner-box" style="width: 12%;">&nbsp;</td>
-                                            <td class="inner-box" style="width: 12%;">&nbsp; {{ item.quantity }}</td>
-                                            <td class="inner-box" style="width: 12%;">&nbsp; {{ item.perprice }}</td>
-                                            <td class="inner-box" style="width: 12%;">&nbsp;{{ item.totalprice }}</td>
-                                            <td class="inner-box" style="width: 5%;">&nbsp;0</td>
+                                            <td class="inner-box" style="width: 12%;text-align: right;">&nbsp; {{ item.quantity }}</td>
+                                            <td class="inner-box" style="width: 12%;text-align: right;">&nbsp; {{ item.perprice }}</td>
+                                            <td class="inner-box" style="width: 12%;text-align: right;">&nbsp;{{ item.totalprice }}</td>
+                                            
                                         </tr>
                                     {% endfor %}
                                 </tbody>
@@ -135,16 +135,17 @@
                                     </tr>
                                     <tr>
                                         <td class="inner-box" style="font-weight: bold;">&nbsp;TOTAL</td>
-                                        <td class="inner-box align-middle">&nbsp; <input type="text" name="total" class="align-middle" pattern="[0-9]+\.[0-9]+" style="border: 0; overflow: hidden;" value="{% if billdetails.total %}{{ billdetails.total }}{% endif %}"> </td>
+                                        <td class="inner-box align-middle">&nbsp; <input type="text" name="total" class="align-middle" pattern="[0-9]+\.[0-9]+" style="border: 0; overflow: hidden;" value="{{ total }}"> </td>
                                     </tr>
                                 </tbody>
                             </table>
                             </td>
                         </tr>
 
+                     
                         <tr>
-                            <td style="text-align: right;">
-                                <span style="font-weight: bold;">FOR COMPANY <br><br><br><br> Signature</span>
+                            <td style="float:right;margin-right:20px;">
+                                <span style="font-weight: bold;">FOR COMPANY <br><br><br><br>Signature</span>
                             </td>
                         </tr>
 
@@ -165,11 +166,11 @@
 
         <br><br>
 
-        <div class="wrapper">
+        <div style="width: 840px; margin-left: auto; margin-right: auto;">
             <button class="center btn btn-primary" onclick="printpage('printArea')">Print</button>
-            <button class="center btn btn-success" type="submit">Save Draft</button>
-            <a href="{% url 'purchases-list' %}" class=" btn center btn-secondary">Go Back</a>
-        </div><!-- Log on to codeastro.com for more projects -->
+            <a href="{% url 'product:new-sales' customer.pk %}" class=" btn center btn-secondary">Go Back</a>
+        
+		</div><!-- Log on to codeastro.com for more projects -->
 
     </form>
 
