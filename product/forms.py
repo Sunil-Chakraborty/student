@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import Form, ModelForm, DateField, widgets,ValidationError
-from .models import Product, Customer, SalesBill, SalesItem, Stock, SalesBillDetails
+from .models import Product, Customer, SalesBill, SalesItem, Stock, SalesBillDetails, Splicing
 from django.core.validators import MaxValueValidator, MinValueValidator, DecimalValidator
 from django.core.exceptions import ValidationError
 from django.forms import formset_factory, modelformset_factory
@@ -298,4 +298,45 @@ class SalesEditForm(forms.ModelForm):
         return cleaned_data
         
 SalesEditFormSet = modelformset_factory(SalesItem, form=SalesEditForm, extra=0)
+
+
+class SplicingForm(forms.ModelForm):
     
+    class Meta:
+        model = Splicing
+        #fields = "__all__"
+        #exclude = ['email','prod_tag','fab_type','edge','prod_des'] 
+        exclude =  ['splice_type','splice_length','tc_thk','tc_length','specn',
+                    'tc_width','bc_thk','bc_length','bc_width','ic_no','ic_length','ic_height',
+                    'ic_thk','sg_width','sg_thk','sg_length','es_width','es_thk',
+                    'es_length','bonder_soln','clng_soln','nrc_width','nrc_length',
+                    'srp_width','srp_length','pol_width','pol_length','is_deleted']
+                    
+        widgets = {
+            'name'      :  widgets.TextInput(attrs={'class': 'form-control','autocomplete': 'on'}),
+            'doc_no'    :  widgets.TextInput(attrs={'class': 'form-control','autocomplete': 'on'}),
+            'doc_dt'    :  widgets.DateInput(attrs={'class': 'form-control','type': 'date'}),
+            'width'     :  widgets.NumberInput(attrs={'min': 500, 'max': 3000,'title': 'Numbers only','autocomplete': 'on'}),         
+            'strength'  :  widgets.NumberInput(attrs={'min': 100, 'max': 5400,'title': 'Numbers only','autocomplete': 'on'}),
+            'dia'       :  widgets.NumberInput(attrs={'min': 2.5, 'max': 20,'title': 'Numbers only','autocomplete': 'on'}),
+            'nos'       :  widgets.NumberInput(attrs={'min': 50, 'max': 200,'title': 'Numbers only','autocomplete': 'on'}),
+            'pitch'     :  widgets.NumberInput(attrs={'min': 2.5, 'max': 20,'title': 'Numbers only','autocomplete': 'on'}),
+            'tr'        :  widgets.NumberInput(attrs={'min': 1.5, 'max': 40,'title': 'Numbers only','autocomplete': 'on'}),
+            'br'        :  widgets.NumberInput(attrs={'min': 1.5, 'max': 40,'title': 'Numbers only','autocomplete': 'on'}),
+            'grade'     :  widgets.TextInput(attrs={'class': 'form-control'}),
+            'brkr_pos'  :  widgets.Select(attrs={}),
+            
+        }
+    
+   
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})
+            field.required = True
+                
+           
+    def get_verbose_name(self, field_name):
+        return self.fields[field_name].widget._meta.model._meta.get_field(field_name).verbose_name
+ 

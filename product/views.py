@@ -14,11 +14,12 @@ from .forms import (
     SaleDetailsForm,    
     StockForm,
     DocForm,
+    SplicingForm,
     )
 from .forms import SalesItemForm,SalesEditForm
     
 from account.models import Account
-from . models import Product, Customer,SalesBill,SalesBillDetails,Stock,SalesItem
+from . models import Product, Customer,SalesBill,SalesBillDetails,Stock,SalesItem,Splicing
 from student_app.templatetags.custom_filters import *
 from django.db import IntegrityError
 from django.views.generic import (
@@ -33,6 +34,7 @@ from django.contrib import messages
 from django.db import IntegrityError
 from django.http import JsonResponse
 
+from decimal import Decimal
 
 def prod_TCB_create(request,*args, **kwargs):
    
@@ -575,5 +577,225 @@ class SaleBillView(View):
             'po': po,
             'total': total
             
+        }
+        return render(request, self.template_name, context)
+
+def prod_splice_create(request,*args, **kwargs):
+
+    qs=Splicing.objects.all()          
+     
+    if request.method == 'POST':     
+        form = SplicingForm(request.POST)
+            
+        if form.is_valid():
+        
+            spl_doc = request.POST['doc_no']
+            
+            
+            spl = form.save(commit=False)
+            
+            spl_type = Decimal(0)
+            
+            # calculation of splice length and splice type
+            if spl.strength <= 1000:               
+               mg1 = (0.5 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 1                
+               spl.splice_length = 600 
+            elif spl.strength <= 1250:
+               mg1 = (0.5 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 1                
+               spl.splice_length = 650 
+            elif spl.strength <= 1600:
+               mg1 = (0.5 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 1 
+               spl.splice_length = 750
+            elif spl.strength <= 2000:
+               mg1 = (0.67 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 2 
+               spl.splice_length = 1150
+            elif spl.strength <= 2500:
+               mg1 = (0.67 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 2 
+               spl.splice_length = 1350
+            elif spl.strength <= 3150:
+               mg1 = (0.67 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 2 
+               spl.splice_length = 1650               
+            elif spl.strength <= 3500:
+               mg1 = (0.75 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 3 
+               spl.splice_length = 2350               
+            elif spl.strength <= 4000:
+               mg1 = (0.75 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 3 
+               spl.splice_length = 2650               
+            elif spl.strength <= 4500:
+               mg1 = (0.75 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 3 
+               spl.splice_length = 2800               
+            elif spl.strength <= 5000:
+               mg1 = (0.80 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 4 
+               spl.splice_length = 4050               
+            elif spl.strength <= 5400:
+               mg1 = (0.80 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 4 
+               spl.splice_length = 4450
+               
+            spl.splice_type=spl_type
+            
+            
+            # calculation of Top combination
+            if spl.brkr_pos == 'Top' or spl.brkr_pos == 'Both':                
+                tc_thk = round(float(spl.tr) - 2 + 0.5 - 1.2, 1)                
+            else:                
+                tc_thk = round(float(spl.tr) - 2 + 0.5, 1)
+            
+            tc_length = round(float(spl.width) + 0.30 * spl.splice_length+200, -2)    
+            
+            
+            specn=str(spl.width)+" mm x ST-"+str(spl.strength)+" x D-"+str(spl.dia)+" x N-"+str(spl.nos)+" x P-"+str(spl.pitch)+" x ("+str(spl.tr)+"+"+str(spl.br)+") + Grd. "+str(spl.grade)+"+ Brk."+str(spl.brkr_pos)
+            
+            
+            spl.specn=specn
+            spl.tc_thk = tc_thk
+            spl.tc_length = tc_length
+            
+            #Specn. :  2000mm x ST-1200 x Dia - 3.6 x N-162 x P-12 x (8 + 6) Grd.-RFRAS
+
+            spl.save()
+           
+            messages.success(request,('<h1 style="text-align:center;">Record has been added successfully!</h1>'))
+            return redirect(request.path)
+    else:        
+        form = SplicingForm()
+        
+    context = {
+        'form': form,
+        "queryset":qs,        
+    }
+    return render(request, 'product/splicing.html', context)
+
+
+def edit_spl(request, spl_id):
+    splicing = get_object_or_404(Splicing, pk=spl_id)
+
+    if request.method == 'POST':
+        form = SplicingForm(request.POST, instance=splicing)
+        if form.is_valid():
+            spl = form.save(commit=False)
+            
+            spl_type = Decimal(0)
+            
+            # calculation of splice length and splice type
+            if spl.strength <= 1000:               
+               mg1 = (0.5 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 1                
+               spl.splice_length = 600 
+            elif spl.strength <= 1250:
+               mg1 = (0.5 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 1                
+               spl.splice_length = 650 
+            elif spl.strength <= 1600:
+               mg1 = (0.5 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 1 
+               spl.splice_length = 750
+            elif spl.strength <= 2000:
+               mg1 = (0.67 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 2 
+               spl.splice_length = 1150
+            elif spl.strength <= 2500:
+               mg1 = (0.67 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 2 
+               spl.splice_length = 1350
+            elif spl.strength <= 3150:
+               mg1 = (0.67 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 2 
+               spl.splice_length = 1650               
+            elif spl.strength <= 3500:
+               mg1 = (0.75 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 3 
+               spl.splice_length = 2350               
+            elif spl.strength <= 4000:
+               mg1 = (0.75 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 3 
+               spl.splice_length = 2650               
+            elif spl.strength <= 4500:
+               mg1 = (0.75 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 3 
+               spl.splice_length = 2800               
+            elif spl.strength <= 5000:
+               mg1 = (0.80 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 4 
+               spl.splice_length = 4050               
+            elif spl.strength <= 5400:
+               mg1 = (0.80 * float(spl.pitch)) - float(spl.dia)
+               if mg1 >= 2:
+                  spl_type = 4 
+               spl.splice_length = 4450
+               
+            spl.splice_type=spl_type
+            
+            
+            # calculation of Top combination
+            if spl.brkr_pos == 'Top' or spl.brkr_pos == 'Both':                
+                tc_thk = round(float(spl.tr) - 2 + 0.5 - 1.2, 1)                
+            else:                
+                tc_thk = round(float(spl.tr) - 2 + 0.5, 1)
+            
+            tc_length = round(float(spl.width) + 0.30 * spl.splice_length+200, -2)    
+            
+            
+            specn=str(spl.width)+" mm x ST-"+str(spl.strength)+" x D-"+str(spl.dia)+" x N-"+str(spl.nos)+" x P-"+str(spl.pitch)+" x ("+str(spl.tr)+"+"+str(spl.br)+") + Grd. "+str(spl.grade)+"+ Brk."+str(spl.brkr_pos)
+            
+            
+            spl.specn=specn
+            spl.tc_thk = tc_thk
+            spl.tc_length = tc_length
+            
+            #Specn. :  2000mm x ST-1200 x Dia - 3.6 x N-162 x P-12 x (8 + 6) Grd.-RFRAS
+
+            
+            spl.save()            
+            messages.success(request,('<h1 style="text-align:center;">Record has been modified!</h1>'))
+            return redirect('product:spl-create')
+        
+    else:
+        form = SplicingForm(instance=splicing)
+
+    return render(request, 'product/edit_splicing.html', {'form': form})
+
+class SplicingView(View):
+    model = Splicing
+    template_name = "product/spldoc.html"   
+
+    def get(self, request, spl_id):
+        # Query the SalesItem objects for the given doc_no
+        spl_doc = Splicing.objects.get(pk=spl_id)
+        
+            
+        context = {            
+            'spl_doc': spl_doc,            
         }
         return render(request, self.template_name, context)

@@ -19,15 +19,13 @@ from product.views import (
     edit_sales_item,
     delete_sales_item,
     SaleBillView,
-    prod_splice_create,
+    Splicing,
     
     StockListView,
     edit_stock,
     stock_delete,
     
     get_stock_data_view,
-    edit_spl,
-    SplicingView,
     
 	)
   
@@ -62,7 +60,5 @@ urlpatterns = [
     path('get_stock_data_view/<int:stockInstanceId>', get_stock_data_view, name='get_stock_data_view'),
     
     path('spl-create/', prod_splice_create, name='spl-create'),
-    path('spl-edit/<str:spl_id>', edit_spl, name='spl-edit'),
-    path('spl-doc/<str:spl_id>/', SplicingView.as_view(), name='spl-doc'),
-    
+
 ]

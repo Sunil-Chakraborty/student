@@ -201,4 +201,57 @@ class SalesBillDetails(models.Model):
     def __str__(self):
 	    return "Bill no: " + str(self.doc_no)
 
+class Splicing(models.Model):
+    id              = models.AutoField(primary_key=True)
+    name            = models.CharField(verbose_name='Name',max_length=150,null=True, blank=True)
+    specn           = models.CharField(verbose_name='Specn.',max_length=150,null=True, blank=True)
+    doc_no          = models.CharField(verbose_name='Doc No.', max_length=50, null=True, blank=True)
+    doc_dt          = models.DateField(verbose_name='Dt.', null=True, blank=True)
+    width           = models.IntegerField(verbose_name='Width(mm)',null=True, blank=True)
+    strength        = models.IntegerField(verbose_name='Strength',null=True, blank=True)
+    dia             = models.DecimalField(verbose_name='Cord Dia',max_digits=5, decimal_places=2,null=True,blank=True)
+    nos             = models.IntegerField(verbose_name='Cord No',null=True, blank=True)
+    pitch           = models.DecimalField(verbose_name='Cord Pitch',max_digits=5,decimal_places=2,null=True,blank=True)
+    tr              = models.DecimalField(verbose_name='Top Rubber(mm)',max_digits=5,decimal_places=2,null=True,blank=True)
+    br              = models.DecimalField(verbose_name='Bot Rubber(mm)',max_digits=5,decimal_places=2,null=True,blank=True)
+    grade           = models.CharField(max_length=50,null=True, blank=True)
+    BRKR_POS_CHOICES = (
+ 		 (None, 'Select'),
+         ('Top', 'Top'),
+         ('Bottom', 'Bottom'),
+         ('Both', 'Both'),
+	)
+    brkr_pos        = models.CharField(verbose_name='Brkr Position', max_length=15,choices=BRKR_POS_CHOICES, null=True, blank=True)
+    splice_type     = models.IntegerField(verbose_name='Splice Type',null=True, blank=True)
+    splice_length   = models.IntegerField(verbose_name='Splice Length',null=True, blank=True)
+    tc_thk          = models.DecimalField(verbose_name='TC Thikness',max_digits=5,decimal_places=2,null=True,blank=True)
+    tc_length       = models.IntegerField(verbose_name='TC Length',null=True, blank=True)
+    tc_width        = models.IntegerField(verbose_name='TC Width',null=True, blank=True)
+    bc_thk          = models.DecimalField(verbose_name='BC Thikness',max_digits=5,decimal_places=2,null=True,blank=True)
+    bc_length       = models.IntegerField(verbose_name='BC Length',null=True, blank=True)
+    bc_width        = models.IntegerField(verbose_name='BC Width',null=True, blank=True)
+    ic_no           = models.IntegerField(verbose_name='IC Nos',null=True, blank=True)
+    ic_length       = models.IntegerField(verbose_name='IC Length',null=True, blank=True)
+    ic_height       = models.IntegerField(verbose_name='IC Height',null=True, blank=True)
+    ic_thk          = models.DecimalField(verbose_name='IC Thikness',max_digits=5,decimal_places=2,null=True,blank=True)
+    sg_width        = models.IntegerField(verbose_name='SG Width',null=True, blank=True)
+    sg_thk          = models.DecimalField(verbose_name='SG Thikness',max_digits=5,decimal_places=2,null=True,blank=True)
+    sg_length       = models.IntegerField(verbose_name='SG Length',null=True, blank=True)
+    es_width        = models.IntegerField(verbose_name='ES Width',null=True, blank=True)
+    es_thk          = models.DecimalField(verbose_name='ES Thikness',max_digits=5,decimal_places=2,null=True,blank=True)
+    es_length       = models.IntegerField(verbose_name='ES Length',null=True, blank=True)
+    bonder_soln     = models.IntegerField(verbose_name='Bonder Solun.',null=True, blank=True)
+    clng_soln       = models.IntegerField(verbose_name='Cleaning Solun.',null=True, blank=True)
+    nrc_width       = models.IntegerField(verbose_name='NRC Width',null=True, blank=True)
+    nrc_length      = models.IntegerField(verbose_name='NRC Length',null=True, blank=True)
+    srp_width       = models.IntegerField(verbose_name='SRP Width',null=True, blank=True)
+    srp_length      = models.IntegerField(verbose_name='SRP Length',null=True, blank=True)
+    pol_width       = models.IntegerField(verbose_name='POL Width',null=True, blank=True)
+    pol_length      = models.IntegerField(verbose_name='POL Length',null=True, blank=True)
+    created_date    = models.DateTimeField(auto_now_add=True)
+    modified_date   = models.DateTimeField(auto_now=True)
+    is_deleted      = models.BooleanField(default=False)
+    
+    def __str__(self):
+	    return self.name
       

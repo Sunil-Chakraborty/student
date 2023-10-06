@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+{% block content %}
+<head>
+    <title>Splicing Data Input Zone</title>
+	
+	<style>
+	input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+           -webkit-appearance: none; 
+           margin: 0; 
+    }
+	.small-font {
+        font-size: 15px; /* Adjust the font size as needed */
+		font-weight: bold;
+	}
+	.table1-container {
+            width: 30%;
+            float: left;
+            box-sizing: border-box;
+            padding: 5px;
+			background-color:lightblue;
+			opacity : 1.2;
+    }
+	.table1-heading {
+            width: 30%;
+			background-color:orange;
+			color:black;
+			text-align:center;
+					
+    }
+	
+	.table2-container {
+            width: 70%;
+            float: left;
+            box-sizing: border-box;
+            padding: 10px;
+			background-color:white;
+    }
+	table tr {
+            height: 50px; /* Increase the height for all table rows */
+    
+	}	
+	table input {
+            height: 30px; /* Adjust the height as needed */
+			font-weight:bold;
+			font-size:20px;
+			color:black;
+    }
+	table td {
+            font-size: 25px; /* Adjust the font size as needed */
+    }
+	.text-center {
+            text-align: center;
+	}
+	table .form-control {
+			margin-left:72px;
+            width: 150px; /* Adjust the width as needed */
+			font-size:20px !important;
+			font-weight:bold !important;
+			
+    }
+	.form-control {			
+			font-size:20px !important;
+			font-weight:bold !important;
+			
+    }
+	td.input-data {
+            font-weight: bold;
+            color: black;
+            font-size: 20px;
+    }
+	</style>
+	
+</head>
+<body>
+	
+    <h1 class="table1-heading">New Data Entry Zone</h1>
+	
+    <div class="table1-container">
+    <form method="POST">
+	
+		{% csrf_token %}
+					{% block error_messages %}
+							
+					{% endblock error_messages %}
+					
+		
+			{% if form.errors %}
+				<ul class="errorlist">
+				  {% for error in form.errors %}
+					<li>{{ error }}</li>
+				  {% endfor %}
+				</ul>
+			{% endif %}
+			
+		<div class="form-group row">
+            <label for="customer" style="margin-left:25px;font-size:25px;font-weight:bold;">Customer</label>
+            <div style="margin-left:25px;font-size:25px;font-weight:bold;width:55%;">
+               {{ form.name }}
+			</div>
+        </div>
+		<div class="form-group row">
+            <label for="doc_no" style="margin-left:25px;font-size:25px;font-weight:bold;">Doc No.</label>
+            <div style="margin-left:55px;font-size:25px;font-weight:bold;width:15%;">
+				{{ form.doc_no }}
+			</div>
+			<div style="margin-left:15px;font-size:25px;font-weight:bold;width:38%;">
+				{{ form.doc_dt }}
+			</div>
+        </div>
+        <table border="1" style="margin-left:10px;font-size:20px;font-weight:bold;width:90%;">
+            <tr style="background-color:grey;color:white;">
+                <th style="text-align:left;font-size:30px;">Specn.</th>
+                <th style="text-align:center;font-size:25px;">UOM</th>
+                <th style="text-align:center;font-size:30px;">&nbsp&nbsp&nbsp&nbspQuantity</th>
+                
+            </tr>
+            <tr>
+                <td>Width</td>
+                <td class="text-center" >mm</td>
+                <td>{{ form.width }}</td>
+            </tr>
+            <tr>
+                <td>Strength</td>
+                <td class="text-center">ST</td>
+				<td>{{ form.strength }}</td>
+            </tr>
+            <tr>
+                <td>Cord Dia</td>
+                <td class="text-center">mm</td>
+                <td>{{ form.dia }}</td>
+            </tr>
+            <tr>
+                <td>Cord nos</td>
+                <td class="text-center">Nos</td>
+				<td>{{ form.nos }}</td>
+            </tr>
+            <tr>
+                <td>Pitch</td>
+                <td class="text-center">mm</td>
+                <td>{{ form.pitch }}</td>
+            </tr>
+			<tr>
+                <td colspan="3" style="background-color:grey;color:white;">Cover Rubber</td>
+            </tr>            
+            <tr>
+                <td>Top</td>
+                <td class="text-center">mm</td>
+                <td>{{ form.tr }}</td>
+            </tr>
+            <tr>
+                <td>Bottom</td>
+                <td class="text-center">mm</td>
+                <td>{{ form.br }}</td>
+               
+            </tr>
+            <tr>
+                <td>Rubber Grade</td>
+				<td></td>
+                <td>{{ form.grade }}</td>
+                
+            </tr>
+			<tr>
+                <td>Breaker</td>
+                <td class="text-center">pos</td>
+				<<td>{{ form.brkr_pos }}</td>
+            </tr>
+        </table>
+		<br>
+        <input style="margin-left:10px;font-size:30px;" type="submit" value="Submit">
+    </form>
+	</div>
+	<div class="table2-container">
+					{% if messages %}
+						<div class="alert alert-success">
+							<ul>
+								{% for message in messages %}
+									<li>{{ message|safe }}</li>
+								{% endfor %}
+							</ul>
+						</div>
+						
+					{% endif %}
+	<p style="color:white; background-color:SlateBlue;font-size: 28px; font-weight: bold; text-align: center;">Splicing Details</p>
+
+		<table id="stock" class="table table-css table-hover table-bordered">
+				
+				<thead class="thead-dark align-middle">
+					<tr>
+						<th style="width:1%;">Srl.</th>
+						<th style="width:1%;">Doc.No.</th>
+						<th style="width:1%;">Doc.Dt.</th>
+						<th>Customer</th>												
+						<th style="width:1%;">Width<br>(mm)</th>
+						<th style="width:1%;">ST</th>
+						<th style="width:1%;">Dia</th>
+						<th style="width:1%;">Nos</th>
+						<th style="width:1%;">Pitch</th>
+						<th>Rub<br> Grade</th>
+						<th style="width:1%;">TR</th>
+						<th style="width:1%;">BR</th>						
+						<th style="text-align:center;">Actions</th>
+						
+					</tr>
+				</thead>
+				<tbody>
+				{% for item in queryset %}
+					<tr>
+						<td class="small-font" style="text-align: center;">{{ forloop.counter }}</td>
+						<td class="small-font" style="text-align: center;">{{ item.doc_no }}</td>
+						<td class="small-font" style="text-align: center;">{{ item.doc_dt| date:"d/m/y" }}</td>
+						<td class="small-font" style="text-align: left;">{{ item.name }}</td>						
+						<td class="small-font" style="text-align: center;">{{ item.width }}</td>
+						<td class="small-font" style="text-align: center;">{{ item.strength }}</td>
+						<td class="small-font" style="text-align: center;">{{ item.dia }}</td>
+						<td class="small-font" style="text-align: center;">{{ item.nos }}</td>
+						<td class="small-font" style="text-align: center;">{{ item.pitch }}</td>
+						<td class="small-font" style="text-align: left;">{{ item.grade }}</td>
+						<td class="small-font" style="text-align: right;">{{ item.tr }}</td>
+						<td class="small-font" style="text-align: right;">{{ item.br }}</td>
+						<td class="small-font align-middle" style="text-align:center;"><a style="color:blue;" href="{% url 'product:spl-edit' spl_id=item.id %}">Edit</a>
+						&nbsp&nbsp<a class="small-font align-middle" style="color:blue;text-align:center;" 
+						href="#">Delete</a>&nbsp&nbsp<a 
+						href="{% url 'product:spl-doc' spl_id=item.id %}" class="btn btn-secondary btn-sm">View Bill</a>
+						</td>
+					</tr>				
+				{% endfor %}
+				</tbody>
+		</table>
+	</div>
+	<script>
+		
+        $(document).ready(function() {
+          
+			
+		});
+		
+	</script>
+	
+	
+</body>
+
+{% endblock %}
+</html>
+
+<!--
+<td class="align-middle"><a style="color:blue;" href="{% url 'product:edit_sales_item' doc_no=item.doc_no %}">Edit</a>&nbsp&nbsp<a class="align-middle" style="color:blue;" href="{% url 'product:delete-sales-item' pk=item.id %}">Delete</a>&nbsp&nbsp<a href="{% url 'product:sale-bill' item.doc_no %}" class="btn btn-secondary btn-sm">View Bill</a></td>
+-->									

@@ -1,0 +1,110 @@
+{% extends 'bill_base.html' %}
+{% load static %}
+
+
+{% block title %} Splicing Material Document : {{ spl_doc.doc_no }}{% endblock title %}
+<head>
+  
+</head>
+{% block content %}
+
+    
+    <!-- <br><br> --><!-- Log on to codeastro.com for more projects -->
+    
+    <form method="post">
+    {% csrf_token %}
+
+        <div class="bg">
+        
+            <br>
+
+            <div id="printArea" class="bg">
+
+                <table class="outer-box inner-box" style="width: 1000px; margin-left: auto; margin-right: auto;">
+                    <tbody>
+                        
+                        <tr style="height: 1.5px;">
+                            <td> <p style="text-align: center;font-weight:bold;">Splicing Material Document</p> </td>
+                        </tr>
+                        
+                        <tr style="text-align: center;">
+                            <td >
+                                <span style="font-size: 230%;"><u>M/S.{{spl_doc.name}}</u></span> <br>
+                                <span style="font-size: 120%; font-weight: bold;">Belt Specn.: {{spl_doc.specn }}</span> <br>
+								<span style="font-size: 120%; font-weight: bold;">Doc No: {{spl_doc.doc_no }}</span> 
+								<span style="font-size: 120%; font-weight: bold;">Date: {{spl_doc.doc_dt }}</span> <br>
+							</td><!-- Log on to codeastro.com for more projects -->
+                        </tr>
+						
+                        
+                        <tr>
+                            <td><!-- Log on to codeastro.com for more projects -->
+                            <table class="outer-box" style="width: 800px; margin-left: auto; margin-right: auto;">
+                                <tbody>
+                                    <tr>
+                                        <td class="inner-box" style="width: 05%; font-weight: bold; text-align: left;">&nbsp;SL</td>
+                                        <td class="inner-box" style="width: 30%; font-weight: bold; text-align: left;">GOODS</td>
+                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: center;">&nbsp;HSN/SAC</td>
+                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: right;">QTY(Mtr)</td>
+                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: right;">RATE/Mtr</td>
+                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: right;">AMOUNT(Rs.)</td>
+                                        
+                                    </tr>
+                                    
+                                        <tr style="height: auto;">
+         
+                                            <td class="inner-box" style="width: 30%;">&nbsp; {{ spl_doc.width }}</td>
+                                            <td class="inner-box" style="width: 12%;">&nbsp;</td>
+                                            <td class="inner-box" style="width: 12%;text-align: right;">&nbsp; {{ spl_doc.pitch }}</td>
+                                            
+                                        </tr>
+                                   
+                                </tbody>
+                            </table>
+                            </td>
+                        </tr>
+                        
+                        
+                     
+                        <tr>
+                            <td style="float:right;margin-right:20px;">
+                                <span style="font-weight: bold;">FOR COMPANY <br><br><br><br>Signature</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="text-align: center;">
+                                <!-- FINAL TEXT -->
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+
+            <!-- <br><br> --><!-- Log on to codeastro.com for more projects -->
+
+        </div>
+
+        <br><br>
+
+        <div style="width: 840px; margin-left: auto; margin-right: auto;">
+            <button class="center btn btn-primary" onclick="printpage('printArea')">Print</button>
+            <a href="{% url 'product:spl-create' %}" class=" btn center btn-secondary">Go Back</a>
+        
+		</div><!-- Log on to codeastro.com for more projects -->
+
+    </form>
+
+    <script>
+        function printpage(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }       
+        </script>
+
+{% endblock %}
