@@ -4,13 +4,13 @@
 
 {% block title %} Splicing Material Document : {{ spl_doc.doc_no }}{% endblock title %}
 <head>
-  
+  <title>Splicing Data</title>
+  <style>
+   
+  </style>
 </head>
 {% block content %}
-
-    
-    <!-- <br><br> --><!-- Log on to codeastro.com for more projects -->
-    
+   
     <form method="post">
     {% csrf_token %}
 
@@ -32,68 +32,234 @@
                                 <span style="font-size: 230%;"><u>M/S.{{spl_doc.name}}</u></span> <br>
                                 <span style="font-size: 120%; font-weight: bold;">Belt Specn.: {{spl_doc.specn }}</span> <br>
 								<span style="font-size: 120%; font-weight: bold;">Doc No: {{spl_doc.doc_no }}</span> 
-								<span style="font-size: 120%; font-weight: bold;">Date: {{spl_doc.doc_dt }}</span> <br>
-							</td><!-- Log on to codeastro.com for more projects -->
+								<span style="font-size: 120%; font-weight: bold;">Date: {{spl_doc.doc_dt }}</span>
+							</td>
                         </tr>
 						
-                        
-                        <tr>
-                            <td><!-- Log on to codeastro.com for more projects -->
+						<tr>
+                            <td>
                             <table class="outer-box" style="width: 800px; margin-left: auto; margin-right: auto;">
                                 <tbody>
+
                                     <tr>
-                                        <td class="inner-box" style="width: 05%; font-weight: bold; text-align: left;">&nbsp;SL</td>
-                                        <td class="inner-box" style="width: 30%; font-weight: bold; text-align: left;">GOODS</td>
-                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: center;">&nbsp;HSN/SAC</td>
-                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: right;">QTY(Mtr)</td>
-                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: right;">RATE/Mtr</td>
-                                        <td class="inner-box" style="width: 12%; font-weight: bold; text-align: right;">AMOUNT(Rs.)</td>
-                                        
+                                        <td class="inner-box" style="width:  4%;font-weight: bold; text-align: left;">&nbsp;Sl.</td>
+                                        <td class="inner-box" style="width: 47%; font-weight: bold; text-align: left;">&nbsp;Particulars</td>
+                                        <td class="inner-box" style="width:  8%; font-weight: bold; text-align: center;">&nbsp;UOM</td>
+                                        <td class="inner-box" style="width: 41%; font-weight: bold; text-align: center;">Quantity</td>
+                                       
                                     </tr>
-                                    
-                                        <tr style="height: auto;">
-         
-                                            <td class="inner-box" style="width: 30%;">&nbsp; {{ spl_doc.width }}</td>
-                                            <td class="inner-box" style="width: 12%;">&nbsp;</td>
-                                            <td class="inner-box" style="width: 12%;text-align: right;">&nbsp; {{ spl_doc.pitch }}</td>
-                                            
-                                        </tr>
-                                   
-                                </tbody>
+									<tr style="height: auto;">         
+										<td class="inner-box" >&nbsp; 1</td>
+										<td class="inner-box" >&nbsp;Splice Type </td>
+										<td class="inner-box" ></td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.splice_type }}</td>
+									</tr>
+									{% if spl_doc.splice_type > 0 %}
+									<tr style="height: auto;">         
+										<td class="inner-box" >&nbsp; 2</td>
+										<td class="inner-box" >&nbsp;Splice Length </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.splice_length }}</td>
+									</tr>
+									<tr style="height: auto;">         
+										<td class="inner-box" >&nbsp; 3</td>
+										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Top Combination Sheet</td>
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Thickness </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										{% if spl_doc.tc_brk %}
+											<td class="inner-box" style="text-align: center;" >{{spl_doc.tc_thk }} TR + 1.2 Brk.+ 2.0 mm Bonder</td>
+										{% else %}				
+											<td class="inner-box" style="text-align: center;" >{{spl_doc.tc_thk }} + 2.0 mm Bonder</td>
+										{% endif %}
+									</tr>
+									
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Length </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.tc_length }}</td>
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c)Width </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.tc_width }}</td>
+									</tr>
+									<tr style="height: auto;">         
+										<td class="inner-box" >&nbsp; 4</td>
+										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Back Combination Sheet</td><br> 
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Thickness </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										{% if spl_doc.bc_brk %}
+											<td class="inner-box" style="text-align: center;" >{{spl_doc.bc_thk }} BR + 1.2 Brk.+ 2.0 mm Bonder</td>
+										{% else %}				
+											<td class="inner-box" style="text-align: center;" >{{spl_doc.bc_thk }} + 2.0 mm Bonder</td>
+										{% endif %}
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Length </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.bc_length }}</td>
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c)Width </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.bc_width }}</td>
+									</tr>
+									
+									<tr style="height: auto;">         
+										<td class="inner-box" >&nbsp; 5</td>
+										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Inter Cord Strip</td>
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Number </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;nos</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.ic_no }}</td>
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Length </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.ic_length }}</td>
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c)Height </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.ic_height }}</td>
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; d)Thickness </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.ic_thk }}</td>
+									</tr>
+									<tr style="height: auto;">         
+										<td class="inner-box" >&nbsp; 6</td>
+										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Skim Gum</td> 
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Width </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.sg_width }}</td>
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Thickness </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.sg_thk }}</td>
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c)Length </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.sg_length }}</td>
+									</tr>
+									<tr style="height: auto;">         
+										<td class="inner-box" >&nbsp; 7</td>
+										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Edge Strip</td> 
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Width </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.es_width }}</td>
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Thickness </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.es_thk }}</td>
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c)Length </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.es_length }}</td>
+									</tr>
+									<tr style="height: auto;">         
+										<td class="inner-box" >&nbsp; 8</td>
+										<td class="inner-box" style="font-weight:bold;">&nbsp;Bonder Solution </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;Ltr.</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.bonder_soln }}</td>
+									</tr>
+									<tr style="height: auto;">         
+										<td class="inner-box" >&nbsp; 9</td>
+										<td class="inner-box" style="font-weight:bold;">&nbsp;Cleaning Solution </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;Ltr.</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.clng_soln }}</td>
+									</tr>
+									<tr style="height: auto;">         
+										<td class="inner-box" >&nbsp; 10</td>
+										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Nylon Release Cloth</td> 
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Width </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.nrc_width }}</td>
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Length </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.nrc_length }}</td>
+									</tr>
+									<tr style="height: auto;">         
+										<td class="inner-box" >&nbsp; 11</td>
+										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Silicon Release Paper</td> 
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Width </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.srp_width }}</td>
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Length </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.srp_length }}</td>
+									</tr>
+									<tr style="height: auto;">         
+										<td class="inner-box" >&nbsp; 12</td>
+										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Polythene Sheet</td> 
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Width </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.pol_width }}</td>
+									</tr>
+									<tr> 
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Length </td>
+										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
+										<td class="inner-box" style="text-align: center;" >{{spl_doc.pol_length }}</td>
+									</tr>
+									{% else %}
+									<tr>
+										<td style="color:red;text-align:center;" colspan="4">Consult with QTM </td>
+									</tr>
+									{% endif %}
+							
+								</tbody>
                             </table>
                             </td>
                         </tr>
+						
                         
-                        
-                     
-                        <tr>
-                            <td style="float:right;margin-right:20px;">
-                                <span style="font-weight: bold;">FOR COMPANY <br><br><br><br>Signature</span>
-                            </td>
+						
+                        <tr>							
+                            <td style="float:right;margin-right:100px;">
+                                <span style="font-weight: bold;">FOR COMPANY <br><br><br>Signature</span>
+                            </td>							
                         </tr>
-
-                        <tr>
-                            <td style="text-align: center;">
-                                <!-- FINAL TEXT -->
-                            </td>
-                        </tr>
+						
 
                     </tbody>
                 </table>
 
             </div>
 
-            <!-- <br><br> --><!-- Log on to codeastro.com for more projects -->
-
+           
         </div>
 
-        <br><br>
+        
 
         <div style="width: 840px; margin-left: auto; margin-right: auto;">
             <button class="center btn btn-primary" onclick="printpage('printArea')">Print</button>
             <a href="{% url 'product:spl-create' %}" class=" btn center btn-secondary">Go Back</a>
         
-		</div><!-- Log on to codeastro.com for more projects -->
+		</div>
 
     </form>
 

@@ -583,7 +583,8 @@ class SaleBillView(View):
 def prod_splice_create(request,*args, **kwargs):
 
     qs=Splicing.objects.all()          
-     
+    tc_brk = False 
+    bc_brk = False
     if request.method == 'POST':     
         form = SplicingForm(request.POST)
             
@@ -658,20 +659,81 @@ def prod_splice_create(request,*args, **kwargs):
             
             # calculation of Top combination
             if spl.brkr_pos == 'Top' or spl.brkr_pos == 'Both':                
-                tc_thk = round(float(spl.tr) - 2 + 0.5 - 1.2, 1)                
+                tc_thk = round(float(spl.tr) - 2 + 0.5 - 1.2, 1)
+                tc_brk = True    
             else:                
                 tc_thk = round(float(spl.tr) - 2 + 0.5, 1)
             
             tc_length = round(float(spl.width) + 0.30 * spl.splice_length+200, -2)    
             
+            # calculation of Bot combination
+            if spl.brkr_pos == 'Bot' or spl.brkr_pos == 'Both':                
+                bc_thk = round(float(spl.br) - 2 + 0.5 - 1.2, 1)
+                bc_brk = True    
+            else:                
+                bc_thk = round(float(spl.br) - 2 + 0.5, 1)
             
+            bc_length = round(float(spl.width) + 0.30 * spl.splice_length+200, -2)    
+            
+            # calculation of Inter Cord Strip
+            if spl_type == 1:
+                ic_no = round(2.2 * spl.nos, 0)
+            else:
+                ic_no = round(1.65 * spl.nos, 0)
+                
+            # calculation of Skim Gum
+            if spl_type > 0 :
+                spl.sg_width = 450
+                spl.sg_thk   = 0.40
+                spl.sg_length = round(1.50 * spl.width, 0)
+            
+            # calculation of Edge Strip
+            if spl_type > 0 :
+                spl.es_width = 450
+                spl.es_thk   = 2
+                spl.es_length = round(1.50 * spl.width, 0)
+                spl.bonder_soln = round(spl.splice_length * spl.width * 3.2 * (10 ** -6), 0)
+                spl.clng_soln = round(spl.splice_length * spl.width * 2 * (10 ** -6), 0)
+                spl.nrc_width = 1370
+                
+                if spl.splice_length <=1350:
+                    spl.nrc_length = round((spl.width+0.30*spl.splice_length+200)*2,-3)
+                else:
+                    spl.nrc_length = 8000
+                      
+                spl.srp_width=150
+                spl.srp_length=round(round(spl.width+0.30*spl.splice_length+200,0)*4,-3)
+                
+                spl.pol_width=1400
+                
+                if spl.splice_length <=1350:
+                    spl.pol_length = round((spl.width+0.30*spl.splice_length+1000)*2,-2)
+                else:
+                    spl.pol_length = 10000
+                
+                    
             specn=str(spl.width)+" mm x ST-"+str(spl.strength)+" x D-"+str(spl.dia)+" x N-"+str(spl.nos)+" x P-"+str(spl.pitch)+" x ("+str(spl.tr)+"+"+str(spl.br)+") + Grd. "+str(spl.grade)+"+ Brk."+str(spl.brkr_pos)
             
             
             spl.specn=specn
+            
             spl.tc_thk = tc_thk
             spl.tc_length = tc_length
+            spl.tc_width = spl.splice_length + 100
+            spl.tc_brk = tc_brk
             
+            spl.bc_thk = bc_thk
+            spl.bc_length = bc_length
+            spl.bc_width = spl.splice_length + 100
+            spl.bc_brk = bc_brk
+            
+             
+            spl.ic_no = ic_no
+            spl.ic_length = spl.splice_length + 200            
+            spl.ic_height = round(float(spl.dia) + 1,1)
+            spl.ic_thk = mg1
+            
+           
             #Specn. :  2000mm x ST-1200 x Dia - 3.6 x N-162 x P-12 x (8 + 6) Grd.-RFRAS
 
             spl.save()
@@ -689,8 +751,12 @@ def prod_splice_create(request,*args, **kwargs):
 
 
 def edit_spl(request, spl_id):
-    splicing = get_object_or_404(Splicing, pk=spl_id)
 
+    splicing = get_object_or_404(Splicing, pk=spl_id)
+    
+    tc_brk = False 
+    bc_brk = False
+    
     if request.method == 'POST':
         form = SplicingForm(request.POST, instance=splicing)
         if form.is_valid():
@@ -760,24 +826,80 @@ def edit_spl(request, spl_id):
             
             # calculation of Top combination
             if spl.brkr_pos == 'Top' or spl.brkr_pos == 'Both':                
-                tc_thk = round(float(spl.tr) - 2 + 0.5 - 1.2, 1)                
+                tc_thk = round(float(spl.tr) - 2 + 0.5 - 1.2, 1)
+                tc_brk = True                  
             else:                
                 tc_thk = round(float(spl.tr) - 2 + 0.5, 1)
             
             tc_length = round(float(spl.width) + 0.30 * spl.splice_length+200, -2)    
             
+            # calculation of Bot combination
+            if spl.brkr_pos == 'Bot' or spl.brkr_pos == 'Both':                
+                bc_thk = round(float(spl.br) - 2 + 0.5 - 1.2, 1)
+                bc_brk = True    
+            else:                
+                bc_thk = round(float(spl.br) - 2 + 0.5, 1)
             
+            bc_length = round(float(spl.width) + 0.30 * spl.splice_length+200, -2)    
+            
+            # calculation of Inter Cord Strip
+            if spl_type == 1:
+                ic_no = round(2.2 * spl.nos, 0)
+            else:
+                ic_no = round(1.65 * spl.nos, 0)
+                
+            # calculation of Skim Gum
+            if spl_type > 0 :
+                spl.sg_width = 450
+                spl.sg_thk   = 0.40
+                spl.sg_length = round(1.50 * spl.width, 0)
+                
+            # calculation of Edge Strip
+            if spl_type > 0 :
+                spl.es_width = 450
+                spl.es_thk   = 2
+                spl.es_length = round(1.50 * spl.width, 0)
+                spl.bonder_soln = round(spl.splice_length * spl.width * 3.2 * (10 ** -6), 0)
+                spl.clng_soln = round(spl.splice_length * spl.width * 2 * (10 ** -6), 0)
+                spl.nrc_width = 1370
+                
+                if spl.splice_length <=1350:
+                    spl.nrc_length = round((spl.width+0.30*spl.splice_length+200)*2,-3)
+                else:
+                    spl.nrc_length = 8000
+                
+                spl.srp_width=150
+                spl.srp_length=round(round(spl.width+0.30*spl.splice_length+200,0)*4,-3)
+                
+                spl.pol_width=1400
+                
+                if spl.splice_length <=1350:
+                    spl.pol_length = round((spl.width+0.30*spl.splice_length+1000)*2,-2)
+                else:
+                    spl.pol_length = 10000
+                
             specn=str(spl.width)+" mm x ST-"+str(spl.strength)+" x D-"+str(spl.dia)+" x N-"+str(spl.nos)+" x P-"+str(spl.pitch)+" x ("+str(spl.tr)+"+"+str(spl.br)+") + Grd. "+str(spl.grade)+"+ Brk."+str(spl.brkr_pos)
             
             
             spl.specn=specn
             spl.tc_thk = tc_thk
             spl.tc_length = tc_length
+            spl.tc_width = spl.splice_length + 100
+            spl.tc_brk = tc_brk            
             
-            #Specn. :  2000mm x ST-1200 x Dia - 3.6 x N-162 x P-12 x (8 + 6) Grd.-RFRAS
-
+            spl.bc_thk = bc_thk
+            spl.bc_length = bc_length
+            spl.bc_width = spl.splice_length + 100
+            spl.bc_brk = bc_brk           
             
-            spl.save()            
+            spl.ic_no = ic_no
+            spl.ic_length = spl.splice_length + 200            
+            spl.ic_height = round(float(spl.dia) + 1,1)
+            spl.ic_thk = mg1
+            
+           
+            spl.save()
+            
             messages.success(request,('<h1 style="text-align:center;">Record has been modified!</h1>'))
             return redirect('product:spl-create')
         

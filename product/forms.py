@@ -310,7 +310,7 @@ class SplicingForm(forms.ModelForm):
                     'tc_width','bc_thk','bc_length','bc_width','ic_no','ic_length','ic_height',
                     'ic_thk','sg_width','sg_thk','sg_length','es_width','es_thk',
                     'es_length','bonder_soln','clng_soln','nrc_width','nrc_length',
-                    'srp_width','srp_length','pol_width','pol_length','is_deleted']
+                    'srp_width','srp_length','pol_width','pol_length','is_deleted','tc_brk','bc_brk']
                     
         widgets = {
             'name'      :  widgets.TextInput(attrs={'class': 'form-control','autocomplete': 'on'}),

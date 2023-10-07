@@ -217,6 +217,7 @@ class Splicing(models.Model):
     grade           = models.CharField(max_length=50,null=True, blank=True)
     BRKR_POS_CHOICES = (
  		 (None, 'Select'),
+         ('Nil', 'Nil'),
          ('Top', 'Top'),
          ('Bottom', 'Bottom'),
          ('Both', 'Both'),
@@ -232,7 +233,7 @@ class Splicing(models.Model):
     bc_width        = models.IntegerField(verbose_name='BC Width',null=True, blank=True)
     ic_no           = models.IntegerField(verbose_name='IC Nos',null=True, blank=True)
     ic_length       = models.IntegerField(verbose_name='IC Length',null=True, blank=True)
-    ic_height       = models.IntegerField(verbose_name='IC Height',null=True, blank=True)
+    ic_height       = models.DecimalField(verbose_name='IC Height',max_digits=5,decimal_places=2,null=True, blank=True)
     ic_thk          = models.DecimalField(verbose_name='IC Thikness',max_digits=5,decimal_places=2,null=True,blank=True)
     sg_width        = models.IntegerField(verbose_name='SG Width',null=True, blank=True)
     sg_thk          = models.DecimalField(verbose_name='SG Thikness',max_digits=5,decimal_places=2,null=True,blank=True)
@@ -248,6 +249,8 @@ class Splicing(models.Model):
     srp_length      = models.IntegerField(verbose_name='SRP Length',null=True, blank=True)
     pol_width       = models.IntegerField(verbose_name='POL Width',null=True, blank=True)
     pol_length      = models.IntegerField(verbose_name='POL Length',null=True, blank=True)
+    tc_brk          = models.BooleanField(default=False)
+    bc_brk          = models.BooleanField(default=False)
     created_date    = models.DateTimeField(auto_now_add=True)
     modified_date   = models.DateTimeField(auto_now=True)
     is_deleted      = models.BooleanField(default=False)
