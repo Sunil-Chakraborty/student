@@ -77,7 +77,9 @@
 		font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	}
 	</style>
-	
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </head>
 <body>
 	
@@ -228,18 +230,57 @@
 						<td class="small-font" style="text-align: right;">{{ item.br }}</td>
 						<td class="small-font align-middle" style="text-align:center;"><a style="color:blue;" href="{% url 'product:spl-edit' spl_id=item.id %}">Edit</a>
 						&nbsp&nbsp<a class="small-font align-middle" style="color:blue;text-align:center;" 
-						href="#">Delete</a>&nbsp&nbsp<a 
-						href="{% url 'product:spl-doc' spl_id=item.id %}" class="btn btn-secondary btn-sm">View Bill</a>
+						href="{% url 'product:delete-spl' spl_id=item.id %}">Delete</a>&nbsp;&nbsp<a 
+						href="{% url 'product:spl-doc' spl_id=item.id %}" class="btn btn-secondary btn-sm">Doc View</a>
 						</td>
 					</tr>				
 				{% endfor %}
 				</tbody>
 		</table>
 	</div>
+	<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+
 	<script>
 		
         $(document).ready(function() {
-          
+		
+					$('#stock').DataTable({
+							//scrollX: true,
+							"colspan": 3, // Specify the colspan value
+							
+							dom: 'lBfrtip',
+							
+							columnDefs: [
+								{
+									targets: [0],
+									orderData: [0, 1],
+								},
+								{
+									targets: [1],
+									orderData: [1, 0],
+								},
+								{
+									targets: [4],
+									orderData: [4, 0],
+								},
+								
+								
+							],
+							
+							buttons: [
+							'copy', 'csv', 'excel', 'pdf', 'print',
+							
+							{
+							  extend: 'excelHtml5',
+							  exportOptions: {
+								columns: ':not(:last-child):not(:nth-last-child(2))'
+							  }
+							}
+							
+							]
+							
+							
+					});  
 			
 		});
 		

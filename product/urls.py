@@ -28,6 +28,7 @@ from product.views import (
     get_stock_data_view,
     edit_spl,
     SplicingView,
+    splicing_delete,
     
 	)
   
@@ -64,5 +65,6 @@ urlpatterns = [
     path('spl-create/', prod_splice_create, name='spl-create'),
     path('spl-edit/<str:spl_id>', edit_spl, name='spl-edit'),
     path('spl-doc/<str:spl_id>/', SplicingView.as_view(), name='spl-doc'),
-    
+    path('delete-spl/<str:spl_id>/', splicing_delete, name='delete-spl'),
+ 
 ]

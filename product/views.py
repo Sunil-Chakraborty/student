@@ -921,3 +921,15 @@ class SplicingView(View):
             'spl_doc': spl_doc,            
         }
         return render(request, self.template_name, context)
+
+def splicing_delete(request, spl_id):
+    
+    splicing = get_object_or_404(Splicing, pk=spl_id)
+    
+    if request.method == "POST":
+        splicing.delete()
+        return redirect("product:spl-create")
+        
+    context = {'splicing':splicing}
+    
+    return render(request, 'product/splicing_delete.html', context)

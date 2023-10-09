@@ -1,15 +1,15 @@
 {% extends 'bill_base.html' %}
 {% load static %}
 
-
-{% block title %} Splicing Material Document : {{ spl_doc.doc_no }}{% endblock title %}
 <head>
-  <title>Splicing Data</title>
+	
   <style>
    
   </style>
 </head>
 {% block content %}
+	
+ 
    
     <form method="post">
     {% csrf_token %}
@@ -66,7 +66,7 @@
 										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Top Combination Sheet</td>
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Thickness </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Thickness </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										{% if spl_doc.tc_brk %}
 											<td class="inner-box" style="text-align: center;" >{{spl_doc.tc_thk }} TR + 1.2 Brk.+ 2.0 mm Bonder</td>
@@ -76,12 +76,12 @@
 									</tr>
 									
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Length </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Length </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.tc_length }}</td>
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c)Width </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c)Width </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.tc_width }}</td>
 									</tr>
@@ -90,7 +90,7 @@
 										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Back Combination Sheet</td><br> 
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Thickness </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Thickness </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										{% if spl_doc.bc_brk %}
 											<td class="inner-box" style="text-align: center;" >{{spl_doc.bc_thk }} BR + 1.2 Brk.+ 2.0 mm Bonder</td>
@@ -99,12 +99,12 @@
 										{% endif %}
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Length </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Length </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.bc_length }}</td>
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c)Width </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c)Width </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.bc_width }}</td>
 									</tr>
@@ -114,22 +114,22 @@
 										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Inter Cord Strip</td>
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Number </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a)Number </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;nos</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.ic_no }}</td>
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Length </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b)Length </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.ic_length }}</td>
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c)Height </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c)Height </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.ic_height }}</td>
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; d)Thickness </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d)Thickness </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.ic_thk }}</td>
 									</tr>
@@ -138,17 +138,17 @@
 										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Skim Gum</td> 
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Width </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Width </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.sg_width }}</td>
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Thickness </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b)Thickness </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.sg_thk }}</td>
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c)Length </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c)Length </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.sg_length }}</td>
 									</tr>
@@ -157,17 +157,17 @@
 										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Edge Strip</td> 
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Width </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a)Width </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.es_width }}</td>
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Thickness </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b)Thickness </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.es_thk }}</td>
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c)Length </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c)Length </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.es_length }}</td>
 									</tr>
@@ -188,12 +188,12 @@
 										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Nylon Release Cloth</td> 
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Width </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a)Width </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.nrc_width }}</td>
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Length </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b)Length </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.nrc_length }}</td>
 									</tr>
@@ -202,12 +202,12 @@
 										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Silicon Release Paper</td> 
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Width </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a)Width </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.srp_width }}</td>
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Length </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b)Length </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.srp_length }}</td>
 									</tr>
@@ -216,12 +216,12 @@
 										<td class="inner-box" style="font-weight:bold;" colspan="3">&nbsp;Polythene Sheet</td> 
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Width </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a)Width </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.pol_width }}</td>
 									</tr>
 									<tr> 
-										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Length </td>
+										<td class="inner-box" colspan="2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b)Length </td>
 										<td class="inner-box" style="text-align: center;" >&nbsp;mm</td>
 										<td class="inner-box" style="text-align: center;" >{{spl_doc.pol_length }}</td>
 									</tr>
