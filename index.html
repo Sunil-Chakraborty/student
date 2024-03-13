@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Status Checker</title>
+    <style>
+      *{
+          padding: 0;
+          margin: 0;
+          box-sizing: border-box;
+      }
+      
+      body{
+          font-family: Arial, sans-serif;
+          background: linear-gradient(to right,#614385,#516395);
+      }
+      
+      .container{
+          max-width: 500px;
+          margin: 200px auto;
+          background-color: #f2f2f2;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 2px 25px rgba(90, 87, 87, 0.3);
+          
+      }
+      
+      h1{
+          text-align: center;
+          margin-bottom: 20px;
+      }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Internet Connection Status Checker</h1>
+        <div class="status">
+           <p><strong>Connection Status:</strong><span id="statusText">Checking...</span></p> 
+           <p><strong>IP Address:</strong><span id="ipAddressText">-</span></p>
+           <p><strong>Network Strength:</strong><span id="networkStrengthText">-</span></p>
+        </div>
+    </div>
+ 
+</body>
+</html>
