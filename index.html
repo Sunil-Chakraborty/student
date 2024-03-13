@@ -4,34 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Internet Status Checker</title>
-    <style>
-      *{
-          padding: 0;
-          margin: 0;
-          box-sizing: border-box;
-      }
-      
-      body{
-          font-family: Arial, sans-serif;
-          background: linear-gradient(to right,#614385,#516395);
-      }
-      
-      .container{
-          max-width: 500px;
-          margin: 200px auto;
-          background-color: #f2f2f2;
-          padding: 20px;
-          border-radius: 8px;
-          box-shadow: 0 2px 25px rgba(90, 87, 87, 0.3);
-          
-      }
-      
-      h1{
-          text-align: center;
-          margin-bottom: 20px;
-      }
-
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -43,51 +16,7 @@
         </div>
     </div>
 
-<script>   
-window.addEventListener("load",checkInternetConnection);
-
-
-function checkInternetConnection(){
-
-    const statusText = document.getElementById('statusText');
-    const ipAddressText = document.getElementById('ipAddressText');
-    const networkStrengthText = document.getElementById('networkStrengthText');
-
-    statusText.textContent = 'Checking....';
-
-
-    if(navigator.onLine){
-        fetch('https://api.ipify.org/?format=json')
-		
-        .then((response)=> response.json())
-        .then((data)=>{
-
-            ipAddressText.textContent = data.ip;
-            statusText.textContent = 'Connected'
-
-            const connection = navigator.connection;
-
-            const networkStrength = connection ?connection.downlink 
-            +'Mbps' : 'Unknown';
-            networkStrengthText.textContent = networkStrength;
-
-
-        })
-        .catch(()=>{
-            statusText.textContent = 'Disconnected';
-            ipAddressText.textContent = '-'
-            networkStrengthText.textContent = '-'
-        })
-
-
-    }else{
-        statusText.textContent = 'Disconnected';
-        ipAddressText.textContent = '-'
-        networkStrengthText.textContent = '-'
-    }
-
-}
-</script> 
+<script src="script.js"></script>  
 </body>
 
     
