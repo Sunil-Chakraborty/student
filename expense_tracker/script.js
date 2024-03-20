@@ -7,6 +7,14 @@ const expenseList =
 const totalAmountElement = 
 	document.getElementById("total-amount"); 
 
+
+// Get the current date
+const currentDate = new Date();
+
+// Format the date as "d-m-yy"
+const formattedDate = currentDate.toLocaleDateString('en-GB');
+
+
 // Initialize expenses array from localStorage 
 let expenses = 
 	JSON.parse(localStorage.getItem("expenses")) || []; 
@@ -26,7 +34,8 @@ function renderExpenses() {
 		const expenseRow = document.createElement("tr"); 
 		expenseRow.innerHTML = ` 
 	<td >${expense.name}</td> 
-	<td style="text-align: right; padding-right: 10px;">${expense.amount.toFixed(2)}</td> 
+	<td >${expense.amount.toFixed(2)}</td>
+	<td style="text-align:center;">${formattedDate}</td> 	
 	<td class="delete-btn" data-id="${i}">Delete</td> 
 	`; 
 		expenseList.appendChild(expenseRow); 
@@ -104,26 +113,27 @@ expenseList.addEventListener("click", deleteExpense);
 // Render initial expenses on page load 
 renderExpenses();
 
-
 // Function to export expense list as CSV
 function exportExpenseListAsCSV() {
-    // Collect data from the table
-    const data = [];
-    $("#expense-list tr").each(function () {
-        const rowData = [];
-        $(this).find("td").each(function () {
-            rowData.push($(this).text());
-        });
-        data.push(rowData.join(","));
-		print(data)
+    // Construct CSV content
+    let csvContent = "Expense Name,Amount (Rs),Date\n";
+    expenses.forEach(expense => {
+        csvContent += `${expense.name},${expense.amount.toFixed(2)},${formattedDate}\n`;
     });
 
-    // Convert data to CSV format
-    const csvContent = "data:text/csv;charset=utf-8," + data.join("\n");
+    // Create a Blob containing the CSV data
+    const blob = new Blob([csvContent], { type: 'text/csv' });
 
-    // Set href attribute of export button to the generated CSV data
-    $("#export-button").attr("href", encodeURI(csvContent));
-    $("#export-button").attr("download", "expense_list.csv");
+    // Create a download link
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = 'expense_list.csv';
+
+    // Trigger the download
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+	console.log(expenses);
 }
 
 // Add event listener to export button
