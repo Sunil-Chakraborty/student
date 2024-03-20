@@ -79,7 +79,7 @@ tbody td {
 } 
 
 .total-amount { 
-	padding: 10px; 
-	text-align: right; 
+	padding: 10px;
+	margin-left:100px;
 	background-color: #f2f2f2; 
 }
