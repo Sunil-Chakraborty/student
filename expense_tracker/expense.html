@@ -7,6 +7,38 @@
 	<link rel="stylesheet"
 		type="text/css"
 		href="style.css" /> 
+
+	<style>
+		.expense-table table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		.expense-table th,
+		.expense-table td {
+			border: 1px solid #ddd;
+			padding: 8px;
+			text-align: left;
+		}
+
+		.expense-table th:last-child,
+		.expense-table td:last-child {
+			text-align: center;
+		}
+
+		.expense-table th:nth-child(2),
+		.expense-table td:nth-child(2) {
+			width: 20%;
+			text-align: right;
+		}
+		
+		.total-amount{
+			margin-left:425px;
+			float:left;
+		}
+	
+	</style>
+
 </head> 
 
 <body> 
@@ -15,10 +47,10 @@
 		<form id="expense-form"> 
 			<input type="text"
 				id="expense-name"
-				placeholder="Expense Name" required /> 
+				placeholder="Expense Name" required />				
 			<input type="number"
 				id="expense-amount"
-				placeholder="Amount" required /> 
+				placeholder="Amount" required />				
 			<button type="submit"> 
 				Add Expense 
 			</button>
@@ -28,22 +60,27 @@
 			<table> 
 				<thead> 
 					<tr> 
-						<th style="width:50%;">Expense Name</th> 
-						<th style="width:40%;">Amount (Rs)</th> 
-						<th style="width:10%;">Action</th> 
+						<th >Expense Name</th>						
+						<th >Amount (Rs)</th>
+						<th style="text-align:center;">Date</th>						
+						<th >Action</th> 
 					</tr> 
 				</thead> 
 				<tbody id="expense-list"></tbody> 
-			</table> 
-			<div class="total-amount"> 
-				<strong>Total:</strong> 
-				Rs.<span id="total-amount">0</span> 
-			</div> 
-			<button style="margin-left:5px;" id="export-button"> 
-				Export Expense 
-			</button>
-			
+			</table>
 		</div> 
+				<div style="padding:10px;margin-left:287px;">					
+					<strong>Total:</strong> 
+					Rs.<span id="total-amount">0</span>
+				
+				
+					<button style="float:right;" id="export-button"> 
+							Export Expense 
+					</button>
+				</div>
+				
+			
+		
 	</div>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="script.js"></script>
