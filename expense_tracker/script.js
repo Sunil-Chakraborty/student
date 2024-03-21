@@ -150,9 +150,9 @@ renderExpenses();
 // Function to export expense list as CSV
 function exportExpenseListAsCSV() {
     // Construct CSV content
-    let csvContent = "Expense Name,Amount (Rs),Date\n";
+    let csvContent = "Expense Name,Amount (Rs),Comment, Date\n";
     expenses.forEach(expense => {
-        csvContent += `${expense.name},${expense.amount.toFixed(2)},${expense.commnet},${expense.date}\n`;
+        csvContent += `${expense.name},${expense.amount.toFixed(2)},${expense.comment},${expense.date}\n`;
     });
 
     // Create a Blob containing the CSV data
