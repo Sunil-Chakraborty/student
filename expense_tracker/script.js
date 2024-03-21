@@ -53,8 +53,15 @@ function renderExpenses() {
 
 		// Update total amount 
 		totalAmount += expense.amount; 
-	} 
-
+	}
+	
+	
+	
+	// Initialize DataTable
+    $(document).ready(function() {
+        $('#expense-table').DataTable();
+    });
+	
 	// Update total amount display 
 	totalAmountElement.textContent = 
 		totalAmount.toFixed(2); 
@@ -165,5 +172,4 @@ function exportExpenseListAsCSV() {
 
 // Add event listener to export button
 $(document).on("click", "#export-button", exportExpenseListAsCSV);
-
 
