@@ -45,44 +45,50 @@
 	<div class="container"> 
 		<h1>Expense Tracker</h1> 
 		<form id="expense-form"> 
-			<input type="text"
-				id="expense-name"
-				placeholder="Expense Name" required />				
-			<input type="number"
-				id="expense-amount"
-				placeholder="Amount" required />				
-			<button type="submit"> 
+			
+			<input type="text" id="expense-name" class="form-control" style="width: 30%;" placeholder="Expense Name" required /> 
+			
+			<textarea id="expense-comment" class="form-control" style="width: 40%; padding-top: calc(0.875em - .5px); padding-bottom: calc(0.375em - 1px);" placeholder="Comment"></textarea>
+
+			<input type="number" id="expense-amount" class="form-control" style="width: 15%;" placeholder="Amount" required /> 
+
+			<input type="date" id="expense-date" class="form-control" style="width: 15%;" required />
+			
+			<button style="margin-left:2px;" type="submit"> 
 				Add Expense 
 			</button>
 			
 		</form> 
+		
 		<div class="expense-table"> 
 			<table> 
 				<thead> 
 					<tr> 
-						<th >Expense Name</th>						
-						<th >Amount (Rs)</th>
-						<th style="text-align:center;">Date</th>						
+						<th style="width:20%;">Expense Name</th>
+						<th style="width:50%;text-align:left;">Narration</th>
+						<th style="width:20%;text-align:right;">Amount (Rs)</th>
+						<th style="width:20%;text-align:center;">Date</th>						
 						<th >Action</th> 
 					</tr> 
 				</thead> 
 				<tbody id="expense-list"></tbody> 
 			</table>
 		</div> 
-				<div style="padding:10px;margin-left:287px;">					
+				<div style="padding:10px;font-size: 18px;">					
 					<strong>Total:</strong> 
-					Rs.<span id="total-amount">0</span>
-				
+					Rs.<span id="total-amount">0</span>				
 				
 					<button style="float:right;" id="export-button"> 
 							Export Expense 
 					</button>
+
 				</div>
 				
 			
 		
 	</div>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	
 	<script src="script.js"></script>
 	
 </body> 
