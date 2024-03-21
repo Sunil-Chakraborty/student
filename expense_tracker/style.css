@@ -7,7 +7,7 @@ body {
 .container { 
 	max-width: 800px; 
 	margin: 0 auto; 
-	background-color: #f9f9f9; 
+	background-color: #FFFACD; 
 	padding: 20px; 
 	border-radius: 8px; 
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
@@ -21,18 +21,23 @@ h1 {
 form { 
 	display: flex; 
 	justify-content: center; 
-	margin-bottom: 20px; 
+	margin-bottom: 20px;
+		
 } 
 
-input[type="text"], 
+input[type="text"],textarea,
+input[type="date"], 
 input[type="number"] { 
 	padding: 10px; 
 	border: 1px solid #ccc; 
 	border-radius: 4px; 
-	outline: none; 
+	outline: none;
+	background-color: #FFFFF0; 
+	margin : 2px;
+	font-size : 16px;	
 } 
 
-input[type="text"]::placeholder, 
+input[type="text"]::placeholder,textarea::placeholder, 
 input[type="number"]::placeholder { 
 	color: #999; 
 } 
@@ -64,7 +69,7 @@ table {
 
 thead th { 
 	background-color: black;
-	color: white;
+	color: white;	
 	padding: 10px; 
 	text-align: left; 
 } 
