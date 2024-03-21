@@ -63,7 +63,8 @@ table {
 } 
 
 thead th { 
-	background-color: #f2f2f2; 
+	background-color: black;
+	color: white;
 	padding: 10px; 
 	text-align: left; 
 } 
