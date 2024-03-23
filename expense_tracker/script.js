@@ -59,7 +59,46 @@ function renderExpenses() {
 	
 	// Initialize DataTable
     $(document).ready(function() {
-        $('#expense-table').DataTable();
+        $('#expense-table').DataTable({
+			
+			lengthMenu: [10,25, 50, 100, 200], // Set the available "Show entries" options
+            pageLength: 10, // Set the default number of records per page
+			
+			responsive: true,
+			dom: 'lBfrtip',
+			
+			buttons: [
+				{
+					extend: 'csv',
+					text: 'Export CSV',
+					customize: function(csv) {
+                    // Exclude last column (Action) from CSV
+						var rows = csv.split('\n');
+						for (var i = 0; i < rows.length; i++) {
+							var cells = rows[i].split(',');
+							cells.splice(cells.length - 1, 1); // Remove last cell (Action)
+							rows[i] = cells.join(',');
+                    }
+                    return rows.join('\n');
+                }					
+				},
+				{
+					extend: 'excel',
+					text: 'Export Excel'
+				},
+				{
+					extend: 'print',
+					text: 'Print',
+					customize: function(win) {
+						$(win.document.body).find('table').addClass('display').css('font-size', '12px');
+						$(win.document.body).find('thead th:last-child').hide(); // Exclude last th (Action)
+						$(win.document.body).find('tbody td:last-child').hide(); // Exclude last td (Delete)
+					}
+				}
+			]
+			
+			
+		});
     });
 	
 	// Update total amount display 
