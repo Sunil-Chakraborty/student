@@ -89,3 +89,15 @@ tbody td {
 	margin-left:100px;
 	background-color: #f2f2f2; 
 }
+
+/* Custom CSS for DataTables elements */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {	
+	font-size: 20px; /* Change the font-size here */
+}
+	
+.dataTables_wrapper .buttons-csv {
+	margin-left: 20px;
+}
