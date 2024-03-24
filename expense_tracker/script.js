@@ -8,16 +8,14 @@ const expenseList =
 const totalAmountElement = 
 	document.getElementById("total-amount"); 
 
-
 // Get the current date
 const currentDate = new Date();
 
-// Format the date as dd-mm-yyyy
-const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getFullYear()}`;
+// Format the date as yyyy-MM-dd
+const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
 
 // Set the default value for the date input
 document.getElementById("expense-date").value = formattedDate;
-
 
 // Initialize expenses array from localStorage 
 let expenses = 
@@ -47,7 +45,8 @@ function renderExpenses() {
 	<td style="font-size: 18px; height: 30px; text-align:left;">${expense.comment}</td>	
 	<td style="font-size: 18px; height: 30px; text-align:right;">${expense.amount.toFixed(2)}</td>
 	<td style="font-size: 18px; height: 30px; text-align:center;">${formattedDate}</td> 	
-	<td class="delete-btn" data-id="${i}">Delete</td> 
+	<td class="delete-btn" data-id="${i}">Delete</td>
+	<td class="edit-btn" data-id="${i}">Edit</td> 	
 	`; 
 		expenseList.appendChild(expenseRow); 
 
@@ -56,50 +55,53 @@ function renderExpenses() {
 	}
 	
 	
-	
-	// Initialize DataTable
-    $(document).ready(function() {
-        $('#expense-table').DataTable({
-			
-			lengthMenu: [10,25, 50, 100, 200], // Set the available "Show entries" options
+		
+    // Check if DataTable is already initialized
+    if (!$.fn.DataTable.isDataTable('#expense-table')) {
+		
+        expenseTable = $('#expense-table').DataTable({
+            lengthMenu: [10, 25, 50, 100, 200], // Set the available "Show entries" options
             pageLength: 10, // Set the default number of records per page
-			
-			responsive: true,
-			dom: 'lBfrtip',
-			
-			buttons: [
-				{
-					extend: 'csv',
-					text: 'Export CSV',
-					customize: function(csv) {
-                    // Exclude last column (Action) from CSV
-						var rows = csv.split('\n');
-						for (var i = 0; i < rows.length; i++) {
-							var cells = rows[i].split(',');
-							cells.splice(cells.length - 1, 1); // Remove last cell (Action)
-							rows[i] = cells.join(',');
+            responsive: true,
+            dom: 'lBfrtip',
+            buttons: [
+                {
+                    extend: 'csv',
+                    text: 'Export CSV',
+                    customize: function(csv) {
+                        // Exclude last column (Action) from CSV
+                        var rows = csv.split('\n');
+                        for (var i = 0; i < rows.length; i++) {
+                            var cells = rows[i].split(',');
+                            cells.splice(cells.length - 1, 1); // Remove last cell (Action)
+                            rows[i] = cells.join(',');
+                        }
+                        return rows.join('\n');
                     }
-                    return rows.join('\n');
-                }					
-				},
-				{
-					extend: 'excel',
-					text: 'Export Excel'
-				},
-				{
-					extend: 'print',
-					text: 'Print',
-					customize: function(win) {
-						$(win.document.body).find('table').addClass('display').css('font-size', '12px');
-						$(win.document.body).find('thead th:last-child').hide(); // Exclude last th (Action)
-						$(win.document.body).find('tbody td:last-child').hide(); // Exclude last td (Delete)
-					}
-				}
-			]
-			
-			
-		});
-    });
+                },
+                {
+                    extend: 'excel',
+                    text: 'Export Excel'
+                },
+                {
+                    extend: 'print',
+                    text: 'Print',
+                    customize: function(win) {
+                        $(win.document.body).find('table').addClass('display').css('font-size', '12px');
+                        $(win.document.body).find('thead th:last-child').hide(); // Exclude last th (Action)
+                        $(win.document.body).find('tbody td:last-child').hide(); // Exclude last td (Delete)
+                    }
+                }
+            ],
+			initComplete: function() {
+            this.api().on('error.dt', function(e, settings, techNote, message) {
+                // Suppress warning messages
+                console.error(message);
+            });
+        }
+        });
+	};
+	
 	
 	// Update total amount display 
 	totalAmountElement.textContent = 
@@ -109,6 +111,7 @@ function renderExpenses() {
 	localStorage.setItem("expenses", 
 		JSON.stringify(expenses)); 
 } 
+
 
 // Function to add expense 
 function addExpense(event) { 
@@ -184,7 +187,26 @@ expenseList.addEventListener("click", deleteExpense);
 // Render initial expenses on page load 
 renderExpenses();
 
+// Add event listener for edit button using event delegation
+$(document).on('click', '#expense-table .edit-btn', function() {
+    // Get the index of the row to edit
+    const rowIndex = parseInt($(this).attr('data-id'));
 
+    // Retrieve the expense data for the selected row
+    const expense = expenses[rowIndex];
+
+    // Populate form fields with expense data for editing
+    document.getElementById("expense-name").value = expense.name;
+    document.getElementById("expense-comment").value = expense.comment;
+    document.getElementById("expense-amount").value = expense.amount;
+    document.getElementById("expense-date").value = expense.date;
+
+    // Remove expense from expenses array
+    expenses.splice(rowIndex, 1);
+
+    // Render expenses to update the table
+    renderExpenses();
+});
 
 // Function to export expense list as CSV
 function exportExpenseListAsCSV() {
