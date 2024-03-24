@@ -84,6 +84,11 @@ tbody td {
 	cursor: pointer; 
 } 
 
+.edit-btn { 
+	color: green; 
+	cursor: pointer; 
+} 
+
 .total-amount { 
 	padding: 10px;
 	margin-left:100px;
