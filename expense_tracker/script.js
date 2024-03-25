@@ -40,14 +40,17 @@ function renderExpenses() {
             year: '2-digit'
         });		
 		const expenseRow = document.createElement("tr"); 
-		expenseRow.innerHTML = ` 
-	<td style="font-size: 18px; height: 30px;">${expense.name}</td>
-	<td style="font-size: 18px; height: 30px; text-align:left;">${expense.comment}</td>	
-	<td style="font-size: 18px; height: 30px; text-align:right;">${expense.amount.toFixed(2)}</td>
-	<td style="font-size: 18px; height: 30px; text-align:center;">${formattedDate}</td> 	
-	<td class="delete-btn" data-id="${i}">Delete</td>
-	<td class="edit-btn" data-id="${i}">Edit</td> 	
-	`; 
+		expenseRow.innerHTML = `
+		<td style="font-size: 18px; height: 30px;">${expense.name}</td>
+		<td style="font-size: 18px; height: 30px; text-align:left;">${expense.comment}</td>	
+		<td style="font-size: 18px; height: 30px; text-align:right;">${expense.amount.toFixed(2)}</td>
+		<td style="font-size: 18px; height: 30px; text-align:center;">${formattedDate}</td> 	
+		<td>			
+			<i class="fas fa-edit edit-icon edit-btn" data-id="${i}"></i>&nbsp&nbsp&nbsp&nbsp
+			<i class="fas fa-trash-alt delete-icon delete-btn" data-id="${i}"></i>
+		</td>
+		`;
+	
 		expenseList.appendChild(expenseRow); 
 
 		// Update total amount 
@@ -159,26 +162,28 @@ function addExpense(event) {
  
 	// Add expense to expenses array 
 	expenses.push(expense); 
-
+	location.reload();
 	// Render expenses 
 	renderExpenses(); 
 } 
 
-// Function to delete expense 
-function deleteExpense(event) { 
-	if (event.target.classList.contains("delete-btn")) { 
+// Function to delete expense
+function deleteExpense(event) {
+    if (event.target.classList.contains("delete-btn")) {
+        // Prompt the user for confirmation before deleting
+        if (window.confirm("Are you sure you want to delete this expense?")) {
+            // Get expense index from data-id attribute
+            const expenseIndex =
+                parseInt(event.target.getAttribute("data-id"));
 
-		// Get expense index from data-id attribute 
-		const expenseIndex = 
-			parseInt(event.target.getAttribute("data-id")); 
+            // Remove expense from expenses array
+            expenses.splice(expenseIndex, 1);
 
-		// Remove expense from expenses array 
-		expenses.splice(expenseIndex, 1); 
-
-		// Render expenses 
-		renderExpenses(); 
-	} 
-} 
+            // Render expenses
+            renderExpenses();
+        }
+    }
+}
 
 // Add event listeners 
 expenseForm.addEventListener("submit", addExpense); 
@@ -234,3 +239,13 @@ function exportExpenseListAsCSV() {
 // Add event listener to export button
 $(document).on("click", "#export-button", exportExpenseListAsCSV);
 
+/*
+//To initialize and activate DataTable()
+$(document).ready(function() {
+    $('#expense-table').DataTable({
+        paging: true, // Enable pagination
+        searching: true, // Enable search box
+        ordering: true // Enable column sorting
+    });
+});
+*/
