@@ -22,46 +22,45 @@ let expenses =
 	JSON.parse(localStorage.getItem("expenses")) || []; 
 
 // Function to render expenses in tabular form 
-function renderExpenses() { 
+function renderExpenses() {
+    // Clear expense list 
+    expenseList.innerHTML = "";
 
-	// Clear expense list 
-	expenseList.innerHTML = ""; 
+    // Initialize total amount 
+    let totalAmount = 0;
 
-	// Initialize total amount 
-	let totalAmount = 0; 
-
-	// Loop through expenses array and create table rows 
-	for (let i = 0; i < expenses.length; i++) { 
-		const expense = expenses[i];
-		// Format the date as 'd-m-yy'
+    // Loop through expenses array and create table rows 
+    for (let i = 0; i < expenses.length; i++) {
+        const expense = expenses[i];
+        // Format the date as 'd-m-yy'
         const formattedDate = new Date(expense.date).toLocaleDateString('en-GB', {
             day: '2-digit',
             month: '2-digit',
             year: '2-digit'
-        });		
-		const expenseRow = document.createElement("tr"); 
-		expenseRow.innerHTML = `
-		<td style="font-size: 18px; height: 30px;">${expense.name}</td>
-		<td style="font-size: 18px; height: 30px; text-align:left;">${expense.comment}</td>	
-		<td style="font-size: 18px; height: 30px; text-align:right;">${expense.amount.toFixed(2)}</td>
-		<td style="font-size: 18px; height: 30px; text-align:center;">${formattedDate}</td> 	
-		<td>			
-			<i class="fas fa-edit edit-icon edit-btn" data-id="${i}"></i>&nbsp&nbsp&nbsp&nbsp
-			<i class="fas fa-trash-alt delete-icon delete-btn" data-id="${i}"></i>
-		</td>
-		`;
-	
-		expenseList.appendChild(expenseRow); 
+        });
+        const expenseRow = document.createElement("tr");
+        expenseRow.innerHTML = `
+            <td style="font-size: 18px; height: 30px;">${expense.name}</td>
+            <td style="font-size: 18px; height: 30px; text-align:left;">${expense.comment}</td>    
+            <td style="font-size: 18px; height: 30px; text-align:right;">${expense.amount.toFixed(2)}</td>
+            <td style="font-size: 18px; height: 30px; text-align:center;">${formattedDate}</td>  
+            <td>            
+                <i class="fas fa-edit edit-icon edit-btn" data-id="${i}"></i>&nbsp&nbsp&nbsp&nbsp
+                <i class="fas fa-trash-alt delete-icon delete-btn" data-id="${i}"></i>
+            </td>
+        `;
 
-		// Update total amount 
-		totalAmount += expense.amount; 
-	}
-	
-	
-		
+        expenseList.appendChild(expenseRow);
+
+        // Update total amount 
+        totalAmount += expense.amount;
+    }
+
+    // Update total amount display 
+    totalAmountElement.textContent = totalAmount.toFixed(2);
+
     // Check if DataTable is already initialized
     if (!$.fn.DataTable.isDataTable('#expense-table')) {
-		
         expenseTable = $('#expense-table').DataTable({
             lengthMenu: [10, 25, 50, 100, 200], // Set the available "Show entries" options
             pageLength: 10, // Set the default number of records per page
@@ -96,24 +95,41 @@ function renderExpenses() {
                     }
                 }
             ],
-			initComplete: function() {
-            this.api().on('error.dt', function(e, settings, techNote, message) {
-                // Suppress warning messages
-                console.error(message);
-            });
-        }
-        });
-	};
-	
-	
-	// Update total amount display 
-	totalAmountElement.textContent = 
-		totalAmount.toFixed(2); 
+            initComplete: function() {
+                this.api().on('error.dt', function(e, settings, techNote, message) {
+                    // Suppress warning messages
+                    console.error(message);
+                });
 
-	// Save expenses to localStorage 
-	localStorage.setItem("expenses", 
-		JSON.stringify(expenses)); 
-} 
+                // Add event listener for filtering
+                this.api().on('draw.dt', function() {
+                    // Recalculate total amount based on visible rows
+                    totalAmount = calculateTotalAmount();
+                    // Update total amount display 
+                    totalAmountElement.textContent = totalAmount.toFixed(2);
+                });
+            }
+        });
+    } else {
+        // If DataTable is already initialized, recalculate total amount
+        totalAmount = calculateTotalAmount();
+        // Update total amount display 
+        totalAmountElement.textContent = totalAmount.toFixed(2);
+    }
+
+    // Save expenses to localStorage 
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+}
+
+// Function to calculate total amount based on visible rows in the DataTable
+function calculateTotalAmount() {
+    let totalAmount = 0;
+    expenseTable.rows({ search: 'applied' }).every(function() {
+        const rowData = this.data();
+        totalAmount += parseFloat(rowData[2]); // Assuming the amount is in the third column
+    });
+    return totalAmount;
+}
 
 
 // Function to add expense 
