@@ -81,12 +81,14 @@ tbody td {
 
 .delete-btn { 
 	color: red; 
-	cursor: pointer; 
+	cursor: pointer;
+	
 } 
 
 .edit-btn { 
 	color: green; 
-	cursor: pointer; 
+	cursor: pointer;
+	
 } 
 
 .total-amount { 
