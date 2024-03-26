@@ -88,7 +88,7 @@ function renderExpenses() {
                 {
                     extend: 'print',
                     text: 'Print',
-                    customize: function(win) {
+                    customize: function(win) {					
                         $(win.document.body).find('table').addClass('display').css('font-size', '12px');
                         $(win.document.body).find('thead th:last-child').hide(); // Exclude last th (Action)
                         $(win.document.body).find('tbody td:last-child').hide(); // Exclude last td (Delete)
@@ -264,4 +264,61 @@ $(document).ready(function() {
         ordering: true // Enable column sorting
     });
 });
+
+EW488879622IN
 */
+
+// Function to generate printable report
+function generateReportPrint() {
+    // Retrieve expenses from localStorage
+    const expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+    // Create a new window for the printable report
+    const printWindow = window.open("", "_blank");
+	
+	// Calculate total amount
+    let totalAmount = 0;
+    expenses.forEach(expense => {
+        totalAmount += expense.amount;
+    });
+
+	// Get the current date
+    const currentDate = new Date().toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+    // Write HTML content to the new window
+    printWindow.document.write("<html><head><title>Expense Report Print</title>");
+    printWindow.document.write('<style>@page { size: landscape; }</style>'); // Set page orientation to landscape
+    printWindow.document.write("</head><body>");
+
+    // Add content to the printable report
+    printWindow.document.write(`<h2>Expense Report as on ${currentDate}</h2>`);
+    printWindow.document.write("<table border='1'><thead><tr><th>Expense Name</th><th>Narration</th><th>Amount (Rs)</th><th>Date</th></tr></thead><tbody>");
+    expenses.forEach(expense => {
+        const formattedDate = new Date(expense.date).toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: '2-digit'
+        });
+        printWindow.document.write(`<tr><td>${expense.name}</td><td>${expense.comment}</td><td style="text-align:right;">${expense.amount.toFixed(2)}</td><td>${formattedDate}</td></tr>`);
+    });
+	 // Print total amount row
+    printWindow.document.write(`<tr><td colspan="2" ><strong>Total Amount</strong></td><td style="text-align:right;font-weight:bold;">${totalAmount.toFixed(2)}</td></tr>`);
+
+    printWindow.document.write("</tbody></table>");
+
+    // Close HTML content
+    printWindow.document.write("</body></html>");
+
+    // Close the document and display the print dialog
+    printWindow.document.close();
+    printWindow.print();
+}
+
+
+// Add event listener to the button for generating the report print
+document.getElementById("generate-report-btn").addEventListener("click", function() {
+    generateReportPrint();
+});
