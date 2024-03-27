@@ -95,7 +95,8 @@ function renderExpenses() {
                     }
                 }
             ],
-	    order: [[3, 'desc']], // Sort by the fourth column (date) in descending order		
+	    order: [[3, 'desc']], // Sort by the fourth column (date) in descending order
+		
             initComplete: function() {
                 this.api().on('error.dt', function(e, settings, techNote, message) {
                     // Suppress warning messages
