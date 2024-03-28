@@ -1,0 +1,116 @@
+/* style.css */
+body { 
+	font-family: Arial, sans-serif; 
+	margin: 20px; 
+} 
+
+.green-amount{
+	color: green;
+	font-weight: bold;
+	
+}
+.container { 
+	max-width: 800px; 
+	margin: 0 auto; 
+	background-color: #FFFACD; 
+	padding: 20px; 
+	border-radius: 8px; 
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+} 
+
+h1 { 
+	text-align: center; 
+	margin-bottom: 20px; 
+} 
+
+form { 
+	display: flex; 
+	justify-content: center; 
+	margin-bottom: 20px;
+		
+} 
+
+input[type="text"],textarea,
+input[type="date"], 
+input[type="number"] { 
+	padding: 10px; 
+	border: 1px solid #ccc; 
+	border-radius: 4px; 
+	outline: none;
+	background-color: white; 
+	margin : 2px;
+	font-size : 16px;
+	
+} 
+
+input[type="text"]::placeholder,textarea::placeholder, 
+input[type="number"]::placeholder { 
+	color: #999; 
+} 
+
+button { 
+	padding: 10px 20px; 
+	background-color: #4caf50; 
+	color: white; 
+	border: none; 
+	border-radius: 4px; 
+	cursor: pointer; 
+} 
+
+button:hover { 
+	background-color: #45a049; 
+} 
+
+.expense-table { 
+	border: 1px solid #ddd; 
+	border-radius: 8px; 
+	overflow: hidden; 
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+} 
+
+table { 
+	width: 100%; 
+	border-collapse: collapse; 
+} 
+
+thead th { 
+	background-color: black;
+	color: white;	
+	padding: 10px; 
+	text-align: left; 
+} 
+
+tbody td { 
+	padding: 10px; 
+	border-top: 1px solid #ddd; 
+} 
+
+.delete-btn { 
+	color: red; 
+	cursor: pointer;
+	
+} 
+
+.edit-btn { 
+	color: green; 
+	cursor: pointer;
+	
+} 
+
+.total-amount { 
+	padding: 10px;
+	margin-left:100px;
+	background-color: #f2f2f2; 
+}
+
+/* Custom CSS for DataTables elements */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {	
+	font-size: 20px; /* Change the font-size here */
+}
+	
+.dataTables_wrapper .buttons-csv {
+	margin-left: 20px;
+}
