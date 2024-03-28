@@ -1,1 +1,117 @@
+<!-- index.html -->
+<!DOCTYPE html> 
+<html> 
 
+<head> 
+	<title>Statements of  Receipt and Payment</title> 
+	<link rel="stylesheet"
+		type="text/css"
+		href="style.css" /> 
+		
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+	<style>
+	
+	.expense-table table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		.expense-table th,
+		.expense-table td {
+			border: 1px solid #ddd;
+			padding: 8px;
+			text-align: left;
+		}
+
+		.expense-table th:last-child,
+		.expense-table td:last-child {
+			text-align: center;
+		}
+
+		.expense-table th:nth-child(2),
+		.expense-table td:nth-child(2) {
+			width: 20%;
+			text-align: right;
+		}
+		
+		.total-amount{
+			margin-left:425px;
+			float:left;
+		}
+	
+	</style>
+</head> 
+
+<body> 
+	<div class="container"> 
+		<h1>Statements of  Receipt and Payment</h1> 
+		<form id="expense-form"> 
+			<div style="margin-top:5px;" class="form-check form-check-inline">
+				<input class="form-check-input" type="radio" name="expense-type" id="expense-rct" value="Rct" checked required>
+				<label class="form-check-label" for="expense-rct">Rct</label>
+			</div>
+			<div style="margin-top:5px;"class="form-check form-check-inline">
+				<input class="form-check-input" type="radio" name="expense-type" id="expense-exp" value="Exp"  required>
+				<label class="form-check-label" for="expense-exp">Exp</label>
+			</div>
+			
+			<input type="text" id="expense-name"  class="form-control" style="width: 25%;" placeholder="Name" required /> 
+			
+			<textarea  id="expense-comment" class="form-control" style="width: 35%; padding-top: calc(0.875em - .5px); padding-bottom: calc(0.375em - 1px);" placeholder="Comment"></textarea>
+
+			<input type="number" id="expense-amount"  class="form-control" style="width: 20%;" placeholder="Amount" /> 
+
+			<input type="date" id="expense-date"  class="form-control" style="width: 20%;" required />
+			
+			<button style="margin-left:2px;" type="submit"> 
+				Add Expense 
+			</button>
+			<button id="generate-report-btn" style="margin-left:5px;">
+				Report
+			</button>
+		</form> 
+		
+		<div class="expense-table"> 
+			<table id="expense-table"> 
+				<thead > 
+					<tr>
+						<th style="width:5%;">Tr.</th>					
+						<th style="width:30%;text-align:left;">Transaction Name</th>
+						<th style="width:43%;text-align:left;">Narration</th>
+						<th style="width:10%;text-align:right;">Amount (Rs)</th>
+						<th style="width:10%;text-align:center;">Date</th>						
+						<th >Actions</th>
+												
+					</tr> 
+				</thead> 
+				<tbody id="expense-list"></tbody> 
+			</table>
+		</div> 
+				<div style="padding:10px;font-size: 18px;">					
+					<strong>Net Amount:</strong> 
+					Rs.<span id="total-amount">0</span>				
+					&nbsp&nbsp(Rect.&nbsp<span id="total-rect">0</span>
+					&nbsp- Pmt.&nbsp<span id="total-exp">0</span>
+					)</span>
+				</div>
+				
+			
+		
+	</div>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
+	<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+	<script type="text/javascript" src=" https://cdn.datatables.net/buttons/2.0.1/js/buttons.colVis.min.js"></script>
+	<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+	<script>
+		document.getElementById("expense-amount").value = "0";
+			
+	</script>
+	<script src="script.js"></script>
+	
+</body> 
+
+</html>
